@@ -1,0 +1,65 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'cz.artin.hackers'
+version = '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+def CRAFTBUKKIT_VERSION = "1.13.2"
+
+
+repositories {
+    maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+    maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compileOnly group: 'org.spigotmc', name: 'spigot-api', version: "${CRAFTBUKKIT_VERSION}-R0.1-SNAPSHOT"
+    compileOnly group: 'org.bukkit', name: 'bukkit', version: "${CRAFTBUKKIT_VERSION}-R0.1-SNAPSHOT"
+}
+
+task downloadBuildTools {
+    def f = new File('build/BuildTools.jar')
+    f.parentFile.mkdirs()
+    if (!f.exists()) {
+        new URL('https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar')
+                .withInputStream { i -> f.withOutputStream { it << i } }
+    }
+}
+
+task compileServerJar(type: Exec) {
+    workingDir 'build'
+
+    commandLine 'java'
+    args=["-jar","BuildTools.jar","-rev", CRAFTBUKKIT_VERSION]
+}
+
+compileServerJar.dependsOn downloadBuildTools
+
+
+task prepareServer(type: Copy) {
+    from("build")
+    include("craftbukkit-*.jar")
+    into "server"
+}
+prepareServer.dependsOn compileServerJar
+
+
+task copyJar(type: Copy) {
+    from("build/libs")
+    include("hackers-plugin*.jar")
+    into "server/plugins"
+}
+
+copyJar.dependsOn build
+
+
+task runServer(type: Exec) {
+    workingDir 'server'
+
+    commandLine 'java'
+    args=["-jar","craftbukkit-${CRAFTBUKKIT_VERSION}.jar"]
+}
+runServer.dependsOn copyJar
