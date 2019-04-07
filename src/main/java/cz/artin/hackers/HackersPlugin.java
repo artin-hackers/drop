@@ -8,7 +8,7 @@ public class HackersPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getLogger().info("Hackers plugin se nacita...");
+        getLogger().info("Loading DROP plugin...");
     }
 
     @Override
