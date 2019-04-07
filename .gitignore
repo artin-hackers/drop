@@ -1,0 +1,7 @@
+.idea/
+*.iml
+.gradle
+server/*
+!server/eula.txt
+!server/ops.json
+build
