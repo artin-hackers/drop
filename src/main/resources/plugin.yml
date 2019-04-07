@@ -1,4 +1,4 @@
-name: hackers-plugin
+name: drop
 version: "1.0-SNAPSHOT"
 author: Artin Hackers Team
-main: cz.artin.hackers.HackersPlugin
+main: cz.artin.hackers.Drop

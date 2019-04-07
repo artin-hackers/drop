@@ -49,7 +49,7 @@ prepareServer.dependsOn compileServerJar
 
 task copyJar(type: Copy) {
     from("build/libs")
-    include("hackers-plugin*.jar")
+    include("drop*.jar")
     into "server/plugins"
 }
 
