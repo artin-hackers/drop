@@ -17,16 +17,30 @@ public class Drop extends JavaPlugin {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (label.equalsIgnoreCase("spawnChicken")) {
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
-                Location location = player.getLocation();
-                location.add(5, 0, 0);
-                Chicken chicken = player.getWorld().spawn(location, Chicken.class);
-                return true;
-            }
-            return false;
+            return spawnChicken(sender);
+        }
+        else if (label.equalsIgnoreCase("spawnRabbit")) {
+            return spawnRabbit(sender);
+        }
+        else if (label.equalsIgnoreCase("spawnWolf")) {
+            return spawnWolf(sender);
         }
 
         return false;
+    }
+
+    private boolean spawnChicken(CommandSender sender) {
+        // TODO
+        return true;
+    }
+
+    private boolean spawnRabbit(CommandSender sender) {
+        // TODO
+        return true;
+    }
+
+    private boolean spawnWolf(CommandSender sender) {
+        // TODO
+        return true;
     }
 }

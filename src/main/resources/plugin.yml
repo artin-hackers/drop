@@ -5,3 +5,7 @@ main: cz.artin.hackers.Drop
 commands:
   spawnChicken:
     description: Spawns a chicken near the player
+  spawnRabbit:
+    description: Spawns a chicken near the player
+  spawnWolf:
+    description: Spawns a chicken near the player
