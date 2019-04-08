@@ -4,5 +4,11 @@
     "name": "Arcifrajer",
     "level": 4,
     "bypassesPlayerLimit": false
+  },
+  {
+    "uuid": "c3d534bf-c4c9-4005-b178-4649ed3edc7c",
+    "name": "FildaHacker",
+    "level": 4,
+    "bypassesPlayerLimit": false
   }
 ]
