@@ -1,14 +1,12 @@
 package cz.artin.hackers;
 
-import org.bukkit.Location;
+import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Drop extends JavaPlugin {
-
     @Override
     public void onEnable() {
         getLogger().info("Loading DROP plugin...");
@@ -16,7 +14,10 @@ public class Drop extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (label.equalsIgnoreCase("spawnChicken")) {
+        if (label.equalsIgnoreCase("setDeveloperMode")) {
+            return setDeveloperMode(sender);
+        }
+        else if (label.equalsIgnoreCase("spawnChicken")) {
             return spawnChicken(sender);
         }
         else if (label.equalsIgnoreCase("spawnRabbit")) {
@@ -27,6 +28,13 @@ public class Drop extends JavaPlugin {
         }
 
         return false;
+    }
+
+    private boolean setDeveloperMode(CommandSender sender) {
+        if (sender instanceof Player) {
+            ((Player) sender).setGameMode(GameMode.CREATIVE);
+        }
+        return true;
     }
 
     private boolean spawnChicken(CommandSender sender) {

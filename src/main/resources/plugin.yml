@@ -3,6 +3,8 @@ version: "1.0-SNAPSHOT"
 author: Artin Hackers Team
 main: cz.artin.hackers.Drop
 commands:
+  setDeveloperMode:
+    description: Sets creative mode
   spawnChicken:
     description: Spawns a chicken near the player
   spawnRabbit:
