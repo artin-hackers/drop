@@ -20,8 +20,11 @@ public class Drop extends JavaPlugin implements Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (label.equalsIgnoreCase("setDeveloperMode")) {
-            return setDeveloperMode(sender);
+        if (label.equalsIgnoreCase("setModeDeveloper")) {
+            return setModeDeveloper(sender);
+        }
+        else if (label.equalsIgnoreCase("setModeNormal")) {
+            return setModeNormal(sender);
         }
         else if (label.equalsIgnoreCase("spawnChicken")) {
             return spawnChicken(sender);
@@ -41,11 +44,19 @@ public class Drop extends JavaPlugin implements Listener {
         event.getPlayer().setGameMode(GameMode.CREATIVE);
     }
 
-    private boolean setDeveloperMode(CommandSender sender) {
+    private boolean setModeDeveloper(CommandSender sender) {
         if (sender instanceof Player) {
             ((Player) sender).setGameMode(GameMode.CREATIVE);
             ((Player) sender).getWorld().setTime(0);
             ((Player) sender).getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        }
+        return true;
+    }
+
+    private boolean setModeNormal(CommandSender sender) {
+        if (sender instanceof Player) {
+            ((Player) sender).setGameMode(GameMode.SURVIVAL);
+            ((Player) sender).getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
         }
         return true;
     }
