@@ -1,6 +1,7 @@
 package cz.artin.hackers;
 
 import org.bukkit.GameMode;
+import org.bukkit.GameRule;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -31,18 +32,20 @@ public class Drop extends JavaPlugin implements Listener {
         else if (label.equalsIgnoreCase("spawnWolf")) {
             return spawnWolf(sender);
         }
-
         return false;
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        getLogger().info("A new player just joined the fray");
+        getLogger().info("A new player, " + event.getPlayer().getName() + ", just joined the fray.");
+        event.getPlayer().setGameMode(GameMode.CREATIVE);
     }
 
     private boolean setDeveloperMode(CommandSender sender) {
         if (sender instanceof Player) {
             ((Player) sender).setGameMode(GameMode.CREATIVE);
+            ((Player) sender).getWorld().setTime(0);
+            ((Player) sender).getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         }
         return true;
     }

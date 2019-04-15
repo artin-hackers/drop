@@ -4,7 +4,7 @@ author: Artin Hackers Team
 main: cz.artin.hackers.Drop
 commands:
   setDeveloperMode:
-    description: Sets creative mode
+    description: Sets creative mode, day and disables day-night cycle
   spawnChicken:
     description: Spawns a chicken near the player
   spawnRabbit:
