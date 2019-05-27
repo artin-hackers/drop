@@ -2,8 +2,10 @@ package cz.artin.hackers;
 
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -70,7 +72,20 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     private boolean spawnDummies(CommandSender sender) {
-        // TODO
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Location playerLocation = player.getLocation().clone();
+            for (int x = -1; x <= 1; x++) {
+                for (int z = -1; z <= 1; z++) {
+                    final Location dummyLocation = new Location(
+                            player.getWorld(),
+                            playerLocation.getX() + x,
+                            playerLocation.getY(),
+                            playerLocation.getZ() + z);
+                    Chicken dummy = player.getWorld().spawn(dummyLocation, Chicken.class);
+                }
+            }
+        }
         return true;
     }
 
