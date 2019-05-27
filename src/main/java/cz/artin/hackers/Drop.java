@@ -29,6 +29,9 @@ public class Drop extends JavaPlugin implements Listener {
         else if (label.equalsIgnoreCase("spawnChicken")) {
             return spawnChicken(sender);
         }
+        else if (label.equalsIgnoreCase("spawnDummies")) {
+            return spawnDummies(sender);
+        }
         else if (label.equalsIgnoreCase("spawnRabbit")) {
             return spawnRabbit(sender);
         }
@@ -62,6 +65,11 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     private boolean spawnChicken(CommandSender sender) {
+        // TODO
+        return true;
+    }
+
+    private boolean spawnDummies(CommandSender sender) {
         // TODO
         return true;
     }
