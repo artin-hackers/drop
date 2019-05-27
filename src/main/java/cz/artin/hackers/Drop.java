@@ -12,6 +12,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Drop extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
@@ -75,19 +77,15 @@ public class Drop extends JavaPlugin implements Listener {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             Location playerLocation = player.getLocation().clone();
-            int position = 0;
-            for (int x = -5; x <= 5; x++) {
-                for (int z = -5; z <= 5; z++) {
-                    final Location dummyLocation = new Location(
-                            player.getWorld(),
-                            playerLocation.getX() + x,
-                            playerLocation.getY(),
-                            playerLocation.getZ() + z);
-                    if (position % 5 == 0) {
-                        Chicken dummy = player.getWorld().spawn(dummyLocation, Chicken.class);
-                    }
-                    position++;
-                }
+            for (int i = 0; i < 10; i++) {
+                int randomX = ThreadLocalRandom.current().nextInt(-5, 5);
+                int randomZ = ThreadLocalRandom.current().nextInt(-5, 5);
+                final Location dummyLocation = new Location(
+                        player.getWorld(),
+                        playerLocation.getX() + randomX,
+                        playerLocation.getY(),
+                        playerLocation.getZ() + randomZ);
+                Chicken dummy = player.getWorld().spawn(dummyLocation, Chicken.class);
             }
         }
         return true;
