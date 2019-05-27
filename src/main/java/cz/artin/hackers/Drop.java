@@ -75,14 +75,18 @@ public class Drop extends JavaPlugin implements Listener {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             Location playerLocation = player.getLocation().clone();
-            for (int x = -1; x <= 1; x++) {
-                for (int z = -1; z <= 1; z++) {
+            int position = 0;
+            for (int x = -5; x <= 5; x++) {
+                for (int z = -5; z <= 5; z++) {
                     final Location dummyLocation = new Location(
                             player.getWorld(),
                             playerLocation.getX() + x,
                             playerLocation.getY(),
                             playerLocation.getZ() + z);
-                    Chicken dummy = player.getWorld().spawn(dummyLocation, Chicken.class);
+                    if (position % 5 == 0) {
+                        Chicken dummy = player.getWorld().spawn(dummyLocation, Chicken.class);
+                    }
+                    position++;
                 }
             }
         }
