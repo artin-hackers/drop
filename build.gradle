@@ -7,7 +7,7 @@ version = '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-def CRAFTBUKKIT_VERSION = "1.13.2"
+def CRAFTBUKKIT_VERSION = "1.14.2"
 
 
 repositories {
