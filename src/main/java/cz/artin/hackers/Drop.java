@@ -15,6 +15,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Drop extends JavaPlugin implements Listener {
+    private static final int DEFAULT_DUMMY_COUNT = 10;
+    private static final int DEFAULT_DUMMY_RADIUS = 10;
+
     @Override
     public void onEnable() {
         getLogger().info("Loading DROP plugin...");
@@ -30,11 +33,11 @@ public class Drop extends JavaPlugin implements Listener {
         else if (label.equalsIgnoreCase("setModeNormal")) {
             return setModeNormal(sender);
         }
-        else if (label.equalsIgnoreCase("spawnChicken")) {
-            return spawnChicken(sender);
-        }
         else if (label.equalsIgnoreCase("spawnDummies")) {
             return spawnDummies(sender);
+        }
+        else if (label.equalsIgnoreCase("spawnChicken")) {
+            return spawnChicken(sender);
         }
         else if (label.equalsIgnoreCase("spawnRabbit")) {
             return spawnRabbit(sender);
@@ -73,13 +76,15 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean spawnDummies(CommandSender sender) {
+    private boolean spawnDummies(CommandSender sender, String... args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             Location playerLocation = player.getLocation().clone();
-            for (int i = 0; i < 10; i++) {
-                int randomX = ThreadLocalRandom.current().nextInt(-5, 5);
-                int randomZ = ThreadLocalRandom.current().nextInt(-5, 5);
+            int count = DEFAULT_DUMMY_COUNT;
+            int radius = DEFAULT_DUMMY_RADIUS;
+            for (int i = 0; i < count; i++) {
+                int randomX = ThreadLocalRandom.current().nextInt(-radius, radius);
+                int randomZ = ThreadLocalRandom.current().nextInt(-radius, radius);
                 final Location dummyLocation = new Location(
                         player.getWorld(),
                         playerLocation.getX() + randomX,
