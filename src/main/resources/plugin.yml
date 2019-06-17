@@ -11,7 +11,3 @@ commands:
     description: Spawns a chicken near the player
   spawnDummies:
     description: Spawns dummies around the player
-  spawnRabbit:
-    description: Spawns a chicken near the player
-  spawnWolf:
-    description: Spawns a chicken near the player

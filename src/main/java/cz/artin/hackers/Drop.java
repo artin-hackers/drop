@@ -33,17 +33,11 @@ public class Drop extends JavaPlugin implements Listener {
         else if (label.equalsIgnoreCase("setModeNormal")) {
             return setModeNormal(sender);
         }
-        else if (label.equalsIgnoreCase("spawnDummies")) {
-            return spawnDummies(sender, args);
-        }
         else if (label.equalsIgnoreCase("spawnChicken")) {
             return spawnChicken(sender);
         }
-        else if (label.equalsIgnoreCase("spawnRabbit")) {
-            return spawnRabbit(sender);
-        }
-        else if (label.equalsIgnoreCase("spawnWolf")) {
-            return spawnWolf(sender);
+        else if (label.equalsIgnoreCase("spawnDummies")) {
+            return spawnDummies(sender, args);
         }
         return false;
     }
@@ -102,16 +96,6 @@ public class Drop extends JavaPlugin implements Listener {
                 Chicken dummy = player.getWorld().spawn(dummyLocation, Chicken.class);
             }
         }
-        return true;
-    }
-
-    private boolean spawnRabbit(CommandSender sender) {
-        // TODO
-        return true;
-    }
-
-    private boolean spawnWolf(CommandSender sender) {
-        // TODO
         return true;
     }
 }
