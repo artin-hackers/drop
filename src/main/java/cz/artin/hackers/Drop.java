@@ -34,7 +34,7 @@ public class Drop extends JavaPlugin implements Listener {
             return setModeNormal(sender);
         }
         else if (label.equalsIgnoreCase("spawnDummies")) {
-            return spawnDummies(sender);
+            return spawnDummies(sender, args);
         }
         else if (label.equalsIgnoreCase("spawnChicken")) {
             return spawnChicken(sender);
@@ -76,12 +76,21 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean spawnDummies(CommandSender sender, String... args) {
+    private boolean spawnDummies(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             Location playerLocation = player.getLocation().clone();
             int count = DEFAULT_DUMMY_COUNT;
             int radius = DEFAULT_DUMMY_RADIUS;
+
+            if (args.length == 1) {
+                count = Integer.valueOf(args[0]);
+            }
+            else if (args.length == 2) {
+                count = Integer.valueOf(args[0]);
+                radius = Integer.valueOf(args[1]);
+            }
+
             for (int i = 0; i < count; i++) {
                 int randomX = ThreadLocalRandom.current().nextInt(-radius, radius);
                 int randomZ = ThreadLocalRandom.current().nextInt(-radius, radius);
