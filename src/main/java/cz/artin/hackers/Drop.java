@@ -48,6 +48,15 @@ public class Drop extends JavaPlugin implements Listener {
         event.getPlayer().setGameMode(GameMode.CREATIVE);
     }
 
+    private int getValueInt(String[] args, int index, int default_value) {
+        if (index < 0 || index >= args.length) {
+            return default_value;
+        }
+        else {
+            return Integer.valueOf(args[index]);
+        }
+    }
+
     private boolean setModeDeveloper(CommandSender sender) {
         if (sender instanceof Player) {
             ((Player) sender).setGameMode(GameMode.CREATIVE);
@@ -74,17 +83,10 @@ public class Drop extends JavaPlugin implements Listener {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             Location playerLocation = player.getLocation().clone();
-            int count = DEFAULT_DUMMY_COUNT;
-            int radius = DEFAULT_DUMMY_RADIUS;
-
-            if (args.length == 1) {
-                count = Integer.valueOf(args[0]);
-            }
-            else if (args.length == 2) {
-                count = Integer.valueOf(args[0]);
-                radius = Integer.valueOf(args[1]);
-            }
-
+            int count = getValueInt(args, 0, DEFAULT_DUMMY_COUNT);
+            int radius = getValueInt(args, 1, DEFAULT_DUMMY_RADIUS);
+            // TODO: Raise an exception if count is negative
+            // TODO: Raise an exception if radius is zero or negative
             for (int i = 0; i < count; i++) {
                 int randomX = ThreadLocalRandom.current().nextInt(-radius, radius);
                 int randomZ = ThreadLocalRandom.current().nextInt(-radius, radius);
