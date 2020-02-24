@@ -9,7 +9,5 @@ commands:
     description: Sets survival mode, and enables day-night cycle
   spawnChicken:
     description: Spawns a chicken near the player
-  spawnRabbit:
-    description: Spawns a chicken near the player
-  spawnWolf:
-    description: Spawns a chicken near the player
+  spawnDummies:
+    description: Spawns dummies around the player
