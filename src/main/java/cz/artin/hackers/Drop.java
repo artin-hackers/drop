@@ -18,7 +18,7 @@ public class Drop extends JavaPlugin implements Listener {
     private static final int DEFAULT_DUMMY_COUNT = 10;
     private static final int DEFAULT_DUMMY_RADIUS = 10;
 
-    private Location PORTAL_EXIT;
+    private Location PORTAL_EXIT = null;
 
     @Override
     public void onEnable() {
@@ -120,7 +120,12 @@ public class Drop extends JavaPlugin implements Listener {
     private boolean teleport(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            player.teleport(PORTAL_EXIT);
+            if (PORTAL_EXIT != null) {
+                player.teleport(PORTAL_EXIT);
+            }
+            else {
+                player.teleport(player.getWorld().getSpawnLocation());
+            }
         }
         return true;
     }
