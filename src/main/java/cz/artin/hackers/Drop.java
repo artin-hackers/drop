@@ -18,6 +18,8 @@ public class Drop extends JavaPlugin implements Listener {
     private static final int DEFAULT_DUMMY_COUNT = 10;
     private static final int DEFAULT_DUMMY_RADIUS = 10;
 
+    private Location PORTAL_EXIT;
+
     @Override
     public void onEnable() {
         getLogger().info("Loading DROP plugin...");
@@ -33,11 +35,17 @@ public class Drop extends JavaPlugin implements Listener {
         else if (label.equalsIgnoreCase("setModeNormal")) {
             return setModeNormal(sender);
         }
+        else if (label.equalsIgnoreCase("setPortalExit")) {
+            return setPortalExit(sender);
+        }
         else if (label.equalsIgnoreCase("spawnChicken")) {
             return spawnChicken(sender);
         }
         else if (label.equalsIgnoreCase("spawnDummies")) {
             return spawnDummies(sender, args);
+        }
+        else if (label.equalsIgnoreCase("teleport")) {
+            return teleport(sender);
         }
         return false;
     }
@@ -74,6 +82,14 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
+    private boolean setPortalExit(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            PORTAL_EXIT = player.getLocation().clone();
+        }
+        return true;
+    }
+
     private boolean spawnChicken(CommandSender sender) {
         // TODO
         return true;
@@ -97,6 +113,14 @@ public class Drop extends JavaPlugin implements Listener {
                         playerLocation.getZ() + randomZ);
                 Chicken dummy = player.getWorld().spawn(dummyLocation, Chicken.class);
             }
+        }
+        return true;
+    }
+
+    private boolean teleport(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            player.teleport(PORTAL_EXIT);
         }
         return true;
     }
