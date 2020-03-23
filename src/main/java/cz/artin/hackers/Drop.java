@@ -47,6 +47,10 @@ public class Drop extends JavaPlugin implements Listener {
         else if (label.equalsIgnoreCase("teleport")) {
             return teleport(sender);
         }
+        else if (label.equalsIgnoreCase("buildObelisk")) {
+            getLogger().info("buildObelisk()");
+            return true;
+        }
         return false;
     }
 
