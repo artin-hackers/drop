@@ -15,3 +15,6 @@ commands:
     description: Spawns dummies around the player
   teleport:
     description: Teleports player to main portal exit
+  buildObelisk:
+    description: Builds an obelisk which allows player to teleport to his
+      current portal exit
