@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -49,7 +50,7 @@ public class Drop extends JavaPlugin implements Listener {
         }
         else if (label.equalsIgnoreCase("buildObelisk")) {
             getLogger().info("buildObelisk()");
-            return true;
+            return buildObelisk(sender);
         }
         return false;
     }
@@ -98,6 +99,22 @@ public class Drop extends JavaPlugin implements Listener {
         // TODO
         return true;
     }
+
+    private boolean buildObelisk(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Location playerLocation = player.getLocation().clone();
+            Location obeliskLocation = player.getLocation().clone();
+            obeliskLocation.add(5, 0, 0);
+            obeliskLocation.getBlock().setType(Material.BLACK_CONCRETE);
+            obeliskLocation.add(0, 1, 0);
+            obeliskLocation.getBlock().setType(Material.BLACK_CONCRETE);
+            obeliskLocation.add(0, 1, 0);
+            obeliskLocation.getBlock().setType(Material.DIAMOND_BLOCK);
+        }
+        return true;
+    }
+
 
     private boolean spawnDummies(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
