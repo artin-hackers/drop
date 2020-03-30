@@ -11,8 +11,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.Material;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-
+import org.bukkit.event.player.PlayerInteractEvent;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Drop extends JavaPlugin implements Listener {
@@ -23,6 +25,7 @@ public class Drop extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        getServer().getPluginManager().registerEvents(this, this);
         getLogger().info("Loading DROP plugin...");
         getServer().getPluginManager().registerEvents(this, this);
         getLogger().info("...plugin successfully loaded.");
@@ -113,6 +116,16 @@ public class Drop extends JavaPlugin implements Listener {
             obeliskLocation.getBlock().setType(Material.DIAMOND_BLOCK);
         }
         return true;
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event) {
+         if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+            if (event.getClickedBlock().getType().equals(Material.DIAMOND_BLOCK)) {
+                event.getPlayer().teleport(PORTAL_EXIT);
+
+            }
+        }
     }
 
 
