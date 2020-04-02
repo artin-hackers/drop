@@ -6,7 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Chicken;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -14,7 +14,6 @@ import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.event.player.PlayerInteractEvent;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Drop extends JavaPlugin implements Listener {
@@ -25,7 +24,6 @@ public class Drop extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        getServer().getPluginManager().registerEvents(this, this);
         getLogger().info("Loading DROP plugin...");
         getServer().getPluginManager().registerEvents(this, this);
         getLogger().info("...plugin successfully loaded.");
@@ -62,6 +60,21 @@ public class Drop extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         getLogger().info("A new player, " + event.getPlayer().getName() + ", just joined the fray.");
         event.getPlayer().setGameMode(GameMode.CREATIVE);
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event) {
+        getLogger().info("onInteract() - Init");
+        if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+            if (event.getClickedBlock().getType().equals(Material.DIAMOND_BLOCK)) {
+                if (PORTAL_EXIT != null) {
+                    event.getPlayer().teleport(PORTAL_EXIT);
+                }
+                else {
+                    event.getPlayer().teleport(event.getPlayer().getWorld().getSpawnLocation());
+                }
+            }
+        }
     }
 
     private int getValueInt(String[] args, int index, int default_value) {
@@ -117,17 +130,6 @@ public class Drop extends JavaPlugin implements Listener {
         }
         return true;
     }
-
-    @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
-         if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-            if (event.getClickedBlock().getType().equals(Material.DIAMOND_BLOCK)) {
-                event.getPlayer().teleport(PORTAL_EXIT);
-
-            }
-        }
-    }
-
 
     private boolean spawnDummies(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
