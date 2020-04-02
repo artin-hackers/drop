@@ -18,3 +18,5 @@ commands:
   buildObelisk:
     description: Builds an obelisk which allows player to teleport to his
       current portal exit
+  sethometown:
+    description: create hometown

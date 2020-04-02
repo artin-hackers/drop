@@ -49,6 +49,11 @@ public class Drop extends JavaPlugin implements Listener {
         else if (label.equalsIgnoreCase("teleport")) {
             return teleport(sender);
         }
+        else if (label.equalsIgnoreCase("sethometown")) {
+            getLogger().info("sethometown");
+            return setHometown(sender);
+        }
+
         else if (label.equalsIgnoreCase("buildObelisk")) {
             getLogger().info("buildObelisk()");
             return buildObelisk(sender);
@@ -92,6 +97,38 @@ public class Drop extends JavaPlugin implements Listener {
             ((Player) sender).getWorld().setTime(0);
             ((Player) sender).getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         }
+        return true;
+    }
+
+    private boolean setHometown(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            PORTAL_EXIT = player.getLocation().clone();
+            Location plattformCenter = player.getLocation().clone();
+            plattformCenter.add(0, -1, 0);
+            for (int x = -2; x <= 2; x++) {
+                for (int z = -2; z <= 2; z++) {
+                    Location plattformBlockPosition = new Location(
+                            player.getWorld(),
+                            plattformCenter.getX() + x,
+                            plattformCenter.getY(),
+                            plattformCenter.getZ() + z);
+                    plattformBlockPosition.getBlock().setType(Material.GLASS);
+                    plattformBlockPosition.add(0, 4, 0);
+                    plattformBlockPosition.getBlock().setType(Material.GREEN_WOOL);
+
+                }
+            }
+            for (int y = 0; y < 3; y++) {
+                Location columnBlockPosition = player.getLocation().clone();
+                columnBlockPosition.add(-2, y, 0);
+                columnBlockPosition.getBlock().setType(Material.EMERALD_BLOCK);
+                columnBlockPosition = player.getLocation().clone();
+                columnBlockPosition.add(2, y, 0);
+                columnBlockPosition.getBlock().setType(Material.EMERALD_BLOCK);
+            }
+        }
+
         return true;
     }
 
