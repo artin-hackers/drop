@@ -20,3 +20,5 @@ commands:
       current portal exit
   sethometown:
     description: create hometown
+  createFireballAxe:
+    description: create fireball axe
