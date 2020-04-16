@@ -7,11 +7,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.*;
-import org.bukkit.itemInMainHand;
-import org.bukkit.ItemStack;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.ItemMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
@@ -59,7 +58,7 @@ public class Drop extends JavaPlugin implements Listener {
         else if (label.equalsIgnoreCase("createFireballAxe")) {
             getLogger().info("createFireballAxe");
             return createFireballAxe(sender);
-
+        }
         else if (label.equalsIgnoreCase("buildObelisk")) {
             getLogger().info("buildObelisk()");
             return buildObelisk(sender);
@@ -84,9 +83,9 @@ public class Drop extends JavaPlugin implements Listener {
                 else {
                     event.getPlayer().teleport(event.getPlayer().getWorld().getSpawnLocation());
 
-                    if (itemInMainHand.getItemMeta().getDisplayName().equals("createFireballAxe")) {
-                        event.getPlayer().launchProjectile(Fireball.class);
-                    }
+                    //if (itemInMainHand.getItemMeta().getDisplayName().equals("createFireballAxe")) {
+                     //   event.getPlayer().launchProjectile(Fireball.class);
+                    //}
 
 
 
