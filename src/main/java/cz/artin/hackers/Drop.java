@@ -92,19 +92,20 @@ public class Drop extends JavaPlugin implements Listener {
                 }
             }
         }
+     //   if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
         if (event.getAction().equals(Action.RIGHT_CLICK_AIR)){
             event.getPlayer().launchProjectile(Fireball.class);
         }
     }
 
     private int getValueInt(String[] args, int index, int default_value) {
-        if (index < 0 || index >= args.length) {
-            return default_value;
+            if (index < 0 || index >= args.length) {
+                return default_value;
+            } else {
+                return Integer.valueOf(args[index]);
+            }
         }
-        else {
-            return Integer.valueOf(args[index]);
-        }
-    }
+
 
     private boolean setModeDeveloper(CommandSender sender) {
         if (sender instanceof Player) {
