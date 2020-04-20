@@ -79,24 +79,26 @@ public class Drop extends JavaPlugin implements Listener {
             if (event.getClickedBlock().getType().equals(Material.DIAMOND_BLOCK)) {
                 if (PORTAL_EXIT != null) {
                     event.getPlayer().teleport(PORTAL_EXIT);
-                }
-                else {
+                } else {
                     event.getPlayer().teleport(event.getPlayer().getWorld().getSpawnLocation());
 
                     //if (itemInMainHand.getItemMeta().getDisplayName().equals("createFireballAxe")) {
-                     //   event.getPlayer().launchProjectile(Fireball.class);
+                    //   event.getPlayer().launchProjectile(Fireball.class);
                     //}
-
 
 
                 }
             }
         }
-     //   if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
-        if (event.getAction().equals(Action.RIGHT_CLICK_AIR)){
-            event.getPlayer().launchProjectile(Fireball.class);
+        if (event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+            ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
+            if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
+
+                    event.getPlayer().launchProjectile(Fireball.class);
+                }
+            }
         }
-    }
+
 
     private int getValueInt(String[] args, int index, int default_value) {
             if (index < 0 || index >= args.length) {
