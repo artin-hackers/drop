@@ -55,9 +55,9 @@ public class Drop extends JavaPlugin implements Listener {
             getLogger().info("sethometown");
             return setHometown(sender);
         }
-        else if (label.equalsIgnoreCase("createFireballAxe")) {
-            getLogger().info("createFireballAxe");
-            return createFireballAxe(sender);
+        else if (label.equalsIgnoreCase("Filipovasekera")) {
+            getLogger().info("Filipovasekera");
+            return Filipovasekera(sender);
         }
         else if (label.equalsIgnoreCase("buildObelisk")) {
             getLogger().info("buildObelisk()");
@@ -93,7 +93,7 @@ public class Drop extends JavaPlugin implements Listener {
         if (event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
             ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
             if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
-                if (itemInMainHand.getItemMeta().getDisplayName().equals("createFireballAxe")) {
+                if (itemInMainHand.getItemMeta().getDisplayName().equals("Filipovasekera")) {
                     event.getPlayer().launchProjectile(Fireball.class);
                 }
             }
@@ -172,7 +172,7 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
 
-    private boolean createFireballAxe (CommandSender sender) {
+    private boolean Filipovasekera (CommandSender sender) {
         if (sender instanceof Player) {
             Player me = (Player) sender;
             ItemStack axe = new ItemStack(Material.DIAMOND_AXE, 1);
