@@ -6,17 +6,23 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Chicken;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.Material;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Drop extends JavaPlugin implements Listener {
     private static final int DEFAULT_DUMMY_COUNT = 10;
     private static final int DEFAULT_DUMMY_RADIUS = 10;
+
+    private Location PORTAL_EXIT = null;
 
     @Override
     public void onEnable() {
@@ -33,11 +39,29 @@ public class Drop extends JavaPlugin implements Listener {
         else if (label.equalsIgnoreCase("setModeNormal")) {
             return setModeNormal(sender);
         }
+        else if (label.equalsIgnoreCase("setPortalExit")) {
+            return setPortalExit(sender);
+        }
         else if (label.equalsIgnoreCase("spawnChicken")) {
             return spawnChicken(sender);
         }
         else if (label.equalsIgnoreCase("spawnDummies")) {
             return spawnDummies(sender, args);
+        }
+        else if (label.equalsIgnoreCase("teleport")) {
+            return teleport(sender);
+        }
+        else if (label.equalsIgnoreCase("sethometown")) {
+            getLogger().info("sethometown");
+            return setHometown(sender);
+        }
+        else if (label.equalsIgnoreCase("Filipovasekera")) {
+            getLogger().info("Filipovasekera");
+            return Filipovasekera(sender);
+        }
+        else if (label.equalsIgnoreCase("buildObelisk")) {
+            getLogger().info("buildObelisk()");
+            return buildObelisk(sender);
         }
         return false;
     }
@@ -48,14 +72,42 @@ public class Drop extends JavaPlugin implements Listener {
         event.getPlayer().setGameMode(GameMode.CREATIVE);
     }
 
-    private int getValueInt(String[] args, int index, int default_value) {
-        if (index < 0 || index >= args.length) {
-            return default_value;
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event) {
+        getLogger().info("onInteract() - Init");
+        if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+            if (event.getClickedBlock().getType().equals(Material.DIAMOND_BLOCK)) {
+                if (PORTAL_EXIT != null) {
+                    event.getPlayer().teleport(PORTAL_EXIT);
+                } else {
+                    event.getPlayer().teleport(event.getPlayer().getWorld().getSpawnLocation());
+
+                    //if (itemInMainHand.getItemMeta().getDisplayName().equals("createFireballAxe")) {
+                    //   event.getPlayer().launchProjectile(Fireball.class);
+                    //}
+
+
+                }
+            }
         }
-        else {
-            return Integer.valueOf(args[index]);
+        if (event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+            ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
+            if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
+                if (itemInMainHand.getItemMeta().getDisplayName().equals("Filipovasekera")) {
+                    event.getPlayer().launchProjectile(Fireball.class);
+                }
+            }
         }
     }
+
+    private int getValueInt(String[] args, int index, int default_value) {
+            if (index < 0 || index >= args.length) {
+                return default_value;
+            } else {
+                return Integer.valueOf(args[index]);
+            }
+        }
+
 
     private boolean setModeDeveloper(CommandSender sender) {
         if (sender instanceof Player) {
@@ -63,6 +115,38 @@ public class Drop extends JavaPlugin implements Listener {
             ((Player) sender).getWorld().setTime(0);
             ((Player) sender).getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         }
+        return true;
+    }
+
+    private boolean setHometown(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            PORTAL_EXIT = player.getLocation().clone();
+            Location plattformCenter = player.getLocation().clone();
+            plattformCenter.add(0, -1, 0);
+            for (int x = -2; x <= 2; x++) {
+                for (int z = -2; z <= 2; z++) {
+                    Location plattformBlockPosition = new Location(
+                            player.getWorld(),
+                            plattformCenter.getX() + x,
+                            plattformCenter.getY(),
+                            plattformCenter.getZ() + z);
+                    plattformBlockPosition.getBlock().setType(Material.GLASS);
+                    plattformBlockPosition.add(0, 4, 0);
+                    plattformBlockPosition.getBlock().setType(Material.GREEN_WOOL);
+
+                }
+            }
+            for (int y = 0; y < 3; y++) {
+                Location columnBlockPosition = player.getLocation().clone();
+                columnBlockPosition.add(-2, y, 0);
+                columnBlockPosition.getBlock().setType(Material.EMERALD_BLOCK);
+                columnBlockPosition = player.getLocation().clone();
+                columnBlockPosition.add(2, y, 0);
+                columnBlockPosition.getBlock().setType(Material.EMERALD_BLOCK);
+            }
+        }
+
         return true;
     }
 
@@ -74,8 +158,45 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
+    private boolean setPortalExit(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            PORTAL_EXIT = player.getLocation().clone();
+        }
+        return true;
+    }
+
     private boolean spawnChicken(CommandSender sender) {
-        // TODO
+
+        return true;
+    }
+
+
+    private boolean Filipovasekera (CommandSender sender) {
+        if (sender instanceof Player) {
+            Player me = (Player) sender;
+            ItemStack axe = new ItemStack(Material.DIAMOND_AXE, 1);
+            ItemMeta meta = axe.getItemMeta();
+            meta.setDisplayName("Filipovasekera");
+            axe.setItemMeta(meta);
+            me.getInventory().addItem(axe);
+
+        }
+        return true;
+    }
+
+    private boolean buildObelisk(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Location playerLocation = player.getLocation().clone();
+            Location obeliskLocation = player.getLocation().clone();
+            obeliskLocation.add(5, 0, 0);
+            obeliskLocation.getBlock().setType(Material.BLACK_CONCRETE);
+            obeliskLocation.add(0, 1, 0);
+            obeliskLocation.getBlock().setType(Material.BLACK_CONCRETE);
+            obeliskLocation.add(0, 1, 0);
+            obeliskLocation.getBlock().setType(Material.DIAMOND_BLOCK);
+        }
         return true;
     }
 
@@ -96,6 +217,19 @@ public class Drop extends JavaPlugin implements Listener {
                         playerLocation.getY(),
                         playerLocation.getZ() + randomZ);
                 Chicken dummy = player.getWorld().spawn(dummyLocation, Chicken.class);
+            }
+        }
+        return true;
+    }
+
+    private boolean teleport(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            if (PORTAL_EXIT != null) {
+                player.teleport(PORTAL_EXIT);
+            }
+            else {
+                player.teleport(player.getWorld().getSpawnLocation());
             }
         }
         return true;
