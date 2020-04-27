@@ -7,6 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.*;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -71,8 +72,12 @@ public class Drop extends JavaPlugin implements Listener {
         getLogger().info("A new player, " + event.getPlayer().getName() + ", just joined the fray.");
         event.getPlayer().setGameMode(GameMode.CREATIVE);
         Filipovasekera(event.getPlayer());
-
     }
+
+     public void onPlayerRespawn (PlayerRespawnEvent event) {
+         getLogger().info("the player has appeared" + event.getPlayer().getName() + "just appeared");
+         Filipovasekera(event.getPlayer());
+     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
