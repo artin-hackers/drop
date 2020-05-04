@@ -71,6 +71,7 @@ public class Drop extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         getLogger().info("onPlayerRespawn()");
+        Filipovasekera(event.getPlayer());
     }
 
     @EventHandler
