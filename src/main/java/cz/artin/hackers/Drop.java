@@ -3,19 +3,24 @@ package cz.artin.hackers;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Chicken;
-import org.bukkit.entity.*;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.entity.Fireball;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Drop extends JavaPlugin implements Listener {
@@ -35,31 +40,23 @@ public class Drop extends JavaPlugin implements Listener {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (label.equalsIgnoreCase("setModeDeveloper")) {
             return setModeDeveloper(sender);
-        }
-        else if (label.equalsIgnoreCase("setModeNormal")) {
+        } else if (label.equalsIgnoreCase("setModeNormal")) {
             return setModeNormal(sender);
-        }
-        else if (label.equalsIgnoreCase("setPortalExit")) {
+        } else if (label.equalsIgnoreCase("setPortalExit")) {
             return setPortalExit(sender);
-        }
-        else if (label.equalsIgnoreCase("spawnChicken")) {
+        } else if (label.equalsIgnoreCase("spawnChicken")) {
             return spawnChicken(sender);
-        }
-        else if (label.equalsIgnoreCase("spawnDummies")) {
+        } else if (label.equalsIgnoreCase("spawnDummies")) {
             return spawnDummies(sender, args);
-        }
-        else if (label.equalsIgnoreCase("teleport")) {
+        } else if (label.equalsIgnoreCase("teleport")) {
             return teleport(sender);
-        }
-        else if (label.equalsIgnoreCase("sethometown")) {
+        } else if (label.equalsIgnoreCase("sethometown")) {
             getLogger().info("sethometown");
             return setHometown(sender);
-        }
-        else if (label.equalsIgnoreCase("Filipovasekera")) {
+        } else if (label.equalsIgnoreCase("Filipovasekera")) {
             getLogger().info("Filipovasekera");
             return Filipovasekera(sender);
-        }
-        else if (label.equalsIgnoreCase("buildObelisk")) {
+        } else if (label.equalsIgnoreCase("buildObelisk")) {
             getLogger().info("buildObelisk()");
             return buildObelisk(sender);
         }
@@ -70,7 +67,14 @@ public class Drop extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         getLogger().info("A new player, " + event.getPlayer().getName() + ", just joined the fray.");
         event.getPlayer().setGameMode(GameMode.CREATIVE);
+        Filipovasekera(event.getPlayer());
     }
+
+    @EventHandler
+    public void onPlayerRespawn (PlayerRespawnEvent event) {
+         getLogger().info("the player has appeared" + event.getPlayer().getName() + "just appeared");
+         Filipovasekera(event.getPlayer());
+     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
@@ -81,12 +85,6 @@ public class Drop extends JavaPlugin implements Listener {
                     event.getPlayer().teleport(PORTAL_EXIT);
                 } else {
                     event.getPlayer().teleport(event.getPlayer().getWorld().getSpawnLocation());
-
-                    //if (itemInMainHand.getItemMeta().getDisplayName().equals("createFireballAxe")) {
-                    //   event.getPlayer().launchProjectile(Fireball.class);
-                    //}
-
-
                 }
             }
         }
@@ -101,13 +99,12 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     private int getValueInt(String[] args, int index, int default_value) {
-            if (index < 0 || index >= args.length) {
-                return default_value;
-            } else {
-                return Integer.valueOf(args[index]);
-            }
+        if (index < 0 || index >= args.length) {
+            return default_value;
+        } else {
+            return Integer.valueOf(args[index]);
         }
-
+    }
 
     private boolean setModeDeveloper(CommandSender sender) {
         if (sender instanceof Player) {
@@ -146,7 +143,6 @@ public class Drop extends JavaPlugin implements Listener {
                 columnBlockPosition.getBlock().setType(Material.EMERALD_BLOCK);
             }
         }
-
         return true;
     }
 
@@ -167,20 +163,23 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     private boolean spawnChicken(CommandSender sender) {
-
         return true;
     }
 
-
-    private boolean Filipovasekera (CommandSender sender) {
+    private boolean Filipovasekera(CommandSender sender) {
         if (sender instanceof Player) {
-            Player me = (Player) sender;
-            ItemStack axe = new ItemStack(Material.DIAMOND_AXE, 1);
-            ItemMeta meta = axe.getItemMeta();
-            meta.setDisplayName("Filipovasekera");
-            axe.setItemMeta(meta);
-            me.getInventory().addItem(axe);
-
+            Player player = (Player) sender;
+            ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+            if (itemInMainHand != null && itemInMainHand.getItemMeta() != null && itemInMainHand.getItemMeta().getDisplayName().equals("Filipovasekera")) {
+                return true;
+            } else {
+                Player me = (Player) sender;
+                ItemStack axe = new ItemStack(Material.DIAMOND_AXE, 1);
+                ItemMeta meta = axe.getItemMeta();
+                meta.setDisplayName("Filipovasekera");
+                axe.setItemMeta(meta);
+                me.getInventory().addItem(axe);
+            }
         }
         return true;
     }
@@ -227,8 +226,7 @@ public class Drop extends JavaPlugin implements Listener {
             Player player = (Player) sender;
             if (PORTAL_EXIT != null) {
                 player.teleport(PORTAL_EXIT);
-            }
-            else {
+            } else {
                 player.teleport(player.getWorld().getSpawnLocation());
             }
         }
