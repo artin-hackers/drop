@@ -68,8 +68,20 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     private boolean Zdenkovahulka(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Player me = (Player) sender;
+            ItemStack wand = new ItemStack(Material.BLAZE_ROD, 1);
+            ItemMeta meta = wand.getItemMeta();
+            meta.setDisplayName("Zdenkovahulka");
+            wand.setItemMeta(meta);
+            me.getInventory().addItem(wand);
+        }
+
         return true;
     }
+
+
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
