@@ -7,6 +7,8 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Chicken;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -69,10 +71,10 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void onPlayerRespawn(PlayerRespawnEvent event) {
-        getLogger().info("onPlayerRespawn()");
-        Filipovasekera(event.getPlayer());
-    }
+    public void onPlayerRespawn (PlayerRespawnEvent event) {
+         getLogger().info("the player has appeared" + event.getPlayer().getName() + "just appeared");
+         Filipovasekera(event.getPlayer());
+     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
@@ -166,12 +168,18 @@ public class Drop extends JavaPlugin implements Listener {
 
     private boolean Filipovasekera(CommandSender sender) {
         if (sender instanceof Player) {
-            Player me = (Player) sender;
-            ItemStack axe = new ItemStack(Material.DIAMOND_AXE, 1);
-            ItemMeta meta = axe.getItemMeta();
-            meta.setDisplayName("Filipovasekera");
-            axe.setItemMeta(meta);
-            me.getInventory().addItem(axe);
+            Player player = (Player) sender;
+            ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+            if (itemInMainHand != null && itemInMainHand.getItemMeta() != null && itemInMainHand.getItemMeta().getDisplayName().equals("Filipovasekera")) {
+                return true;
+            } else {
+                Player me = (Player) sender;
+                ItemStack axe = new ItemStack(Material.DIAMOND_AXE, 1);
+                ItemMeta meta = axe.getItemMeta();
+                meta.setDisplayName("Filipovasekera");
+                axe.setItemMeta(meta);
+                me.getInventory().addItem(axe);
+            }
         }
         return true;
     }
