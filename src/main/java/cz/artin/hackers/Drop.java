@@ -59,8 +59,16 @@ public class Drop extends JavaPlugin implements Listener {
         } else if (label.equalsIgnoreCase("buildObelisk")) {
             getLogger().info("buildObelisk()");
             return buildObelisk(sender);
+        } else if (label.equalsIgnoreCase("Zdenkovahulka")) {
+             return Zdenkovahulka(sender);
+
+
         }
         return false;
+    }
+
+    private boolean Zdenkovahulka(CommandSender sender) {
+        return true;
     }
 
     @EventHandler
