@@ -114,11 +114,14 @@ public class Drop extends JavaPlugin implements Listener {
             if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
                 if (itemInMainHand.getItemMeta().getDisplayName().equals("Filipovasekera")) {
                     event.getPlayer().launchProjectile(Fireball.class);
-
+                }
+                if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
+                         creategauge(event.getPlayer());
+                    }
                 }
             }
         }
-    }
+
 
     private int getValueInt(String[] args, int index, int default_value) {
         if (index < 0 || index >= args.length) {
