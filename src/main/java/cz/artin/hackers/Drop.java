@@ -4,6 +4,7 @@ import org.bukkit.GameMode;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Chicken;
@@ -21,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Drop extends JavaPlugin implements Listener {
@@ -212,13 +214,16 @@ public class Drop extends JavaPlugin implements Listener {
     private boolean creategauge(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            for (int i = 1; i < 6; i++) {
-                Location pozice = putInView(sender, i);
-                pozice.add(0,-1,0);
-                pozice.getBlock().setType(Material.DIRT);
+//            for (int i = 1; i < 6; i++) {
+//                Location pozice = putInView(sender, i);
+//                pozice.add(0,-1,0);
+//                pozice.getBlock().setType(Material.DIRT);
+//            }
+//            buildwall(sender);
+         List<Block> sight =player.getLineOfSight(null, 10);
+            for (Block temp : sight) {
+                temp.setType(Material.GOLD_BLOCK);
             }
-            buildwall(sender);
-
         }
         return true;
     }
