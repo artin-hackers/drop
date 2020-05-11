@@ -219,10 +219,10 @@ public class Drop extends JavaPlugin implements Listener {
 //                pozice.add(0,-1,0);
 //                pozice.getBlock().setType(Material.DIRT);
 //            }
-//            buildwall(sender);
+         buildwall(sender);
          List<Block> sight =player.getLineOfSight(null, 10);
             for (Block temp : sight) {
-                temp.setType(Material.GOLD_BLOCK);
+                temp.setType(Material.DIRT);
             }
         }
         return true;
