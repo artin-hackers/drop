@@ -32,6 +32,7 @@ public class Drop extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         getLogger().info("Loading DROP plugin...");
+        MagicWandFire.init();
         getServer().getPluginManager().registerEvents(this, this);
         getLogger().info("...plugin successfully loaded.");
     }
