@@ -60,8 +60,9 @@ public class Drop extends JavaPlugin implements Listener {
             getLogger().info("buildObelisk()");
             return buildObelisk(sender);
         } else if (label.equalsIgnoreCase("Zdenkovahulka")) {
-             return Zdenkovahulka(sender);
-
+            return Zdenkovahulka(sender);
+        } else if (label.equalsIgnoreCase("creategauge")) {
+             return creategauge(sender);
 
         }
         return false;
@@ -113,6 +114,7 @@ public class Drop extends JavaPlugin implements Listener {
             if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
                 if (itemInMainHand.getItemMeta().getDisplayName().equals("Filipovasekera")) {
                     event.getPlayer().launchProjectile(Fireball.class);
+
                 }
             }
         }
@@ -204,6 +206,83 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
+    private boolean creategauge(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            for (int i = 1; i < 6; i++) {
+                Location pozice = putInView(sender, i);
+                pozice.add(0,-1,0);
+                pozice.getBlock().setType(Material.DIRT);
+            }
+            buildwall(sender);
+
+        }
+        return true;
+    }
+
+    public Location putInView(CommandSender sender, int distance) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Location location = player.getLocation().clone();
+            directions direction = getDirection(sender);
+            if (direction == directions.NORTH) {
+                location.add(0, 0, -distance);
+            } else if (direction == directions.EAST) {
+                location.add(distance, 0, 0);
+            } else if (direction == directions.SOUTH) {
+                location.add(0, 0, distance);
+            } else if (direction == directions.WEST) {
+                location.add(-distance, 0, 0);
+            } else {
+                getLogger().info("Error: putInView()");
+                return null;
+            }
+            return location;
+        }
+        return null;
+    }
+
+    public directions getDirection(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            int rotation = Math.round(player.getLocation().getYaw() + 270) % 360;
+            if (rotation >= 45 && rotation < 135) {
+                return directions.NORTH;
+            } else if (rotation >= 135 && rotation < 225) {
+                return directions.EAST;
+            } else if (rotation >= 225 && rotation < 315) {
+                return directions.SOUTH;
+            } else {
+                return directions.WEST;
+            }
+        }
+        return null;
+    }
+    private enum directions {
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST
+    }
+    private boolean buildwall(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Location pozice = putInView(sender, 6);
+            for (int x = -1; x < 2; x++) {
+                for (int y = 0; y < 3; y++) {
+                    for (int z = -1; z < 2; z++) {
+                        final Location pozice_tmp = new Location(
+                                player.getWorld(),
+                                pozice.getX() + x,
+                                pozice.getY() + y,
+                                pozice.getZ() + z);
+                        pozice_tmp.getBlock().setType(Material.DIRT);
+                    }
+                }
+            }
+        }
+        return true;
+    }
     private boolean buildObelisk(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
