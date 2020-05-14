@@ -214,10 +214,13 @@ public class Drop extends JavaPlugin implements Listener {
     private boolean creategauge(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
+            Location playerLocation = player.getLocation();
+            Location playergroundLocation = playerLocation.add(0,-1,0);
+            Material material = playergroundLocation.getBlock().getType();
             List<Block> sight = player.getLineOfSight(null, 10);
             for (int i = 0; i < sight.size(); i++) {
                 if (i > 2) {
-                    sight.get(i).setType(Material.DIRT);
+                    sight.get(i).setType(material);
                 }
             }
             Location wallCentre = sight.get(sight.size()-1).getLocation();
@@ -229,7 +232,7 @@ public class Drop extends JavaPlugin implements Listener {
                                 wallCentre.getX() + x,
                                 wallCentre.getY() + y,
                                 wallCentre.getZ() + z);
-                        wallBlock.getBlock().setType(Material.DIAMOND_BLOCK);
+                        wallBlock.getBlock().setType(material);
                     }
                 }
             }
