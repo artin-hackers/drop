@@ -217,6 +217,9 @@ public class Drop extends JavaPlugin implements Listener {
             Location playerLocation = player.getLocation();
             Location playergroundLocation = playerLocation.add(0,-1,0);
             Material material = playergroundLocation.getBlock().getType();
+            if (material != Material.DIRT && material!= Material.SANDSTONE){
+                return true;
+            }
             List<Block> sight = player.getLineOfSight(null, 10);
             for (int i = 0; i < sight.size(); i++) {
                 if (i > 2) {
