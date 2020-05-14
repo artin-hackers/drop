@@ -214,18 +214,13 @@ public class Drop extends JavaPlugin implements Listener {
     private boolean creategauge(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-//            for (int i = 1; i < 6; i++) {
-//                Location pozice = putInView(sender, i);
-//                pozice.add(0,-1,0);
-//                pozice.getBlock().setType(Material.DIRT);
-//            }
-            buildwall(sender);
             List<Block> sight = player.getLineOfSight(null, 10);
             for (int i = 0; i < sight.size(); i++) {
-                if (i > 0) {
+                if (i > 1) {
                     sight.get(i).setType(Material.DIRT);
                 }
             }
+            sight.get(sight.size()-1).setType(Material.GOLD_BLOCK);
         }
         return true;
     }
