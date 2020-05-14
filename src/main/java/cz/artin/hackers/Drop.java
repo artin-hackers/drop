@@ -216,11 +216,23 @@ public class Drop extends JavaPlugin implements Listener {
             Player player = (Player) sender;
             List<Block> sight = player.getLineOfSight(null, 10);
             for (int i = 0; i < sight.size(); i++) {
-                if (i > 1) {
+                if (i > 2) {
                     sight.get(i).setType(Material.DIRT);
                 }
             }
-            sight.get(sight.size()-1).setType(Material.GOLD_BLOCK);
+            Location wallCentre = sight.get(sight.size()-1).getLocation();
+            for (int x = -2; x <= 2; x++) {
+                for (int y = -2; y <= 2; y++) {
+                    for (int z = -2; z <= 2; z++) {
+                        final Location wallBlock = new Location(
+                                player.getWorld(),
+                                wallCentre.getX() + x,
+                                wallCentre.getY() + y,
+                                wallCentre.getZ() + z);
+                        wallBlock.getBlock().setType(Material.DIAMOND_BLOCK);
+                    }
+                }
+            }
         }
         return true;
     }
