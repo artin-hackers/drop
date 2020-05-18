@@ -97,6 +97,7 @@ public class Drop extends JavaPlugin implements Listener {
     public void onPlayerRespawn (PlayerRespawnEvent event) {
          getLogger().info("the player has appeared" + event.getPlayer().getName() + "just appeared");
          Filipovasekera(event.getPlayer());
+         Zdenkovahulka(event.getPlayer());
      }
 
     @EventHandler
