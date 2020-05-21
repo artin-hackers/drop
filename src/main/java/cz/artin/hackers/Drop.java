@@ -221,7 +221,7 @@ public class Drop extends JavaPlugin implements Listener {
             Material material = playergroundLocation.getBlock().getType();
             List<Block> sight = player.getLineOfSight(null, 10);
             for (int i = 0; i < sight.size(); i++) {
-                if (i > 2) {
+                if (i > sight.size()/5) {
                     sight.get(i).setType(material);
                 }
             }
