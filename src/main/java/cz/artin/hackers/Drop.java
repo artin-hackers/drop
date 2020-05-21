@@ -22,7 +22,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Drop extends JavaPlugin implements Listener {
@@ -219,27 +221,31 @@ public class Drop extends JavaPlugin implements Listener {
             Location playerLocation = player.getLocation();
             Location playergroundLocation = playerLocation.add(0,-1,0);
             Material material = playergroundLocation.getBlock().getType();
-            List<Block> sight = player.getLineOfSight(null, 10);
+            Set<Material> all_materials = new HashSet<>();
+            all_materials.add(Material.GOLD_ORE);
+            for (Material mat : Material.values()) {
+                all_materials.add(mat);
+            }
+            List<Block> sight = player.getLineOfSight(all_materials, 10);
             for (int i = 0; i < sight.size(); i++) {
                 if (i > sight.size()/4) {
-//                    sight.get(i).setType(material);
-                    sight.get(i).setType(Material.DIRT);
+                    sight.get(i).setType(material);
                 }
             }
             Location wallCentre = sight.get(sight.size()-1).getLocation();
             wallCentre.getBlock().setType(Material.GOLD_BLOCK);
-//            for (int x = -2; x <= 2; x++) {
-//                for (int y = -2; y <= 2; y++) {
-//                    for (int z = -2; z <= 2; z++) {
-//                        final Location wallBlock = new Location(
-//                                player.getWorld(),
-//                                wallCentre.getX() + x,
-//                                wallCentre.getY() + y,
-//                                wallCentre.getZ() + z);
-//                        wallBlock.getBlock().setType(material);
-//                    }
-//                }
-//            }
+            for (int x = -2; x <= 2; x++) {
+                for (int y = -2; y <= 2; y++) {
+                    for (int z = -2; z <= 2; z++) {
+                        final Location wallBlock = new Location(
+                                player.getWorld(),
+                                wallCentre.getX() + x,
+                                wallCentre.getY() + y,
+                                wallCentre.getZ() + z);
+                        wallBlock.getBlock().setType(material);
+                    }
+                }
+            }
         }
         return true;
     }
