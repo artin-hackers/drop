@@ -89,8 +89,9 @@ public class Drop extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         getLogger().info("A new player, " + event.getPlayer().getName() + ", just joined the fray.");
-        event.getPlayer().setGameMode(GameMode.CREATIVE);
+        event.getPlayer().setGameMode(GameMode.SURVIVAL);
         Filipovasekera(event.getPlayer());
+        Zdenkovahulka(event.getPlayer());
     }
 
     @EventHandler
