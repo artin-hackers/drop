@@ -4,6 +4,7 @@ import org.bukkit.GameMode;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Chicken;
@@ -21,6 +22,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Drop extends JavaPlugin implements Listener {
@@ -33,6 +38,8 @@ public class Drop extends JavaPlugin implements Listener {
     public void onEnable() {
         getLogger().info("Loading DROP plugin...");
         getServer().getPluginManager().registerEvents(this, this);
+        getServer().getWorld("world").setTime(1000);
+        getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         getLogger().info("...plugin successfully loaded.");
     }
 
@@ -59,21 +66,46 @@ public class Drop extends JavaPlugin implements Listener {
         } else if (label.equalsIgnoreCase("buildObelisk")) {
             getLogger().info("buildObelisk()");
             return buildObelisk(sender);
+        } else if (label.equalsIgnoreCase("Zdenkovahulka")) {
+            return Zdenkovahulka(sender);
+        } else if (label.equalsIgnoreCase("creategauge")) {
+             return creategauge(sender);
+
         }
         return false;
     }
 
+    private boolean Zdenkovahulka(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Player me = (Player) sender;
+            ItemStack wand = new ItemStack(Material.BLAZE_ROD, 1);
+            ItemMeta meta = wand.getItemMeta();
+            meta.setDisplayName("Zdenkovahulka");
+            wand.setItemMeta(meta);
+            me.getInventory().addItem(wand);
+        }
+
+        return true;
+    }
+
+
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         getLogger().info("A new player, " + event.getPlayer().getName() + ", just joined the fray.");
-        event.getPlayer().setGameMode(GameMode.CREATIVE);
+        event.getPlayer().setGameMode(GameMode.SURVIVAL);
+        getLogger().info(event.getPlayer().getWorld().getName());
         Filipovasekera(event.getPlayer());
+        Zdenkovahulka(event.getPlayer());
     }
 
     @EventHandler
-    public void onPlayerRespawn (PlayerRespawnEvent event) {
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
          getLogger().info("the player has appeared" + event.getPlayer().getName() + "just appeared");
+         event.getPlayer().setGameMode(GameMode.SURVIVAL);
          Filipovasekera(event.getPlayer());
+         Zdenkovahulka(event.getPlayer());
      }
 
     @EventHandler
@@ -88,15 +120,19 @@ public class Drop extends JavaPlugin implements Listener {
                 }
             }
         }
-        if (event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+        if (event.getAction().equals(Action.RIGHT_CLICK_AIR)||event.getAction().equals(Action.RIGHT_CLICK_BLOCK )) {
             ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
             if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
                 if (itemInMainHand.getItemMeta().getDisplayName().equals("Filipovasekera")) {
                     event.getPlayer().launchProjectile(Fireball.class);
                 }
+                if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
+                         creategauge(event.getPlayer());
+                    }
+                }
             }
         }
-    }
+
 
     private int getValueInt(String[] args, int index, int default_value) {
         if (index < 0 || index >= args.length) {
@@ -184,6 +220,104 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
+    private boolean creategauge(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Location playerLocation = player.getLocation();
+            Location playergroundLocation = playerLocation.add(0,-1,0);
+            Material material = playergroundLocation.getBlock().getType();
+            Set<Material> all_materials = new HashSet<>();
+            all_materials.add(Material.GOLD_ORE);
+            for (Material mat : Material.values()) {
+                all_materials.add(mat);
+            }
+            List<Block> sight = player.getLineOfSight(all_materials, 10);
+            for (int i = 0; i < sight.size(); i++) {
+                if (i > sight.size()/4) {
+                    sight.get(i).setType(material);
+                }
+            }
+            Location wallCentre = sight.get(sight.size()-1).getLocation();
+            wallCentre.getBlock().setType(Material.GOLD_BLOCK);
+            for (int x = -2; x <= 2; x++) {
+                for (int y = -2; y <= 2; y++) {
+                    for (int z = -2; z <= 2; z++) {
+                        final Location wallBlock = new Location(
+                                player.getWorld(),
+                                wallCentre.getX() + x,
+                                wallCentre.getY() + y,
+                                wallCentre.getZ() + z);
+                        wallBlock.getBlock().setType(material);
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public Location putInView(CommandSender sender, int distance) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Location location = player.getLocation().clone();
+            directions direction = getDirection(sender);
+            if (direction == directions.NORTH) {
+                location.add(0, 0, -distance);
+            } else if (direction == directions.EAST) {
+                location.add(distance, 0, 0);
+            } else if (direction == directions.SOUTH) {
+                location.add(0, 0, distance);
+            } else if (direction == directions.WEST) {
+                location.add(-distance, 0, 0);
+            } else {
+                getLogger().info("Error: putInView()");
+                return null;
+            }
+            return location;
+        }
+        return null;
+    }
+
+    public directions getDirection(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            int rotation = Math.round(player.getLocation().getYaw() + 270) % 360;
+            if (rotation >= 45 && rotation < 135) {
+                return directions.NORTH;
+            } else if (rotation >= 135 && rotation < 225) {
+                return directions.EAST;
+            } else if (rotation >= 225 && rotation < 315) {
+                return directions.SOUTH;
+            } else {
+                return directions.WEST;
+            }
+        }
+        return null;
+    }
+    private enum directions {
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST
+    }
+    private boolean buildwall(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Location pozice = putInView(sender, 6);
+            for (int x = -1; x < 2; x++) {
+                for (int y = 0; y < 3; y++) {
+                    for (int z = -1; z < 2; z++) {
+                        final Location pozice_tmp = new Location(
+                                player.getWorld(),
+                                pozice.getX() + x,
+                                pozice.getY() + y,
+                                pozice.getZ() + z);
+                        pozice_tmp.getBlock().setType(Material.DIRT);
+                    }
+                }
+            }
+        }
+        return true;
+    }
     private boolean buildObelisk(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;

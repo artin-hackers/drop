@@ -22,3 +22,7 @@ commands:
     description: create hometown
   Filipovasekera:
     description: create Filipovasekera
+  Zdenkovahulka:
+    description: create Zdenkovahulka
+  creategauge:
+    description: create gauge
