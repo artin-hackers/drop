@@ -25,6 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Drop extends JavaPlugin implements Listener {
@@ -37,6 +38,8 @@ public class Drop extends JavaPlugin implements Listener {
     public void onEnable() {
         getLogger().info("Loading DROP plugin...");
         getServer().getPluginManager().registerEvents(this, this);
+        getServer().getWorld("world").setTime(1000);
+        getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         getLogger().info("...plugin successfully loaded.");
     }
 
@@ -92,13 +95,15 @@ public class Drop extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         getLogger().info("A new player, " + event.getPlayer().getName() + ", just joined the fray.");
         event.getPlayer().setGameMode(GameMode.SURVIVAL);
+        getLogger().info(event.getPlayer().getWorld().getName());
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
     }
 
     @EventHandler
-    public void onPlayerRespawn (PlayerRespawnEvent event) {
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
          getLogger().info("the player has appeared" + event.getPlayer().getName() + "just appeared");
+         event.getPlayer().setGameMode(GameMode.SURVIVAL);
          Filipovasekera(event.getPlayer());
          Zdenkovahulka(event.getPlayer());
      }
