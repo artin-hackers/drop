@@ -93,6 +93,17 @@ public class Drop extends JavaPlugin implements Listener {
                    }
                }
            }
+           for (int x=-50;x<=50;x++) {
+               for (int z=-50;z<=50;z++) {
+                   Location blockLocation = new Location(
+                           player.getWorld(),
+                           location.getX()+x,
+                           location.getY()-1,
+                           location.getZ()+z);
+                   blockLocation.getBlock().setType(Material.GRASS_BLOCK);
+
+               }
+           }
            return true;
        }
        else {
