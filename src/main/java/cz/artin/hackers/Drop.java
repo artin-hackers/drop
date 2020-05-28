@@ -89,13 +89,9 @@ public class Drop extends JavaPlugin implements Listener {
                                location.getX()+x,
                                location.getY()+y,
                                location.getZ()+z);
-                       blockLocation.getBlock().setType(Material.GOLD_BLOCK);
-
-
+                       blockLocation.getBlock().setType(Material.AIR);
                    }
                }
-
-
            }
            return true;
        }
