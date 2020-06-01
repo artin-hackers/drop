@@ -150,6 +150,7 @@ public class Drop extends JavaPlugin implements Listener {
         getLogger().info(event.getPlayer().getWorld().getName());
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
+        Hulkazivota(event.getPlayer());
     }
 
     @EventHandler
@@ -158,6 +159,7 @@ public class Drop extends JavaPlugin implements Listener {
          event.getPlayer().setGameMode(GameMode.SURVIVAL);
          Filipovasekera(event.getPlayer());
          Zdenkovahulka(event.getPlayer());
+         Hulkazivota(event.getPlayer());
      }
 
     @EventHandler
