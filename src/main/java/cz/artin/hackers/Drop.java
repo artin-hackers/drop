@@ -68,6 +68,8 @@ public class Drop extends JavaPlugin implements Listener {
             return buildObelisk(sender);
         } else if (label.equalsIgnoreCase("Zdenkovahulka")) {
             return Zdenkovahulka(sender);
+        } else if (label.equalsIgnoreCase("Hulkazivota")) {
+            return Hulkazivota(sender);
         } else if (label.equalsIgnoreCase("creategauge")) {
              return creategauge(sender);
         } else if (label.equalsIgnoreCase("createArena")) {
@@ -126,6 +128,19 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
+    private boolean Hulkazivota(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Player me = (Player) sender;
+            ItemStack wand = new ItemStack(Material.BLAZE_ROD, 1);
+            ItemMeta meta = wand.getItemMeta();
+            meta.setDisplayName("Hulkazivota");
+            wand.setItemMeta(meta);
+            me.getInventory().addItem(wand);
+        }
+
+        return true;
+    }
 
 
     @EventHandler
@@ -165,6 +180,10 @@ public class Drop extends JavaPlugin implements Listener {
                 }
                 if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
                          creategauge(event.getPlayer());
+                 if(itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
+                         Hulkazivota2(event.getPlayer());
+
+                         }
                     }
                 }
             }
@@ -314,6 +333,40 @@ public class Drop extends JavaPlugin implements Listener {
         return null;
     }
 
+    private boolean Hulkazivota2(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Location playerLocation = player.getLocation();
+            Location playergroundLocation = playerLocation.add(0,-1,0);
+            Material material = playergroundLocation.getBlock().getType();
+            Set<Material> all_materials = new HashSet<>();
+            all_materials.add(Material.AIR);
+            for (Material mat : Material.values()) {
+                all_materials.add(mat);
+            }
+            List<Block> sight = player.getLineOfSight(all_materials, 10);
+            for (int i = 0; i < sight.size(); i++) {
+                if (i > sight.size()/4) {
+                    sight.get(i).setType(material);
+                }
+            }
+            Location wallCentre = sight.get(sight.size()-1).getLocation();
+            wallCentre.getBlock().setType(Material.AIR);
+            for (int x = -2; x <= 2; x++) {
+                for (int y = -2; y <= 2; y++) {
+                    for (int z = -2; z <= 2; z++) {
+                        final Location wallBlock = new Location(
+                                player.getWorld(),
+                                wallCentre.getX() + x,
+                                wallCentre.getY() + y,
+                                wallCentre.getZ() + z);
+                        wallBlock.getBlock().setType(material);
+                    }
+                }
+            }
+        }
+        return true;
+    }
     public directions getDirection(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
