@@ -179,16 +179,14 @@ public class Drop extends JavaPlugin implements Listener {
                     event.getPlayer().launchProjectile(Fireball.class);
                 }
                 if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
-                         creategauge(event.getPlayer());
-                 if(itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
-                         Hulkazivota2(event.getPlayer());
-
-                         }
-                    }
+                    creategauge(event.getPlayer());
+                }
+                if(itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
+                    Hulkazivota2(event.getPlayer());
                 }
             }
         }
-
+    }
 
     private int getValueInt(String[] args, int index, int default_value) {
         if (index < 0 || index >= args.length) {
@@ -347,7 +345,7 @@ public class Drop extends JavaPlugin implements Listener {
             List<Block> sight = player.getLineOfSight(all_materials, 10);
             for (int i = 0; i < sight.size(); i++) {
                 if (i > sight.size()/4) {
-                    sight.get(i).setType(material);
+                    sight.get(i).setType(Material.AIR);
                 }
             }
             Location wallCentre = sight.get(sight.size()-1).getLocation();
@@ -360,7 +358,7 @@ public class Drop extends JavaPlugin implements Listener {
                                 wallCentre.getX() + x,
                                 wallCentre.getY() + y,
                                 wallCentre.getZ() + z);
-                        wallBlock.getBlock().setType(material);
+                        wallBlock.getBlock().setType(Material.AIR);
                     }
                 }
             }
