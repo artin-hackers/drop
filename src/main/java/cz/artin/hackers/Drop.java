@@ -70,9 +70,46 @@ public class Drop extends JavaPlugin implements Listener {
             return Zdenkovahulka(sender);
         } else if (label.equalsIgnoreCase("creategauge")) {
              return creategauge(sender);
+        } else if (label.equalsIgnoreCase("createArena")) {
+            return createArena(sender);
 
         }
         return false;
+    }
+
+    private boolean createArena(CommandSender sender) {
+       if (sender instanceof Player) {
+           Player player = (Player) sender;
+           Location location = player.getLocation();
+           for (int x=-50;x<=50;x++) {
+               for(int y=0;y<=50;y++){
+                   for (int z=-50;z<=50;z++){
+                       Location blockLocation = new Location(
+                               player.getWorld(),
+                               location.getX()+x,
+                               location.getY()+y,
+                               location.getZ()+z);
+                       blockLocation.getBlock().setType(Material.AIR);
+                   }
+               }
+           }
+           for (int x=-50;x<=50;x++) {
+               for (int z=-50;z<=50;z++) {
+                   Location blockLocation = new Location(
+                           player.getWorld(),
+                           location.getX()+x,
+                           location.getY()-1,
+                           location.getZ()+z);
+                   blockLocation.getBlock().setType(Material.GRASS_BLOCK);
+
+               }
+           }
+           return true;
+       }
+       else {
+           return false;
+       }
+
     }
 
     private boolean Zdenkovahulka(CommandSender sender) {

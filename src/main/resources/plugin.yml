@@ -26,3 +26,5 @@ commands:
     description: create Zdenkovahulka
   creategauge:
     description: create gauge
+  createArena:
+    description: createArena
