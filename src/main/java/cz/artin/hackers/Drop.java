@@ -337,7 +337,7 @@ public class Drop extends JavaPlugin implements Listener {
             Player player = (Player) sender;
             Location playerLocation = player.getLocation();
             for (int x = -2; x <= 2; x++) {
-                for (int y = -2; y <= 2; y++) {
+                for (int y = 0; y <= 2; y++) {
                     for (int z = -2; z <= 2; z++) {
                         final Location wallBlock = new Location(
                                 player.getWorld(),
