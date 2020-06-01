@@ -1,2 +1,1 @@
-# drop
-Diablo Rip-Off Project
+# Diablo Rip-Off Project

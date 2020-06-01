@@ -3,6 +3,8 @@ version: "1.0-SNAPSHOT"
 author: Artin Hackers Team
 main: cz.artin.hackers.Drop
 commands:
+  equipMagicWand:
+    description: Equip magic wand that allows casting spells.
   setModeDeveloper:
     description: Sets creative mode, day and disables day-night cycle
   setModeNormal:

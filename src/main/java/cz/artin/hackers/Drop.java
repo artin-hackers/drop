@@ -17,18 +17,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Drop extends JavaPlugin implements Listener {
+    private final static Logger LOGGER = Logger.getLogger(MagicWand.class.getName());
+
     private static final int DEFAULT_DUMMY_COUNT = 10;
     private static final int DEFAULT_DUMMY_RADIUS = 10;
 
@@ -36,12 +37,14 @@ public class Drop extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        getLogger().info("Loading DROP plugin...");
-        MagicWandFire.init();
+        LOGGER.info("Drop.onEnable(): Started");
+        LOGGER.info("Loading DROP plugin...");
+        MagicWand.init();
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getWorld("world").setTime(1000);
         getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-        getLogger().info("...plugin successfully loaded.");
+        LOGGER.info("...plugin successfully loaded.");
+        LOGGER.info("Drop.onEnable(): Finished");
     }
 
     @Override
