@@ -179,14 +179,16 @@ public class Drop extends JavaPlugin implements Listener {
                     event.getPlayer().launchProjectile(Fireball.class);
                 }
                 if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
-                    creategauge(event.getPlayer());
-                }
-                if(itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
-                    Hulkazivota2(event.getPlayer());
+                         creategauge(event.getPlayer());
+                 if(itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
+                         Hulkazivota2(event.getPlayer());
+
+                         }
+                    }
                 }
             }
         }
-    }
+
 
     private int getValueInt(String[] args, int index, int default_value) {
         if (index < 0 || index >= args.length) {
@@ -335,29 +337,14 @@ public class Drop extends JavaPlugin implements Listener {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             Location playerLocation = player.getLocation();
-            Location playergroundLocation = playerLocation.add(0,-1,0);
-            Material material = playergroundLocation.getBlock().getType();
-            Set<Material> all_materials = new HashSet<>();
-            all_materials.add(Material.AIR);
-            for (Material mat : Material.values()) {
-                all_materials.add(mat);
-            }
-            List<Block> sight = player.getLineOfSight(all_materials, 10);
-            for (int i = 0; i < sight.size(); i++) {
-                if (i > sight.size()/4) {
-                    sight.get(i).setType(Material.AIR);
-                }
-            }
-            Location wallCentre = sight.get(sight.size()-1).getLocation();
-            wallCentre.getBlock().setType(Material.AIR);
             for (int x = -2; x <= 2; x++) {
                 for (int y = -2; y <= 2; y++) {
                     for (int z = -2; z <= 2; z++) {
                         final Location wallBlock = new Location(
                                 player.getWorld(),
-                                wallCentre.getX() + x,
-                                wallCentre.getY() + y,
-                                wallCentre.getZ() + z);
+                                playerLocation.getX() + x,
+                                playerLocation.getY() + y,
+                                playerLocation.getZ() + z);
                         wallBlock.getBlock().setType(Material.AIR);
                     }
                 }
