@@ -68,6 +68,8 @@ public class Drop extends JavaPlugin implements Listener {
             return buildObelisk(sender);
         } else if (label.equalsIgnoreCase("Zdenkovahulka")) {
             return Zdenkovahulka(sender);
+        } else if (label.equalsIgnoreCase("Hulkazivota")) {
+            return Hulkazivota(sender);
         } else if (label.equalsIgnoreCase("creategauge")) {
              return creategauge(sender);
         } else if (label.equalsIgnoreCase("createArena")) {
@@ -126,6 +128,19 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
+    private boolean Hulkazivota(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Player me = (Player) sender;
+            ItemStack wand = new ItemStack(Material.BLAZE_ROD, 1);
+            ItemMeta meta = wand.getItemMeta();
+            meta.setDisplayName("Hulkazivota");
+            wand.setItemMeta(meta);
+            me.getInventory().addItem(wand);
+        }
+
+        return true;
+    }
 
 
     @EventHandler
@@ -135,6 +150,7 @@ public class Drop extends JavaPlugin implements Listener {
         getLogger().info(event.getPlayer().getWorld().getName());
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
+        Hulkazivota(event.getPlayer());
     }
 
     @EventHandler
@@ -143,6 +159,7 @@ public class Drop extends JavaPlugin implements Listener {
          event.getPlayer().setGameMode(GameMode.SURVIVAL);
          Filipovasekera(event.getPlayer());
          Zdenkovahulka(event.getPlayer());
+         Hulkazivota(event.getPlayer());
      }
 
     @EventHandler
@@ -164,11 +181,22 @@ public class Drop extends JavaPlugin implements Listener {
                     event.getPlayer().launchProjectile(Fireball.class);
                 }
                 if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
-                         creategauge(event.getPlayer());
-                    }
+                     creategauge(event.getPlayer());
+                }
+                if (itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
+                    Hulkazivota2(event.getPlayer());
                 }
             }
         }
+        if (event.getAction().equals(Action.LEFT_CLICK_AIR)||event.getAction().equals(Action.LEFT_CLICK_BLOCK )) {
+            ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
+            if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
+                if (itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
+                    createhole(event.getPlayer());
+                }
+            }
+        }
+    }
 
 
     private int getValueInt(String[] args, int index, int default_value) {
@@ -292,6 +320,27 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
+    private boolean createhole(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            List<Block> sight = player.getLineOfSight(null, 20);
+            Location holeCentre = sight.get(sight.size()-1).getLocation();
+            for (int x = -1; x <= 1; x++) {
+                for (int y = -1; y <= 1; y++) {
+                    for (int z = -1; z <= 1; z++) {
+                        final Location wallBlock = new Location(
+                                player.getWorld(),
+                                holeCentre.getX() + x,
+                                holeCentre.getY() + y,
+                                holeCentre.getZ() + z);
+                        wallBlock.getBlock().setType(Material.AIR);
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     public Location putInView(CommandSender sender, int distance) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
@@ -314,6 +363,25 @@ public class Drop extends JavaPlugin implements Listener {
         return null;
     }
 
+    private boolean Hulkazivota2(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Location playerLocation = player.getLocation();
+            for (int x = -2; x <= 2; x++) {
+                for (int y = 0; y <= 2; y++) {
+                    for (int z = -2; z <= 2; z++) {
+                        final Location wallBlock = new Location(
+                                player.getWorld(),
+                                playerLocation.getX() + x,
+                                playerLocation.getY() + y,
+                                playerLocation.getZ() + z);
+                        wallBlock.getBlock().setType(Material.AIR);
+                    }
+                }
+            }
+        }
+        return true;
+    }
     public directions getDirection(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
