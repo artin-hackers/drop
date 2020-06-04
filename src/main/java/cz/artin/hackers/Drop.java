@@ -312,6 +312,27 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
+    private boolean createhole(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            List<Block> sight = player.getLineOfSight(null, 20);
+            Location holeCentre = sight.get(sight.size()-1).getLocation();
+            for (int x = -1; x <= 1; x++) {
+                for (int y = -1; y <= 1; y++) {
+                    for (int z = -1; z <= 1; z++) {
+                        final Location wallBlock = new Location(
+                                player.getWorld(),
+                                holeCentre.getX() + x,
+                                holeCentre.getY() + y,
+                                holeCentre.getZ() + z);
+                        wallBlock.getBlock().setType(Material.AIR);
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     public Location putInView(CommandSender sender, int distance) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
