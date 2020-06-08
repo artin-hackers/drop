@@ -7,12 +7,9 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Chicken;
-import org.bukkit.entity.Entity;
+import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.entity.Fireball;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -348,7 +345,9 @@ public class Drop extends JavaPlugin implements Listener {
         Entity target = getNearestEntityInSight(player, 20);
         if (target != null) {
             getLogger().info("Target: " + target.getName());
-            target.remove();
+            if (target instanceof LivingEntity) {
+                ((LivingEntity) target).damage(999999999, player);
+            }
         }
         return true;
     }
@@ -507,7 +506,7 @@ public class Drop extends JavaPlugin implements Listener {
                         playerLocation.getX() + randomX,
                         playerLocation.getY(),
                         playerLocation.getZ() + randomZ);
-                Chicken dummy = player.getWorld().spawn(dummyLocation, Chicken.class);
+                Zombie dummy = player.getWorld().spawn(dummyLocation, Zombie.class);
             }
         }
         return true;
