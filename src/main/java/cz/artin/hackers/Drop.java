@@ -177,45 +177,50 @@ public class Drop extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        getLogger().info("onInteract() - Init");
-        if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-            if (event.getClickedBlock().getType().equals(Material.DIAMOND_BLOCK)) {
-                if (PORTAL_EXIT != null) {
-                    event.getPlayer().teleport(PORTAL_EXIT);
-                } else {
-                    event.getPlayer().teleport(event.getPlayer().getWorld().getSpawnLocation());
+        getLogger().info("Drop.onInteract()");
+        ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
+        if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
+            String itemDisplayName = itemInMainHand.getItemMeta().getDisplayName();
+            if (itemDisplayName.equals("RifleWand")) {
+                if (event.getAction().equals(Action.LEFT_CLICK_AIR)
+                    || event.getAction().equals(Action.LEFT_CLICK_BLOCK)
+                ) {
+                    shootRifleWand(event.getPlayer());
                 }
             }
-        }
-        if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-            ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
-            if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
-                if (itemInMainHand.getItemMeta().getDisplayName().equals("Filipovasekera")) {
-                    event.getPlayer().launchProjectile(Fireball.class);
-                }
-                if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
-                    creategauge(event.getPlayer());
-                }
-                if (itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
-                    Hulkazivota2(event.getPlayer());
-                }
 
-
+            // Refactor from this point
+            if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                if (event.getClickedBlock().getType().equals(Material.DIAMOND_BLOCK)) {
+                    if (PORTAL_EXIT != null) {
+                        event.getPlayer().teleport(PORTAL_EXIT);
+                    } else {
+                        event.getPlayer().teleport(event.getPlayer().getWorld().getSpawnLocation());
+                    }
+                }
             }
-        }
-        if (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-            ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
-            if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
-                if (itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
-                    createhole(event.getPlayer());
+            if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
+                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Filipovasekera")) {
+                        event.getPlayer().launchProjectile(Fireball.class);
+                    }
+                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
+                        creategauge(event.getPlayer());
+                    }
+                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
+                        Hulkazivota2(event.getPlayer());
+                    }
                 }
-                if (itemInMainHand.getItemMeta().getDisplayName().equals("equipRifle")) {
-                    equipRifle2(event.getPlayer());
+            }
+            if (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
+                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
+                        createhole(event.getPlayer());
+                    }
                 }
             }
         }
     }
-
 
     private int getValueInt(String[] args, int index, int default_value) {
         if (index < 0 || index >= args.length) {
@@ -338,21 +343,31 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean equipRifle2(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            List<Block> sight = player.getLineOfSight(null, 20);
-            for (int i = 0; i < sight.size(); i++) {
-                Location target = sight.get(i).getLocation();
-                Collection<Entity> nearbyEntities = target.getWorld().getNearbyEntities(target, 1, 1, 1);
-                getLogger().info("Total entities: " + nearbyEntities.size());
-                for (Entity entity : nearbyEntities) {
-                    getLogger().info(entity.getName());
+    private boolean shootRifleWand(Player player) {
+        getLogger().info("Drop.shootRifleWand()");
+        Entity target = getNearestEntityInSight(player, 20);
+        if (target != null) {
+            getLogger().info("Target: " + target.getName());
+            target.remove();
+        }
+        return true;
+    }
+
+    public static Entity getNearestEntityInSight(Player player, int range) {
+        ArrayList<Entity> nearbyEntities = (ArrayList<Entity>) player.getNearbyEntities(range, range, range);
+        ArrayList<Block> sightBlocks = (ArrayList<Block>) player.getLineOfSight(null, range);
+        for (Block block : sightBlocks) {
+            Location location = block.getLocation();
+            for (Entity entity : nearbyEntities) {
+                if (Math.abs(entity.getLocation().getX() - location.getX()) < 1.3
+                        && Math.abs(entity.getLocation().getY() - location.getY()) < 1.5
+                        && Math.abs(entity.getLocation().getZ() - location.getZ()) < 1.3
+                ) {
+                    return entity;
                 }
             }
         }
-
-        return true;
+        return null;
     }
 
     private boolean createhole(CommandSender sender) {
