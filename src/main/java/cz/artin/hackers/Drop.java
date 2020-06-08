@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Chicken;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.entity.Fireball;
@@ -74,7 +75,7 @@ public class Drop extends JavaPlugin implements Listener {
         } else if (label.equalsIgnoreCase("equipRifle")) {
             return equipRifle(sender);
         } else if (label.equalsIgnoreCase("creategauge")) {
-             return creategauge(sender);
+            return creategauge(sender);
         } else if (label.equalsIgnoreCase("createArena")) {
             return createArena(sender);
 
@@ -83,37 +84,36 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     private boolean createArena(CommandSender sender) {
-       if (sender instanceof Player) {
-           Player player = (Player) sender;
-           Location location = player.getLocation();
-           for (int x=-50;x<=50;x++) {
-               for(int y=0;y<=50;y++){
-                   for (int z=-50;z<=50;z++){
-                       Location blockLocation = new Location(
-                               player.getWorld(),
-                               location.getX()+x,
-                               location.getY()+y,
-                               location.getZ()+z);
-                       blockLocation.getBlock().setType(Material.AIR);
-                   }
-               }
-           }
-           for (int x=-50;x<=50;x++) {
-               for (int z=-50;z<=50;z++) {
-                   Location blockLocation = new Location(
-                           player.getWorld(),
-                           location.getX()+x,
-                           location.getY()-1,
-                           location.getZ()+z);
-                   blockLocation.getBlock().setType(Material.GRASS_BLOCK);
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Location location = player.getLocation();
+            for (int x = -50; x <= 50; x++) {
+                for (int y = 0; y <= 50; y++) {
+                    for (int z = -50; z <= 50; z++) {
+                        Location blockLocation = new Location(
+                                player.getWorld(),
+                                location.getX() + x,
+                                location.getY() + y,
+                                location.getZ() + z);
+                        blockLocation.getBlock().setType(Material.AIR);
+                    }
+                }
+            }
+            for (int x = -50; x <= 50; x++) {
+                for (int z = -50; z <= 50; z++) {
+                    Location blockLocation = new Location(
+                            player.getWorld(),
+                            location.getX() + x,
+                            location.getY() - 1,
+                            location.getZ() + z);
+                    blockLocation.getBlock().setType(Material.GRASS_BLOCK);
 
-               }
-           }
-           return true;
-       }
-       else {
-           return false;
-       }
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
 
     }
 
@@ -130,6 +130,7 @@ public class Drop extends JavaPlugin implements Listener {
 
         return true;
     }
+
     private boolean equipRifle(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
@@ -172,13 +173,13 @@ public class Drop extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-         getLogger().info("the player has appeared" + event.getPlayer().getName() + "just appeared");
-         event.getPlayer().setGameMode(GameMode.SURVIVAL);
-         Filipovasekera(event.getPlayer());
-         Zdenkovahulka(event.getPlayer());
-         Hulkazivota(event.getPlayer());
-         equipRifle(event.getPlayer());
-     }
+        getLogger().info("the player has appeared" + event.getPlayer().getName() + "just appeared");
+        event.getPlayer().setGameMode(GameMode.SURVIVAL);
+        Filipovasekera(event.getPlayer());
+        Zdenkovahulka(event.getPlayer());
+        Hulkazivota(event.getPlayer());
+        equipRifle(event.getPlayer());
+    }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
@@ -192,24 +193,23 @@ public class Drop extends JavaPlugin implements Listener {
                 }
             }
         }
-        if (event.getAction().equals(Action.RIGHT_CLICK_AIR)||event.getAction().equals(Action.RIGHT_CLICK_BLOCK )) {
+        if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
             if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
                 if (itemInMainHand.getItemMeta().getDisplayName().equals("Filipovasekera")) {
                     event.getPlayer().launchProjectile(Fireball.class);
                 }
                 if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
-                     creategauge(event.getPlayer());
+                    creategauge(event.getPlayer());
                 }
                 if (itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
                     Hulkazivota2(event.getPlayer());
                 }
 
 
-
             }
         }
-        if (event.getAction().equals(Action.LEFT_CLICK_AIR)||event.getAction().equals(Action.LEFT_CLICK_BLOCK )) {
+        if (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
             ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
             if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
                 if (itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
@@ -217,9 +217,9 @@ public class Drop extends JavaPlugin implements Listener {
                 }
                 if (itemInMainHand.getItemMeta().getDisplayName().equals("equipRifle")) {
                     equipRifle2(event.getPlayer());
+                }
             }
         }
-      }
     }
 
 
@@ -313,7 +313,7 @@ public class Drop extends JavaPlugin implements Listener {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             Location playerLocation = player.getLocation();
-            Location playergroundLocation = playerLocation.add(0,-1,0);
+            Location playergroundLocation = playerLocation.add(0, -1, 0);
             Material material = playergroundLocation.getBlock().getType();
             Set<Material> all_materials = new HashSet<>();
             all_materials.add(Material.GOLD_ORE);
@@ -322,11 +322,11 @@ public class Drop extends JavaPlugin implements Listener {
             }
             List<Block> sight = player.getLineOfSight(all_materials, 10);
             for (int i = 0; i < sight.size(); i++) {
-                if (i > sight.size()/4) {
+                if (i > sight.size() / 4) {
                     sight.get(i).setType(material);
                 }
             }
-            Location wallCentre = sight.get(sight.size()-1).getLocation();
+            Location wallCentre = sight.get(sight.size() - 1).getLocation();
             wallCentre.getBlock().setType(Material.GOLD_BLOCK);
             for (int x = -2; x <= 2; x++) {
                 for (int y = -2; y <= 2; y++) {
@@ -347,13 +347,15 @@ public class Drop extends JavaPlugin implements Listener {
     private boolean equipRifle2(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            List<Block> sight = player.getLineOfSight(null, 10);
-            Location target = sight.get(sight.size()-1).getLocation();
-            target.getBlock().setType(Material.GOLD_BLOCK);
-            getLogger().info("shotfired");
-
+            List<Block> sight = player.getLineOfSight(null, 20);
+            for (int i = 0; i < sight.size(); i++) {
+                Location target = sight.get(i).getLocation();
+                List<Entity> nearbyEntities = (List<Entity>)target.getWorld().getNearbyEntities(target, 1, 1, 1);
+             //   getLogger().info((String)nearbyEntities.size());
+                getLogger().info("shotfired");
 
             }
+        }
 
         return true;
     }
