@@ -21,6 +21,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.omg.PortableInterceptor.LOCATION_FORWARD;
 
 import java.util.HashSet;
 import java.util.List;
@@ -70,6 +71,8 @@ public class Drop extends JavaPlugin implements Listener {
             return Zdenkovahulka(sender);
         } else if (label.equalsIgnoreCase("Hulkazivota")) {
             return Hulkazivota(sender);
+        } else if (label.equalsIgnoreCase("equipRifle")) {
+            return equipRifle(sender);
         } else if (label.equalsIgnoreCase("creategauge")) {
              return creategauge(sender);
         } else if (label.equalsIgnoreCase("createArena")) {
@@ -127,6 +130,19 @@ public class Drop extends JavaPlugin implements Listener {
 
         return true;
     }
+    private boolean equipRifle(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Player me = (Player) sender;
+            ItemStack wand = new ItemStack(Material.WOODEN_HOE, 1);
+            ItemMeta meta = wand.getItemMeta();
+            meta.setDisplayName("equipRifle");
+            wand.setItemMeta(meta);
+            me.getInventory().addItem(wand);
+        }
+
+        return true;
+    }
 
     private boolean Hulkazivota(CommandSender sender) {
         if (sender instanceof Player) {
@@ -151,6 +167,7 @@ public class Drop extends JavaPlugin implements Listener {
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         Hulkazivota(event.getPlayer());
+        equipRifle(event.getPlayer());
     }
 
     @EventHandler
@@ -160,6 +177,7 @@ public class Drop extends JavaPlugin implements Listener {
          Filipovasekera(event.getPlayer());
          Zdenkovahulka(event.getPlayer());
          Hulkazivota(event.getPlayer());
+         equipRifle(event.getPlayer());
      }
 
     @EventHandler
@@ -186,6 +204,9 @@ public class Drop extends JavaPlugin implements Listener {
                 if (itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
                     Hulkazivota2(event.getPlayer());
                 }
+
+
+
             }
         }
         if (event.getAction().equals(Action.LEFT_CLICK_AIR)||event.getAction().equals(Action.LEFT_CLICK_BLOCK )) {
@@ -194,8 +215,11 @@ public class Drop extends JavaPlugin implements Listener {
                 if (itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
                     createhole(event.getPlayer());
                 }
+                if (itemInMainHand.getItemMeta().getDisplayName().equals("equipRifle")) {
+                    equipRifle2(event.getPlayer());
             }
         }
+      }
     }
 
 
@@ -320,6 +344,20 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
+    private boolean equipRifle2(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            List<Block> sight = player.getLineOfSight(null, 10);
+            Location target = sight.get(sight.size()-1).getLocation();
+            target.getBlock().setType(Material.GOLD_BLOCK);
+            getLogger().info("shotfired");
+
+
+            }
+
+        return true;
+    }
+
     private boolean createhole(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
@@ -340,6 +378,9 @@ public class Drop extends JavaPlugin implements Listener {
         }
         return true;
     }
+
+
+
 
     public Location putInView(CommandSender sender, int distance) {
         if (sender instanceof Player) {
