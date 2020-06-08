@@ -24,10 +24,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.omg.PortableInterceptor.LOCATION_FORWARD;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Drop extends JavaPlugin implements Listener {
@@ -72,13 +69,12 @@ public class Drop extends JavaPlugin implements Listener {
             return Zdenkovahulka(sender);
         } else if (label.equalsIgnoreCase("Hulkazivota")) {
             return Hulkazivota(sender);
-        } else if (label.equalsIgnoreCase("equipRifle")) {
-            return equipRifle(sender);
         } else if (label.equalsIgnoreCase("creategauge")) {
             return creategauge(sender);
         } else if (label.equalsIgnoreCase("createArena")) {
             return createArena(sender);
-
+        } else if (label.equalsIgnoreCase("equipRifleWand")) {
+            return equipRifleWand(sender);
         }
         return false;
     }
@@ -131,17 +127,15 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean equipRifle(CommandSender sender) {
+    private boolean equipRifleWand(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            Player me = (Player) sender;
-            ItemStack wand = new ItemStack(Material.WOODEN_HOE, 1);
+            ItemStack wand = new ItemStack(Material.STICK, 1);
             ItemMeta meta = wand.getItemMeta();
-            meta.setDisplayName("equipRifle");
+            meta.setDisplayName("RifleWand");
             wand.setItemMeta(meta);
-            me.getInventory().addItem(wand);
+            player.getInventory().addItem(wand);
         }
-
         return true;
     }
 
@@ -168,7 +162,7 @@ public class Drop extends JavaPlugin implements Listener {
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         Hulkazivota(event.getPlayer());
-        equipRifle(event.getPlayer());
+        equipRifleWand(event.getPlayer());
     }
 
     @EventHandler
@@ -178,7 +172,7 @@ public class Drop extends JavaPlugin implements Listener {
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         Hulkazivota(event.getPlayer());
-        equipRifle(event.getPlayer());
+        equipRifleWand(event.getPlayer());
     }
 
     @EventHandler
@@ -350,10 +344,11 @@ public class Drop extends JavaPlugin implements Listener {
             List<Block> sight = player.getLineOfSight(null, 20);
             for (int i = 0; i < sight.size(); i++) {
                 Location target = sight.get(i).getLocation();
-                List<Entity> nearbyEntities = (List<Entity>)target.getWorld().getNearbyEntities(target, 1, 1, 1);
-             //   getLogger().info((String)nearbyEntities.size());
-                getLogger().info("shotfired");
-
+                Collection<Entity> nearbyEntities = target.getWorld().getNearbyEntities(target, 1, 1, 1);
+                getLogger().info("Total entities: " + nearbyEntities.size());
+                for (Entity entity : nearbyEntities) {
+                    getLogger().info(entity.getName());
+                }
             }
         }
 
