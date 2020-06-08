@@ -30,3 +30,5 @@ commands:
     description: create gauge
   createArena:
     description: createArena
+  Hulkazivota:
+    description: safe player
