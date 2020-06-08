@@ -15,11 +15,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.omg.PortableInterceptor.LOCATION_FORWARD;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -342,7 +339,7 @@ public class Drop extends JavaPlugin implements Listener {
 
     private boolean shootRifleWand(Player player) {
         getLogger().info("Drop.shootRifleWand()");
-        Entity target = getNearestEntityInSight(player, 20);
+        Entity target = getNearestLivingEntityInSight(player, 20);
         if (target != null) {
             getLogger().info("Target: " + target.getName());
             if (target instanceof LivingEntity) {
@@ -352,12 +349,18 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
-    public static Entity getNearestEntityInSight(Player player, int range) {
+    public static Entity getNearestLivingEntityInSight(Player player, int range) {
         ArrayList<Entity> nearbyEntities = (ArrayList<Entity>) player.getNearbyEntities(range, range, range);
+        ArrayList<Entity> nearbyLivingEntities = new ArrayList<Entity>();
+        for (Entity entity : nearbyEntities) {
+            if (entity instanceof LivingEntity) {
+                nearbyLivingEntities.add(entity);
+            }
+        }
         ArrayList<Block> sightBlocks = (ArrayList<Block>) player.getLineOfSight(null, range);
         for (Block block : sightBlocks) {
             Location location = block.getLocation();
-            for (Entity entity : nearbyEntities) {
+            for (Entity entity : nearbyLivingEntities) {
                 if (Math.abs(entity.getLocation().getX() - location.getX()) < 1.3
                         && Math.abs(entity.getLocation().getY() - location.getY()) < 1.5
                         && Math.abs(entity.getLocation().getZ() - location.getZ()) < 1.3
