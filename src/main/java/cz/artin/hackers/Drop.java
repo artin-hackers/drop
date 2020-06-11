@@ -7,25 +7,18 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Chicken;
+import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.entity.Fireball;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Drop extends JavaPlugin implements Listener {
@@ -71,46 +64,46 @@ public class Drop extends JavaPlugin implements Listener {
         } else if (label.equalsIgnoreCase("Hulkazivota")) {
             return Hulkazivota(sender);
         } else if (label.equalsIgnoreCase("creategauge")) {
-             return creategauge(sender);
+            return creategauge(sender);
         } else if (label.equalsIgnoreCase("createArena")) {
             return createArena(sender);
-
+        } else if (label.equalsIgnoreCase("equipRifleWand")) {
+            return equipRifleWand(sender);
         }
         return false;
     }
 
     private boolean createArena(CommandSender sender) {
-       if (sender instanceof Player) {
-           Player player = (Player) sender;
-           Location location = player.getLocation();
-           for (int x=-50;x<=50;x++) {
-               for(int y=0;y<=50;y++){
-                   for (int z=-50;z<=50;z++){
-                       Location blockLocation = new Location(
-                               player.getWorld(),
-                               location.getX()+x,
-                               location.getY()+y,
-                               location.getZ()+z);
-                       blockLocation.getBlock().setType(Material.AIR);
-                   }
-               }
-           }
-           for (int x=-50;x<=50;x++) {
-               for (int z=-50;z<=50;z++) {
-                   Location blockLocation = new Location(
-                           player.getWorld(),
-                           location.getX()+x,
-                           location.getY()-1,
-                           location.getZ()+z);
-                   blockLocation.getBlock().setType(Material.GRASS_BLOCK);
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Location location = player.getLocation();
+            for (int x = -50; x <= 50; x++) {
+                for (int y = 0; y <= 50; y++) {
+                    for (int z = -50; z <= 50; z++) {
+                        Location blockLocation = new Location(
+                                player.getWorld(),
+                                location.getX() + x,
+                                location.getY() + y,
+                                location.getZ() + z);
+                        blockLocation.getBlock().setType(Material.AIR);
+                    }
+                }
+            }
+            for (int x = -50; x <= 50; x++) {
+                for (int z = -50; z <= 50; z++) {
+                    Location blockLocation = new Location(
+                            player.getWorld(),
+                            location.getX() + x,
+                            location.getY() - 1,
+                            location.getZ() + z);
+                    blockLocation.getBlock().setType(Material.GRASS_BLOCK);
 
-               }
-           }
-           return true;
-       }
-       else {
-           return false;
-       }
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
 
     }
 
@@ -125,6 +118,18 @@ public class Drop extends JavaPlugin implements Listener {
             me.getInventory().addItem(wand);
         }
 
+        return true;
+    }
+
+    private boolean equipRifleWand(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            ItemStack wand = new ItemStack(Material.STICK, 1);
+            ItemMeta meta = wand.getItemMeta();
+            meta.setDisplayName("RifleWand");
+            wand.setItemMeta(meta);
+            player.getInventory().addItem(wand);
+        }
         return true;
     }
 
@@ -151,53 +156,65 @@ public class Drop extends JavaPlugin implements Listener {
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         Hulkazivota(event.getPlayer());
+        equipRifleWand(event.getPlayer());
     }
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-         getLogger().info("the player has appeared" + event.getPlayer().getName() + "just appeared");
-         event.getPlayer().setGameMode(GameMode.SURVIVAL);
-         Filipovasekera(event.getPlayer());
-         Zdenkovahulka(event.getPlayer());
-         Hulkazivota(event.getPlayer());
-     }
+        getLogger().info("the player has appeared" + event.getPlayer().getName() + "just appeared");
+        event.getPlayer().setGameMode(GameMode.SURVIVAL);
+        Filipovasekera(event.getPlayer());
+        Zdenkovahulka(event.getPlayer());
+        Hulkazivota(event.getPlayer());
+        equipRifleWand(event.getPlayer());
+    }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        getLogger().info("onInteract() - Init");
-        if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-            if (event.getClickedBlock().getType().equals(Material.DIAMOND_BLOCK)) {
-                if (PORTAL_EXIT != null) {
-                    event.getPlayer().teleport(PORTAL_EXIT);
-                } else {
-                    event.getPlayer().teleport(event.getPlayer().getWorld().getSpawnLocation());
+        getLogger().info("Drop.onInteract()");
+        ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
+        if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
+            String itemDisplayName = itemInMainHand.getItemMeta().getDisplayName();
+            if (itemDisplayName.equals("RifleWand")) {
+                if (event.getAction().equals(Action.LEFT_CLICK_AIR)
+                    || event.getAction().equals(Action.LEFT_CLICK_BLOCK)
+                ) {
+                    shootRifleWand(event.getPlayer());
                 }
             }
-        }
-        if (event.getAction().equals(Action.RIGHT_CLICK_AIR)||event.getAction().equals(Action.RIGHT_CLICK_BLOCK )) {
-            ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
-            if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
-                if (itemInMainHand.getItemMeta().getDisplayName().equals("Filipovasekera")) {
-                    event.getPlayer().launchProjectile(Fireball.class);
-                }
-                if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
-                     creategauge(event.getPlayer());
-                }
-                if (itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
-                    Hulkazivota2(event.getPlayer());
+
+            // Refactor from this point
+            if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                if (event.getClickedBlock().getType().equals(Material.DIAMOND_BLOCK)) {
+                    if (PORTAL_EXIT != null) {
+                        event.getPlayer().teleport(PORTAL_EXIT);
+                    } else {
+                        event.getPlayer().teleport(event.getPlayer().getWorld().getSpawnLocation());
+                    }
                 }
             }
-        }
-        if (event.getAction().equals(Action.LEFT_CLICK_AIR)||event.getAction().equals(Action.LEFT_CLICK_BLOCK )) {
-            ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
-            if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
-                if (itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
-                    createhole(event.getPlayer());
+            if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
+                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Filipovasekera")) {
+                        event.getPlayer().launchProjectile(Fireball.class);
+                    }
+                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
+                        creategauge(event.getPlayer());
+                    }
+                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
+                        Hulkazivota2(event.getPlayer());
+                    }
+                }
+            }
+            if (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
+                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
+                        createhole(event.getPlayer());
+                    }
                 }
             }
         }
     }
-
 
     private int getValueInt(String[] args, int index, int default_value) {
         if (index < 0 || index >= args.length) {
@@ -289,7 +306,7 @@ public class Drop extends JavaPlugin implements Listener {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             Location playerLocation = player.getLocation();
-            Location playergroundLocation = playerLocation.add(0,-1,0);
+            Location playergroundLocation = playerLocation.add(0, -1, 0);
             Material material = playergroundLocation.getBlock().getType();
             Set<Material> all_materials = new HashSet<>();
             all_materials.add(Material.GOLD_ORE);
@@ -298,11 +315,11 @@ public class Drop extends JavaPlugin implements Listener {
             }
             List<Block> sight = player.getLineOfSight(all_materials, 10);
             for (int i = 0; i < sight.size(); i++) {
-                if (i > sight.size()/4) {
+                if (i > sight.size() / 4) {
                     sight.get(i).setType(material);
                 }
             }
-            Location wallCentre = sight.get(sight.size()-1).getLocation();
+            Location wallCentre = sight.get(sight.size() - 1).getLocation();
             wallCentre.getBlock().setType(Material.GOLD_BLOCK);
             for (int x = -2; x <= 2; x++) {
                 for (int y = -2; y <= 2; y++) {
@@ -318,6 +335,41 @@ public class Drop extends JavaPlugin implements Listener {
             }
         }
         return true;
+    }
+
+    private boolean shootRifleWand(Player player) {
+        getLogger().info("Drop.shootRifleWand()");
+        Entity target = getNearestLivingEntityInSight(player, 20);
+        if (target != null) {
+            getLogger().info("Target: " + target.getName());
+            if (target instanceof LivingEntity) {
+                ((LivingEntity) target).damage(999999999, player);
+            }
+        }
+        return true;
+    }
+
+    public static Entity getNearestLivingEntityInSight(Player player, int range) {
+        ArrayList<Entity> nearbyEntities = (ArrayList<Entity>) player.getNearbyEntities(range, range, range);
+        ArrayList<Entity> nearbyLivingEntities = new ArrayList<Entity>();
+        for (Entity entity : nearbyEntities) {
+            if (entity instanceof LivingEntity) {
+                nearbyLivingEntities.add(entity);
+            }
+        }
+        ArrayList<Block> sightBlocks = (ArrayList<Block>) player.getLineOfSight(null, range);
+        for (Block block : sightBlocks) {
+            Location location = block.getLocation();
+            for (Entity entity : nearbyLivingEntities) {
+                if (Math.abs(entity.getLocation().getX() - location.getX()) < 1.3
+                        && Math.abs(entity.getLocation().getY() - location.getY()) < 1.5
+                        && Math.abs(entity.getLocation().getZ() - location.getZ()) < 1.3
+                ) {
+                    return entity;
+                }
+            }
+        }
+        return null;
     }
 
     private boolean createhole(CommandSender sender) {
@@ -340,6 +392,9 @@ public class Drop extends JavaPlugin implements Listener {
         }
         return true;
     }
+
+
+
 
     public Location putInView(CommandSender sender, int distance) {
         if (sender instanceof Player) {
@@ -454,7 +509,7 @@ public class Drop extends JavaPlugin implements Listener {
                         playerLocation.getX() + randomX,
                         playerLocation.getY(),
                         playerLocation.getZ() + randomZ);
-                Chicken dummy = player.getWorld().spawn(dummyLocation, Chicken.class);
+                Zombie dummy = player.getWorld().spawn(dummyLocation, Zombie.class);
             }
         }
         return true;
