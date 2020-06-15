@@ -19,27 +19,7 @@ public class ItemMagicWand implements Listener {
 
     public ItemMagicWand(JavaPlugin plugin) {
         LOGGER.info("MagicWand(): Started");
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
         LOGGER.info("MagicWand(): Finished");
-    }
-
-    public static boolean equip(CommandSender sender) {
-        LOGGER.info("MagicWand.equip(): Started");
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            ItemStack item = new ItemStack(Material.STICK, 1);
-            ItemMeta meta = item.getItemMeta();
-            if (meta != null) {
-                meta.setDisplayName("MagicWand");
-            } else {
-                LOGGER.warning("MagicWand.equip(): Meta data are null");
-                return false;
-            }
-            item.setItemMeta(meta);
-            player.getInventory().addItem(item);
-        }
-        LOGGER.info("MagicWand.equip(): Finished");
-        return true;
     }
 
     @EventHandler
