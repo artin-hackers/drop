@@ -48,8 +48,10 @@ public class Drop extends JavaPlugin implements Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (label.equalsIgnoreCase("equipMagicWand")) {
-            return ItemMagicWand.equip(sender);
+        if (label.equalsIgnoreCase("equip")) {
+            return equip(sender, args);
+
+        // Refactor from this point down
         } else if (label.equalsIgnoreCase("setModeDeveloper")) {
             return setModeDeveloper(sender);
         } else if (label.equalsIgnoreCase("setModeNormal")) {
@@ -82,6 +84,31 @@ public class Drop extends JavaPlugin implements Listener {
 
         }
         return false;
+    }
+
+    private boolean equip(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player) || args.length != 1) {
+            LOGGER.warning("Drop.equip: Invalid command");
+            return false;
+        }
+        Player player = (Player) sender;
+        String itemName = args[0];
+        ItemStack item;
+        if (itemName.equalsIgnoreCase("MagicWand")) {
+            item = new ItemStack(Material.STICK, 1);
+        } else {
+            LOGGER.warning("Drop.equip: Unknown item");
+            return false;
+        }
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) {
+            LOGGER.warning("Drop.equip: Meta data are null");
+            return false;
+        }
+        meta.setDisplayName(itemName);
+        item.setItemMeta(meta);
+        player.getInventory().addItem(item);
+        return true;
     }
 
     private boolean createArena(CommandSender sender) {
