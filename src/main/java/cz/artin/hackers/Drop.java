@@ -49,7 +49,7 @@ public class Drop extends JavaPlugin implements Listener {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (label.equalsIgnoreCase("equipMagicWand")) {
-            return ItemMagicWand.equip();
+            return ItemMagicWand.equip(sender);
         } else if (label.equalsIgnoreCase("setModeDeveloper")) {
             return setModeDeveloper(sender);
         } else if (label.equalsIgnoreCase("setModeNormal")) {
