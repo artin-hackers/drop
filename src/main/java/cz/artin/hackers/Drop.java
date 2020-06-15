@@ -38,7 +38,7 @@ public class Drop extends JavaPlugin implements Listener {
     public void onEnable() {
         LOGGER.info("Drop.onEnable(): Started");
         LOGGER.info("Loading DROP plugin...");
-        ItemMagicWand.init();
+        new ItemMagicWand(this);
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getWorld("world").setTime(1000);
         getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
