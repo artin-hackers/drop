@@ -13,7 +13,7 @@ public class Item {
 
     public static boolean equip(CommandSender sender, String[] args) {
         if (!(sender instanceof Player) || args.length != 1) {
-            LOGGER.warning("Drop.equip: Invalid command");
+            LOGGER.warning("Item.equip: Invalid use of command");
             return false;
         }
         Player player = (Player) sender;
@@ -22,12 +22,12 @@ public class Item {
         if (itemName.equalsIgnoreCase("MagicWand")) {
             item = new ItemStack(Material.STICK, 1);
         } else {
-            LOGGER.warning("Drop.equip: Unknown item");
+            LOGGER.warning("Item.equip: Unknown item requested");
             return false;
         }
         ItemMeta meta = item.getItemMeta();
         if (meta == null) {
-            LOGGER.warning("Drop.equip: Meta data are null");
+            LOGGER.warning("Item.equip: Cannot get item meta data");
             return false;
         }
         meta.setDisplayName(itemName);

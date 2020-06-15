@@ -1,3 +1,5 @@
+// REFACTOR!
+
 package cz.artin.hackers;
 
 import org.bukkit.GameMode;
@@ -27,7 +29,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 
 public class Drop extends JavaPlugin implements Listener {
-    private final static Logger LOGGER = Logger.getLogger(ItemMagicWand.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(Drop.class.getName());
 
     private static final int DEFAULT_DUMMY_COUNT = 10;
     private static final int DEFAULT_DUMMY_RADIUS = 10;
@@ -35,10 +37,10 @@ public class Drop extends JavaPlugin implements Listener {
     private Location PORTAL_EXIT = null;
 
     @Override
-    public void onEnable() {
+    public void onEnable() {  // REFACTOR!
         LOGGER.info("Drop.onEnable(): Started");
         LOGGER.info("Loading DROP plugin...");
-        new ItemMagicWand(this);
+        new ItemListener(this);
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getWorld("world").setTime(1000);
         getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
