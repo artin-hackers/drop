@@ -24,11 +24,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Drop extends JavaPlugin implements Listener {
-    private final static Logger LOGGER = Logger.getLogger(MagicWand.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(ItemMagicWand.class.getName());
 
     private static final int DEFAULT_DUMMY_COUNT = 10;
     private static final int DEFAULT_DUMMY_RADIUS = 10;
@@ -39,7 +38,7 @@ public class Drop extends JavaPlugin implements Listener {
     public void onEnable() {
         LOGGER.info("Drop.onEnable(): Started");
         LOGGER.info("Loading DROP plugin...");
-        MagicWand.init();
+        ItemMagicWand.init();
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getWorld("world").setTime(1000);
         getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
@@ -49,7 +48,9 @@ public class Drop extends JavaPlugin implements Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (label.equalsIgnoreCase("setModeDeveloper")) {
+        if (label.equalsIgnoreCase("equipMagicWand")) {
+            return ItemMagicWand.equip();
+        } else if (label.equalsIgnoreCase("setModeDeveloper")) {
             return setModeDeveloper(sender);
         } else if (label.equalsIgnoreCase("setModeNormal")) {
             return setModeNormal(sender);
