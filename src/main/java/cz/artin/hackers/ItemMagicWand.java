@@ -11,10 +11,9 @@ import java.util.logging.Logger;
 public class ItemMagicWand {
     private final static Logger LOGGER = Logger.getLogger(ItemMagicWand.class.getName());
 
-    public static boolean init() {
+    public static void init() {
         LOGGER.info("MagicWand.init(): Started");
         LOGGER.info("MagicWand.init(): Finished");
-        return true;
     }
 
     public static boolean equip(CommandSender sender) {
@@ -23,7 +22,12 @@ public class ItemMagicWand {
             Player player = (Player) sender;
             ItemStack wand = new ItemStack(Material.STICK, 1);
             ItemMeta meta = wand.getItemMeta();
-            meta.setDisplayName("MagicWand");
+            if (meta != null) {
+                meta.setDisplayName("MagicWand");
+            } else {
+                LOGGER.warning("MagicWand.equip(): Meta data are null");
+                return false;
+            }
             wand.setItemMeta(meta);
             player.getInventory().addItem(wand);
         }
