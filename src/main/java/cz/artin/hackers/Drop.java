@@ -1,5 +1,3 @@
-// REFACTOR!
-
 package cz.artin.hackers;
 
 import org.bukkit.GameMode;
@@ -37,21 +35,19 @@ public class Drop extends JavaPlugin implements Listener {
     private Location PORTAL_EXIT = null;
 
     @Override
-    public void onEnable() {  // REFACTOR!
-        LOGGER.info("Drop.onEnable(): Started");
+    public void onEnable() {
         LOGGER.info("Loading DROP plugin...");
-        new ItemListener(this);
         getServer().getPluginManager().registerEvents(this, this);
+        new Equipment(this);
         getServer().getWorld("world").setTime(1000);
         getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         LOGGER.info("...plugin successfully loaded.");
-        LOGGER.info("Drop.onEnable(): Finished");
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (label.equalsIgnoreCase("equip")) {
-            return Item.equip(sender, args);
+            return Equipment.equip(sender, args);
 
         // Refactor from this point down
         } else if (label.equalsIgnoreCase("setModeDeveloper")) {
