@@ -41,6 +41,8 @@ public class Drop extends JavaPlugin implements Listener {
     public void onEnable() {
         LOGGER.info("Loading DROP plugin...");
         getServer().getPluginManager().registerEvents(this, this);
+        magicWand = new MagicWand(this);
+        zireaelSword = new ZireaelSword(this);
         getServer().getWorld("world").setTime(1000);  // TODO: Development setup, remove in release
         getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // TODO: Development setup, remove in release
         LOGGER.info("...plugin successfully loaded.");
@@ -99,10 +101,8 @@ public class Drop extends JavaPlugin implements Listener {
         Player player = (Player) sender;
         String itemName = args[0];
         if (itemName.equalsIgnoreCase("MagicWand")) {
-            magicWand = new MagicWand(this);
             magicWand.equip(player);
         } else if (itemName.equalsIgnoreCase("ZireaelSword")) {
-            zireaelSword = new ZireaelSword(this);
             zireaelSword.equip(player);
         } else {
             LOGGER.warning("Unknown item requested");
@@ -181,6 +181,8 @@ public class Drop extends JavaPlugin implements Listener {
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         Hulkazivota(event.getPlayer());
+        magicWand.equip(event.getPlayer());
+        zireaelSword.equip(event.getPlayer());
     }
 
     @EventHandler
@@ -190,6 +192,8 @@ public class Drop extends JavaPlugin implements Listener {
          Filipovasekera(event.getPlayer());
          Zdenkovahulka(event.getPlayer());
          Hulkazivota(event.getPlayer());
+        magicWand.equip(event.getPlayer());
+        zireaelSword.equip(event.getPlayer());
      }
 
     @EventHandler
