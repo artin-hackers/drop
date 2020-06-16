@@ -9,30 +9,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
-import java.util.logging.Logger;
 
-// TODO: Create abstract class for constructor, equip and event handler
-public class ZireaelSword implements Listener {
-    private final Logger LOGGER = Logger.getLogger(ZireaelSword.class.getName());
-
+public class ZireaelSword extends Item implements Listener {
     public ZireaelSword(JavaPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public void equip(Player player) {
-        ItemStack item = new ItemStack(Material.DIAMOND_SWORD, 1);
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null) {
-            LOGGER.warning("Cannot get item meta data");
-            return;
-        }
-        meta.setDisplayName(ZireaelSword.class.getName());
-        item.setItemMeta(meta);
-        player.getInventory().addItem(item);
+        super.equipItem(player, Material.DIAMOND_SWORD, ZireaelSword.class.getName());
     }
 
     @EventHandler

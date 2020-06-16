@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 public class Drop extends JavaPlugin implements Listener {
     private final Logger LOGGER = Logger.getLogger(Drop.class.getName());
 
-    // TODO: Creare list of items
+    // TODO: Create list of items
     private MagicWand magicWand;
     private ZireaelSword zireaelSword;
 
