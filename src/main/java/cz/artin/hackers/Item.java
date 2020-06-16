@@ -23,7 +23,7 @@ public class Item {
         player.getInventory().addItem(item);
     }
 
-    public boolean isItem(PlayerInteractEvent event, String displayName) {
+    public boolean isItemInMainHand(PlayerInteractEvent event, String displayName) {
         ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
         if (itemInMainHand.getItemMeta() != null) {
             return itemInMainHand.getItemMeta().getDisplayName().equals(displayName);

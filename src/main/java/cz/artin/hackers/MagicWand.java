@@ -15,12 +15,12 @@ public class MagicWand extends Item implements Listener {
     }
 
     public void equip(Player player) {
-        super.equipItem(player, Material.STICK, MagicWand.class.getName());
+        equipItem(player, Material.STICK, MagicWand.class.getName());
     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        if (!super.isItem(event, MagicWand.class.getName())) {
+        if (!isItemInMainHand(event, MagicWand.class.getName())) {
             return;
         }
         if (event.getAction().equals(Action.LEFT_CLICK_AIR)

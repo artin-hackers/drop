@@ -18,12 +18,12 @@ public class ZireaelSword extends Item implements Listener {
     }
 
     public void equip(Player player) {
-        super.equipItem(player, Material.DIAMOND_SWORD, ZireaelSword.class.getName());
+        equipItem(player, Material.DIAMOND_SWORD, ZireaelSword.class.getName());
     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        if (!super.isItem(event, ZireaelSword.class.getName())) {
+        if (!isItemInMainHand(event, ZireaelSword.class.getName())) {
             return;
         }
         if (event.getAction().equals(Action.RIGHT_CLICK_AIR)
