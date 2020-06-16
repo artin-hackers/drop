@@ -15,7 +15,7 @@ public class MagicWand extends Item implements Listener {
     }
 
     public void equip(Player player) {
-        equipItem(player, Material.STICK, MagicWand.class.getName());
+        super.equip(player, Material.STICK, MagicWand.class.getName());
     }
 
     @EventHandler

@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 public class Item {
     private final Logger LOGGER = Logger.getLogger(Item.class.getName());
 
-    public void equipItem(Player player, Material material, String displayName) {
+    public void equip(Player player, Material material, String displayName) {
         ItemStack item = new ItemStack(material, 1);
         ItemMeta meta = item.getItemMeta();
         if (meta == null) {

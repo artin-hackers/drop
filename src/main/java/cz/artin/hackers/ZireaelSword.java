@@ -18,7 +18,7 @@ public class ZireaelSword extends Item implements Listener {
     }
 
     public void equip(Player player) {
-        equipItem(player, Material.DIAMOND_SWORD, ZireaelSword.class.getName());
+        super.equip(player, Material.DIAMOND_SWORD, ZireaelSword.class.getName());
     }
 
     @EventHandler
