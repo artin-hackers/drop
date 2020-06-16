@@ -2,6 +2,7 @@ package cz.artin.hackers;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -20,5 +21,14 @@ public class Item {
         meta.setDisplayName(displayName);
         item.setItemMeta(meta);
         player.getInventory().addItem(item);
+    }
+
+    public boolean isItem(PlayerInteractEvent event, String displayName) {
+        ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
+        if (itemInMainHand.getItemMeta() != null) {
+            return itemInMainHand.getItemMeta().getDisplayName().equals(displayName);
+        } else {
+            return false;
+        }
     }
 }
