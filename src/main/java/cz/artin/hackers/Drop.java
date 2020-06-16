@@ -27,29 +27,31 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 
 public class Drop extends JavaPlugin implements Listener {
-    private final static Logger LOGGER = Logger.getLogger(Drop.class.getName());
+    private final Logger LOGGER = Logger.getLogger(Drop.class.getName());
 
-    private static final int DEFAULT_DUMMY_COUNT = 10;
-    private static final int DEFAULT_DUMMY_RADIUS = 10;
+    // TODO: Creare list of items
+    private MagicWand magicWand;
+    private ZireaelSword zireaelSword;
 
-    private Location PORTAL_EXIT = null;
+    private static final int DEFAULT_DUMMY_COUNT = 10;  // TODO: Move to a sub-class
+    private static final int DEFAULT_DUMMY_RADIUS = 10;  // TODO: Move to a sub-class
+    private Location PORTAL_EXIT = null;  // TODO: Move to a sub-class
 
     @Override
     public void onEnable() {
         LOGGER.info("Loading DROP plugin...");
         getServer().getPluginManager().registerEvents(this, this);
-        new Equipment(this);
-        getServer().getWorld("world").setTime(1000);
-        getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        getServer().getWorld("world").setTime(1000);  // TODO: Development setup, remove in release
+        getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // TODO: Development setup, remove in release
         LOGGER.info("...plugin successfully loaded.");
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (label.equalsIgnoreCase("equip")) {
-            return Equipment.equip(sender, args);
+            equip(sender, args);
 
-        // Refactor from this point down
+        // TODO: Refactor from this point down
         } else if (label.equalsIgnoreCase("setModeDeveloper")) {
             return setModeDeveloper(sender);
         } else if (label.equalsIgnoreCase("setModeNormal")) {
@@ -79,9 +81,32 @@ public class Drop extends JavaPlugin implements Listener {
              return creategauge(sender);
         } else if (label.equalsIgnoreCase("createArena")) {
             return createArena(sender);
-
+        } else {
+            return false;
         }
-        return false;
+        return true;
+    }
+
+    private void equip(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            LOGGER.warning("Invalid caller of equip command");
+            return;
+        }
+        if (args.length != 1) {
+            LOGGER.warning("Invalid argument in equip command");
+            return;
+        }
+        Player player = (Player) sender;
+        String itemName = args[0];
+        if (itemName.equalsIgnoreCase("MagicWand")) {
+            magicWand = new MagicWand(this);
+            magicWand.equip(player);
+        } else if (itemName.equalsIgnoreCase("ZireaelSword")) {
+            zireaelSword = new ZireaelSword(this);
+            zireaelSword.equip(player);
+        } else {
+            LOGGER.warning("Unknown item requested");
+        }
     }
 
     private boolean createArena(CommandSender sender) {

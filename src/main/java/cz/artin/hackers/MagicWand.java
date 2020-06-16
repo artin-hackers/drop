@@ -1,10 +1,11 @@
 package cz.artin.hackers;
 
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -12,36 +13,24 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
 
-public class Equipment implements Listener {
-    private final static Logger LOGGER = Logger.getLogger(Equipment.class.getName());
+// TODO: Create abstract class for constructor, equip and event handler
+public class MagicWand implements Listener {
+    private final Logger LOGGER = Logger.getLogger(MagicWand.class.getName());
 
-    public Equipment(JavaPlugin plugin) {
+    public MagicWand(JavaPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    public static boolean equip(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player) || args.length != 1) {
-            LOGGER.warning("Invalid use of equip command");
-            return false;
-        }
-        Player player = (Player) sender;
-        String itemName = args[0];
-        ItemStack item;
-        if (itemName.equalsIgnoreCase("MagicWand")) {
-            item = new ItemStack(Material.STICK, 1);
-        } else {
-            LOGGER.warning("Unknown item requested");
-            return false;
-        }
+    public void equip(Player player) {
+        ItemStack item = new ItemStack(Material.STICK, 1);
         ItemMeta meta = item.getItemMeta();
         if (meta == null) {
             LOGGER.warning("Cannot get item meta data");
-            return false;
+            return;
         }
-        meta.setDisplayName(itemName);
+        meta.setDisplayName(MagicWand.class.getName());
         item.setItemMeta(meta);
         player.getInventory().addItem(item);
-        return true;
     }
 
     @EventHandler
@@ -49,9 +38,17 @@ public class Equipment implements Listener {
         ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
         if (itemInMainHand.getItemMeta() != null) {
             String itemDisplayName = itemInMainHand.getItemMeta().getDisplayName();
-            if (itemDisplayName.equals("MagicWand")) {
-                EquipmentMagicWand.use(event);
+            if (itemDisplayName.equals(MagicWand.class.getName())) {
+                if (event.getAction().equals(Action.LEFT_CLICK_AIR)
+                        || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                    launchFireball(event.getPlayer());
+                }
             }
         }
+    }
+
+    // TODO: Create class for the effect
+    private void launchFireball(Player player) {
+        player.launchProjectile(Fireball.class);
     }
 }
