@@ -36,6 +36,11 @@ public class ZireaelSword extends Item implements Listener {
     private void blinkForward(Player player) {
         List<Block> sight = player.getLineOfSight(null, 10);
         Location targetLocation = sight.get(sight.size()-1).getLocation();
-        player.teleport(targetLocation);
+        if (targetLocation.getBlock().getType().equals(Material.AIR)) {
+            player.teleport(targetLocation);
+        } else if (sight.size() >= 2) {
+            targetLocation = sight.get(sight.size()-2).getLocation();
+            player.teleport(targetLocation);
+        }
     }
 }
