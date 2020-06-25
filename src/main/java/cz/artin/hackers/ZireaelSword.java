@@ -42,6 +42,7 @@ public class ZireaelSword extends Item implements Listener {
         } else {
             return;
         }
+        targetLocation.setDirection(player.getLocation().getDirection());
         player.teleport(targetLocation);
     }
 }
