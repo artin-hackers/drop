@@ -37,10 +37,11 @@ public class ZireaelSword extends Item implements Listener {
         List<Block> sight = player.getLineOfSight(null, 10);
         Location targetLocation = sight.get(sight.size()-1).getLocation();
         if (targetLocation.getBlock().getType().equals(Material.AIR)) {
-            player.teleport(targetLocation);
         } else if (sight.size() >= 2) {
             targetLocation = sight.get(sight.size()-2).getLocation();
-            player.teleport(targetLocation);
+        } else {
+            return;
         }
+        player.teleport(targetLocation);
     }
 }
