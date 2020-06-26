@@ -18,27 +18,43 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Logger;
 
 public class Drop extends JavaPlugin implements Listener {
-    private static final int DEFAULT_DUMMY_COUNT = 10;
-    private static final int DEFAULT_DUMMY_RADIUS = 10;
+    private final Logger LOGGER = Logger.getLogger(Drop.class.getName());
+    private final List<ItemEquip> items = new ArrayList<>();
 
-    private Location PORTAL_EXIT = null;
+    public interface ItemEquip {
+        void equip(Player player);
+    }
+
+    private static final int DEFAULT_DUMMY_COUNT = 10;  // TODO: Move to a sub-class
+    private static final int DEFAULT_DUMMY_RADIUS = 10;  // TODO: Move to a sub-class
+    private Location PORTAL_EXIT = null;  // TODO: Move to a sub-class
 
     @Override
     public void onEnable() {
-        getLogger().info("Loading DROP plugin...");
+        LOGGER.info("Loading DROP plugin...");
         getServer().getPluginManager().registerEvents(this, this);
-        getServer().getWorld("world").setTime(1000);
-        getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-        getLogger().info("...plugin successfully loaded.");
+        items.add(new MagicWand(this));
+        items.add(new ZireaelSword(this));
+        getServer().getWorld("world").setTime(1000);  // TODO: Development setup, remove in release version
+        getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // TODO: Development setup, remove in release version
+        LOGGER.info("...plugin successfully loaded.");
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (label.equalsIgnoreCase("setModeDeveloper")) {
+        if (label.equalsIgnoreCase("equip")) {
+            return equip(sender, args);
+
+        // TODO: Refactor from this point down
+        } else if (label.equalsIgnoreCase("setModeDeveloper")) {
             return setModeDeveloper(sender);
         } else if (label.equalsIgnoreCase("setModeNormal")) {
             return setModeNormal(sender);
@@ -67,10 +83,35 @@ public class Drop extends JavaPlugin implements Listener {
             return creategauge(sender);
         } else if (label.equalsIgnoreCase("createArena")) {
             return createArena(sender);
-        } else if (label.equalsIgnoreCase("equipRifleWand")) {
-            return equipRifleWand(sender);
+        } else {
+            return false;
         }
-        return false;
+    }
+
+    private boolean equip(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            LOGGER.warning("Invalid caller of equip command");
+            return false;
+        } else if (args.length != 1) {
+            LOGGER.warning("Invalid argument in equip command");
+            return false;
+        } else {
+            // TODO: Call functions from items list
+            Player player = (Player) sender;
+            String itemName = args[0];
+            if (itemName.equalsIgnoreCase("MagicWand")) {
+                MagicWand magicWand = new MagicWand(this);
+                magicWand.equip(player);
+                return true;
+            } else if (itemName.equalsIgnoreCase("ZireaelSword")) {
+                ZireaelSword zireaelSword = new ZireaelSword(this);
+                zireaelSword.equip(player);
+                return true;
+            } else {
+                LOGGER.warning("Unknown item requested");
+                return false;
+            }
+        }
     }
 
     private boolean createArena(CommandSender sender) {
@@ -156,7 +197,9 @@ public class Drop extends JavaPlugin implements Listener {
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         Hulkazivota(event.getPlayer());
-        equipRifleWand(event.getPlayer());
+        for (ItemEquip item : items) {
+            item.equip(event.getPlayer());
+        }
     }
 
     @EventHandler
@@ -166,8 +209,10 @@ public class Drop extends JavaPlugin implements Listener {
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         Hulkazivota(event.getPlayer());
-        equipRifleWand(event.getPlayer());
-    }
+        for (ItemEquip item : items) {
+            item.equip(event.getPlayer());
+        }
+     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {

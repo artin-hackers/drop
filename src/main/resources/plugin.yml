@@ -3,6 +3,8 @@ version: "1.0-SNAPSHOT"
 author: Artin Hackers Team
 main: cz.artin.hackers.Drop
 commands:
+  equip:
+    description: Equip an item.
   setModeDeveloper:
     description: Sets creative mode, day and disables day-night cycle
   setModeNormal:
@@ -30,5 +32,3 @@ commands:
     description: createArena
   Hulkazivota:
     description: safe player
-  equipRifleWand:
-    description: Equip magic wand that allows shooting.
