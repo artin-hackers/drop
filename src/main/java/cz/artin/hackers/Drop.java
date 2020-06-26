@@ -53,7 +53,7 @@ public class Drop extends JavaPlugin implements Listener {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (label.equalsIgnoreCase("equip")) {
-            equip(sender, args);
+            return equip(sender, args);
 
         // TODO: Refactor from this point down
         } else if (label.equalsIgnoreCase("setModeDeveloper")) {
@@ -88,27 +88,32 @@ public class Drop extends JavaPlugin implements Listener {
         } else {
             return false;
         }
-        return true;
     }
 
-    private void equip(CommandSender sender, String[] args) {
+    private boolean equip(CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
             LOGGER.warning("Invalid caller of equip command");
-            return;
-        }
-        if (args.length != 1) {
+            return false;
+        } else if (args.length != 1) {
             LOGGER.warning("Invalid argument in equip command");
-            return;
+            return false;
+        } else {
+            // TODO: Call functions from items list
+            Player player = (Player) sender;
+            String itemName = args[0];
+            if (itemName.equalsIgnoreCase("MagicWand")) {
+                MagicWand magicWand = new MagicWand(this);
+                magicWand.equip(player);
+                return true;
+            } else if (itemName.equalsIgnoreCase("ZireaelSword")) {
+                ZireaelSword zireaelSword = new ZireaelSword(this);
+                zireaelSword.equip(player);
+                return true;
+            } else {
+                LOGGER.warning("Unknown item requested");
+                return false;
+            }
         }
-        Player player = (Player) sender;
-        String itemName = args[0];
-//        if (itemName.equalsIgnoreCase("MagicWand")) {
-//            magicWand.equip(player);
-//        } else if (itemName.equalsIgnoreCase("ZireaelSword")) {
-//            zireaelSword.equip(player);
-//        } else {
-//            LOGGER.warning("Unknown item requested");
-//        }
     }
 
     private boolean createArena(CommandSender sender) {
