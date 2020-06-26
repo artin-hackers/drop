@@ -8,7 +8,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.logging.Logger;
 
-public class Item {
+public abstract class Item {
     private final Logger LOGGER = Logger.getLogger(Item.class.getName());
 
     public void equip(Player player, Material material, String displayName) {
