@@ -17,8 +17,9 @@ public class ZireaelSword extends Item implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
+    @Override
     public void equip(Player player) {
-        super.equip(player, Material.DIAMOND_SWORD, ZireaelSword.class.getName());
+        equip(player, Material.DIAMOND_SWORD, ZireaelSword.class.getName());
     }
 
     @EventHandler

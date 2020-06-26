@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,10 +29,11 @@ import java.util.logging.Logger;
 
 public class Drop extends JavaPlugin implements Listener {
     private final Logger LOGGER = Logger.getLogger(Drop.class.getName());
+    private final List<ItemEquip> items = new ArrayList<>();
 
-    // TODO: Create list of items
-    private MagicWand magicWand;
-    private ZireaelSword zireaelSword;
+    public interface ItemEquip {
+        public void equip(Player player);
+    }
 
     private static final int DEFAULT_DUMMY_COUNT = 10;  // TODO: Move to a sub-class
     private static final int DEFAULT_DUMMY_RADIUS = 10;  // TODO: Move to a sub-class
@@ -41,8 +43,8 @@ public class Drop extends JavaPlugin implements Listener {
     public void onEnable() {
         LOGGER.info("Loading DROP plugin...");
         getServer().getPluginManager().registerEvents(this, this);
-        magicWand = new MagicWand(this);
-        zireaelSword = new ZireaelSword(this);
+        items.add(new MagicWand(this));
+        items.add(new ZireaelSword(this));
         getServer().getWorld("world").setTime(1000);  // TODO: Development setup, remove in release
         getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // TODO: Development setup, remove in release
         LOGGER.info("...plugin successfully loaded.");
@@ -100,13 +102,13 @@ public class Drop extends JavaPlugin implements Listener {
         }
         Player player = (Player) sender;
         String itemName = args[0];
-        if (itemName.equalsIgnoreCase("MagicWand")) {
-            magicWand.equip(player);
-        } else if (itemName.equalsIgnoreCase("ZireaelSword")) {
-            zireaelSword.equip(player);
-        } else {
-            LOGGER.warning("Unknown item requested");
-        }
+//        if (itemName.equalsIgnoreCase("MagicWand")) {
+//            magicWand.equip(player);
+//        } else if (itemName.equalsIgnoreCase("ZireaelSword")) {
+//            zireaelSword.equip(player);
+//        } else {
+//            LOGGER.warning("Unknown item requested");
+//        }
     }
 
     private boolean createArena(CommandSender sender) {
@@ -181,19 +183,21 @@ public class Drop extends JavaPlugin implements Listener {
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         Hulkazivota(event.getPlayer());
-        magicWand.equip(event.getPlayer());
-        zireaelSword.equip(event.getPlayer());
+        for (ItemEquip item : items) {
+            item.equip(event.getPlayer());
+        }
     }
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-         getLogger().info("the player has appeared" + event.getPlayer().getName() + "just appeared");
-         event.getPlayer().setGameMode(GameMode.SURVIVAL);
-         Filipovasekera(event.getPlayer());
-         Zdenkovahulka(event.getPlayer());
-         Hulkazivota(event.getPlayer());
-        magicWand.equip(event.getPlayer());
-        zireaelSword.equip(event.getPlayer());
+        getLogger().info("the player has appeared" + event.getPlayer().getName() + "just appeared");
+        event.getPlayer().setGameMode(GameMode.SURVIVAL);
+        Filipovasekera(event.getPlayer());
+        Zdenkovahulka(event.getPlayer());
+        Hulkazivota(event.getPlayer());
+        for (ItemEquip item : items) {
+            item.equip(event.getPlayer());
+        }
      }
 
     @EventHandler
