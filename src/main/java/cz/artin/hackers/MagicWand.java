@@ -21,11 +21,8 @@ public class MagicWand extends Item implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        if (!isItemInMainHand(event, MagicWand.class.getName())) {
-            return;
-        }
-        if (event.getAction().equals(Action.LEFT_CLICK_AIR)
-                || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+        if (isItemInMainHand(event, MagicWand.class.getName()) &&
+                (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK))) {
             launchFireball(event.getPlayer());
         }
     }
