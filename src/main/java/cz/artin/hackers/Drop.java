@@ -32,7 +32,7 @@ public class Drop extends JavaPlugin implements Listener {
     private final List<ItemEquip> items = new ArrayList<>();
 
     public interface ItemEquip {
-        public void equip(Player player);
+        void equip(Player player);
     }
 
     private static final int DEFAULT_DUMMY_COUNT = 10;  // TODO: Move to a sub-class
@@ -45,8 +45,8 @@ public class Drop extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this, this);
         items.add(new MagicWand(this));
         items.add(new ZireaelSword(this));
-        getServer().getWorld("world").setTime(1000);  // TODO: Development setup, remove in release
-        getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // TODO: Development setup, remove in release
+        getServer().getWorld("world").setTime(1000);  // TODO: Development setup, remove in release version
+        getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // TODO: Development setup, remove in release version
         LOGGER.info("...plugin successfully loaded.");
     }
 

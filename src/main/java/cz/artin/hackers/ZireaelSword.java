@@ -1,18 +1,13 @@
 package cz.artin.hackers;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.List;
-
 public class ZireaelSword extends Item implements Listener {
+    // TODO: Move to Item class
     public ZireaelSword(JavaPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
@@ -22,28 +17,10 @@ public class ZireaelSword extends Item implements Listener {
         equip(player, Material.DIAMOND_SWORD, ZireaelSword.class.getName());
     }
 
-    @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
-        if (!isItemInMainHand(event, ZireaelSword.class.getName())) {
-            return;
+    @Override
+    public void effect(Player player, Action action) {
+        if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
+            Effect.blinkForward(player, 10);
         }
-        if (event.getAction().equals(Action.RIGHT_CLICK_AIR)
-                || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-            blinkForward(event.getPlayer());
-        }
-    }
-
-    // TODO: Create class for the effect
-    private void blinkForward(Player player) {
-        List<Block> sight = player.getLineOfSight(null, 10);
-        Location targetLocation = sight.get(sight.size()-1).getLocation();
-        if (targetLocation.getBlock().getType().equals(Material.AIR)) {
-        } else if (sight.size() >= 2) {
-            targetLocation = sight.get(sight.size()-2).getLocation();
-        } else {
-            return;
-        }
-        targetLocation.setDirection(player.getLocation().getDirection());
-        player.teleport(targetLocation);
     }
 }
