@@ -23,5 +23,6 @@ public abstract class Effect {
         }
         targetLocation.setDirection(player.getLocation().getDirection());
         player.teleport(targetLocation);
+        player.setFallDistance(0);
     }
 }
