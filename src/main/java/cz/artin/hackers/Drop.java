@@ -212,6 +212,7 @@ public class Drop extends JavaPlugin implements Listener {
         for (ItemEquip item : items) {
             item.equip(event.getPlayer());
         }
+        event.getPlayer().sendMessage("chcipnul jsi");
      }
 
     @EventHandler
