@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 public class Drop extends JavaPlugin implements Listener {
     private final Logger LOGGER = Logger.getLogger(Drop.class.getName());
     private final List<ItemEquip> items = new ArrayList<>();
+    private final List<DropPlayer> dropPlayers = new ArrayList<>();
 
     public interface ItemEquip {
         void equip(Player player);
@@ -210,6 +211,11 @@ public class Drop extends JavaPlugin implements Listener {
         ZDENEK_SCORE=0;
         FILIP_DEATHS=0;
         ZDENEK_DEATHS=0;
+        DropPlayer dropPlayer = new DropPlayer();
+        dropPlayer.name = event.getPlayer().getName();
+        dropPlayer.score = 0;
+        dropPlayer.deaths = 0;
+        dropPlayers.add(dropPlayer);
     }
 
     @EventHandler
@@ -226,7 +232,12 @@ public class Drop extends JavaPlugin implements Listener {
         ZDENEK_DEATHS+=1;
         event.getPlayer().sendMessage("Filip: "+FILIP_SCORE+"/"+FILIP_DEATHS);
         event.getPlayer().sendMessage("Zdenek:"+ZDENEK_SCORE+"/"+ZDENEK_DEATHS);
-
+        for (DropPlayer player : dropPlayers) {
+            if (player.name == event.getPlayer().getName()) {
+                player.deaths++;
+            }
+            event.getPlayer().sendMessage("Deaths: " + player.deaths);
+        }
      }
 
     @EventHandler
