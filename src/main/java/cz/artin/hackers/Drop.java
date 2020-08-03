@@ -37,6 +37,12 @@ public class Drop extends JavaPlugin implements Listener {
     private static final int DEFAULT_DUMMY_RADIUS = 10;  // TODO: Move to a sub-class
     private Location PORTAL_EXIT = null;  // TODO: Move to a sub-class
 
+    private static int FILIP_SCORE;
+    private static int ZDENEK_SCORE;
+    private static int FILIP_DEATHS;
+    private static int ZDENEK_DEATHS;
+
+
     @Override
     public void onEnable() {
         LOGGER.info("Loading DROP plugin...");
@@ -200,6 +206,10 @@ public class Drop extends JavaPlugin implements Listener {
         for (ItemEquip item : items) {
             item.equip(event.getPlayer());
         }
+        FILIP_SCORE=0;
+        ZDENEK_SCORE=0;
+        FILIP_DEATHS=0;
+        ZDENEK_DEATHS=0;
     }
 
     @EventHandler
@@ -212,7 +222,11 @@ public class Drop extends JavaPlugin implements Listener {
         for (ItemEquip item : items) {
             item.equip(event.getPlayer());
         }
-        event.getPlayer().sendMessage("chcipnul jsi");
+        FILIP_DEATHS+=1;
+        ZDENEK_DEATHS+=1;
+        event.getPlayer().sendMessage("Filip: "+FILIP_SCORE+"/"+FILIP_DEATHS);
+        event.getPlayer().sendMessage("Zdenek:"+ZDENEK_SCORE+"/"+ZDENEK_DEATHS);
+
      }
 
     @EventHandler
