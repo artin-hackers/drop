@@ -5,13 +5,12 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -200,7 +199,6 @@ public class Drop extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         getLogger().info("A new player, " + event.getPlayer().getName() + ", just joined the fray.");
         event.getPlayer().setGameMode(GameMode.SURVIVAL);
-        getLogger().info(event.getPlayer().getWorld().getName());
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         Hulkazivota(event.getPlayer());
@@ -215,29 +213,46 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        dropPlayers.removeIf(dropPlayer -> dropPlayer.name.equals(event.getPlayer().getName()));
+    }
+
+    @EventHandler
+    public void onPlayerKick(PlayerKickEvent event) {
+        dropPlayers.removeIf(dropPlayer -> dropPlayer.name.equals(event.getPlayer().getName()));
+    }
+
+    @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        getLogger().info("the player has appeared" + event.getPlayer().getName() + "just appeared");
-        event.getPlayer().setGameMode(GameMode.SURVIVAL);
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         Hulkazivota(event.getPlayer());
         for (ItemEquip item : items) {
             item.equip(event.getPlayer());
         }
-        for (DropPlayer player : dropPlayers) {
-            if (player.name == event.getPlayer().getName()) {
-                player.deaths++;
-                event.getPlayer().sendMessage("Deaths: " + player.deaths);
-            } else if (player.name==event.getPlayer().getKiller().getName()) {
-                player.score++;
-                event.getPlayer().getKiller().sendMessage("score" + player.score);
-            }
-        }
      }
 
     @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity().getPlayer();
+        if (player != null) {
+            for (DropPlayer dropPlayer : dropPlayers) {
+                if (dropPlayer.name.equals(player.getName())) {
+                    dropPlayer.deaths++;
+                }
+                Player killer = player.getKiller();
+                if (killer != null) {
+                    if (dropPlayer.name.equals(killer.getName())) {
+                        dropPlayer.score++;
+                    }
+                }
+                Bukkit.broadcastMessage(dropPlayer.name + ": " + dropPlayer.score + "/" + dropPlayer.deaths);
+            }
+        }
+    }
+
+    @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        getLogger().info("Drop.onInteract()");
         ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
         if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
             String itemDisplayName = itemInMainHand.getItemMeta().getDisplayName();
