@@ -1,9 +1,6 @@
 package cz.artin.hackers;
 
-import org.bukkit.GameMode;
-import org.bukkit.GameRule;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -38,12 +35,6 @@ public class Drop extends JavaPlugin implements Listener {
     private static final int DEFAULT_DUMMY_RADIUS = 10;  // TODO: Move to a sub-class
     private Location PORTAL_EXIT = null;  // TODO: Move to a sub-class
 
-    private static int FILIP_SCORE;
-    private static int ZDENEK_SCORE;
-    private static int FILIP_DEATHS;
-    private static int ZDENEK_DEATHS;
-
-
     @Override
     public void onEnable() {
         LOGGER.info("Loading DROP plugin...");
@@ -52,6 +43,15 @@ public class Drop extends JavaPlugin implements Listener {
         items.add(new ZireaelSword(this));
         getServer().getWorld("world").setTime(1000);  // TODO: Development setup, remove in release version
         getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // TODO: Development setup, remove in release version
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            DropPlayer dropPlayer = new DropPlayer();
+            dropPlayer.name = player.getName();
+            dropPlayer.score = 0;
+            dropPlayer.deaths = 0;
+            dropPlayers.add(dropPlayer);
+        }
+
         LOGGER.info("...plugin successfully loaded.");
     }
 
@@ -207,10 +207,6 @@ public class Drop extends JavaPlugin implements Listener {
         for (ItemEquip item : items) {
             item.equip(event.getPlayer());
         }
-        FILIP_SCORE=0;
-        ZDENEK_SCORE=0;
-        FILIP_DEATHS=0;
-        ZDENEK_DEATHS=0;
         DropPlayer dropPlayer = new DropPlayer();
         dropPlayer.name = event.getPlayer().getName();
         dropPlayer.score = 0;
@@ -228,15 +224,11 @@ public class Drop extends JavaPlugin implements Listener {
         for (ItemEquip item : items) {
             item.equip(event.getPlayer());
         }
-        FILIP_DEATHS+=1;
-        ZDENEK_DEATHS+=1;
-        event.getPlayer().sendMessage("Filip: "+FILIP_SCORE+"/"+FILIP_DEATHS);
-        event.getPlayer().sendMessage("Zdenek:"+ZDENEK_SCORE+"/"+ZDENEK_DEATHS);
         for (DropPlayer player : dropPlayers) {
             if (player.name == event.getPlayer().getName()) {
                 player.deaths++;
+                event.getPlayer().sendMessage("Deaths: " + player.deaths);
             }
-            event.getPlayer().sendMessage("Deaths: " + player.deaths);
         }
      }
 
