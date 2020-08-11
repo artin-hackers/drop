@@ -1,20 +1,16 @@
 package cz.artin.hackers;
 
-import org.bukkit.GameMode;
-import org.bukkit.GameRule;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -28,6 +24,7 @@ import java.util.logging.Logger;
 public class Drop extends JavaPlugin implements Listener {
     private final Logger LOGGER = Logger.getLogger(Drop.class.getName());
     private final List<ItemEquip> items = new ArrayList<>();
+    private final List<DropPlayer> dropPlayers = new ArrayList<>();
 
     public interface ItemEquip {
         void equip(Player player);
@@ -45,6 +42,15 @@ public class Drop extends JavaPlugin implements Listener {
         items.add(new ZireaelSword(this));
         getServer().getWorld("world").setTime(1000);  // TODO: Development setup, remove in release version
         getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // TODO: Development setup, remove in release version
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            DropPlayer dropPlayer = new DropPlayer();
+            dropPlayer.name = player.getName();
+            dropPlayer.score = 0;
+            dropPlayer.deaths = 0;
+            dropPlayers.add(dropPlayer);
+        }
+
         LOGGER.info("...plugin successfully loaded.");
     }
 
@@ -193,19 +199,31 @@ public class Drop extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         getLogger().info("A new player, " + event.getPlayer().getName() + ", just joined the fray.");
         event.getPlayer().setGameMode(GameMode.SURVIVAL);
-        getLogger().info(event.getPlayer().getWorld().getName());
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         Hulkazivota(event.getPlayer());
         for (ItemEquip item : items) {
             item.equip(event.getPlayer());
         }
+        DropPlayer dropPlayer = new DropPlayer();
+        dropPlayer.name = event.getPlayer().getName();
+        dropPlayer.score = 0;
+        dropPlayer.deaths = 0;
+        dropPlayers.add(dropPlayer);
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        dropPlayers.removeIf(dropPlayer -> dropPlayer.name.equals(event.getPlayer().getName()));
+    }
+
+    @EventHandler
+    public void onPlayerKick(PlayerKickEvent event) {
+        dropPlayers.removeIf(dropPlayer -> dropPlayer.name.equals(event.getPlayer().getName()));
     }
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        getLogger().info("the player has appeared" + event.getPlayer().getName() + "just appeared");
-        event.getPlayer().setGameMode(GameMode.SURVIVAL);
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         Hulkazivota(event.getPlayer());
@@ -215,8 +233,26 @@ public class Drop extends JavaPlugin implements Listener {
      }
 
     @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity().getPlayer();
+        if (player != null) {
+            for (DropPlayer dropPlayer : dropPlayers) {
+                if (dropPlayer.name.equals(player.getName())) {
+                    dropPlayer.deaths++;
+                }
+                Player killer = player.getKiller();
+                if (killer != null) {
+                    if (dropPlayer.name.equals(killer.getName())) {
+                        dropPlayer.score++;
+                    }
+                }
+                Bukkit.broadcastMessage(dropPlayer.name + ": " + dropPlayer.score + "/" + dropPlayer.deaths);
+            }
+        }
+    }
+
+    @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        getLogger().info("Drop.onInteract()");
         ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
         if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
             String itemDisplayName = itemInMainHand.getItemMeta().getDisplayName();
