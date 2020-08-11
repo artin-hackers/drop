@@ -228,6 +228,9 @@ public class Drop extends JavaPlugin implements Listener {
             if (player.name == event.getPlayer().getName()) {
                 player.deaths++;
                 event.getPlayer().sendMessage("Deaths: " + player.deaths);
+            } else if (player.name==event.getPlayer().getKiller().getName()) {
+                player.score++;
+                event.getPlayer().getKiller().sendMessage("score" + player.score);
             }
         }
      }
