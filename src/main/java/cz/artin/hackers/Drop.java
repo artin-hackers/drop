@@ -202,6 +202,7 @@ public class Drop extends JavaPlugin implements Listener {
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         Hulkazivota(event.getPlayer());
+        createbow(event.getPlayer());
         for (ItemEquip item : items) {
             item.equip(event.getPlayer());
         }
@@ -227,6 +228,7 @@ public class Drop extends JavaPlugin implements Listener {
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         Hulkazivota(event.getPlayer());
+        createbow(event.getPlayer());
         for (ItemEquip item : items) {
             item.equip(event.getPlayer());
         }
@@ -382,6 +384,16 @@ public class Drop extends JavaPlugin implements Listener {
         }
         return true;
     }
+
+    private boolean createbow(CommandSender sender){
+        ItemStack bow = new ItemStack(Material.BOW,1);
+        ItemStack arrows = new ItemStack(Material.ARROW,30);
+        Player player = (Player) sender;
+        player.getInventory().addItem(bow);
+        player.getInventory().addItem(arrows);
+        return true;
+    }
+
 
     private boolean creategauge(CommandSender sender) {
         if (sender instanceof Player) {
