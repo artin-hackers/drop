@@ -239,7 +239,7 @@ public class Drop extends JavaPlugin implements Listener {
     public void onHit(ProjectileHitEvent event) {
         if (event.getEntity() instanceof Arrow) {
             LOGGER.info("Arrow hit something");
-            event.getEntity().getLocation().getBlock().setType(Material.FIRE);
+            setGroundFire(event.getEntity().getLocation(), 5);
         }
     }
 
@@ -542,9 +542,17 @@ public class Drop extends JavaPlugin implements Listener {
 
     }
     private boolean setGroundFire(Location location, int radius) {
-     //   if (sender instanceof Player) {
-       //     Player player = (Player) sender;
-         //   Location locationLocation = player.getLocation();
+    for (int x = - radius; x<= radius;x++){
+        final Location currentLocation= new Location(
+        location.getWorld(),
+        location.getX()+x,
+        location.getY(),
+        location.getZ());
+        currentLocation.getBlock().setType(Material.FIRE);
+
+
+
+    }
 
             return true;
         }
