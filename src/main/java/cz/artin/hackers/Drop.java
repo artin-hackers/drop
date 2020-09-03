@@ -239,7 +239,7 @@ public class Drop extends JavaPlugin implements Listener {
     public void onHit(ProjectileHitEvent event) {
         if (event.getEntity() instanceof Arrow) {
             LOGGER.info("Arrow hit something");
-            setGroundFire(event.getEntity().getLocation(), 5);
+            setGroundFire(event.getEntity().getLocation(), 3);
         }
     }
 
@@ -543,15 +543,16 @@ public class Drop extends JavaPlugin implements Listener {
     }
     private boolean setGroundFire(Location location, int radius) {
     for (int x = - radius; x<= radius;x++){
+        for (int z = - radius; z<=radius;z++){
         final Location currentLocation= new Location(
         location.getWorld(),
         location.getX()+x,
         location.getY(),
-        location.getZ());
+        location.getZ()+z);
         currentLocation.getBlock().setType(Material.FIRE);
 
 
-
+        }
     }
 
             return true;
