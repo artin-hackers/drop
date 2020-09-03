@@ -6,6 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.event.EventHandler;
@@ -233,6 +234,14 @@ public class Drop extends JavaPlugin implements Listener {
             item.equip(event.getPlayer());
         }
      }
+
+    @EventHandler
+    public void onHit(ProjectileHitEvent event) {
+        if (event.getEntity() instanceof Arrow) {
+            LOGGER.info("Arrow hit something");
+            event.getEntity().getLocation().getBlock().setType(Material.FIRE);
+        }
+    }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
@@ -529,7 +538,17 @@ public class Drop extends JavaPlugin implements Listener {
             }
         }
         return true;
+
+
     }
+    private boolean setGroundFire(Location location, int radius) {
+     //   if (sender instanceof Player) {
+       //     Player player = (Player) sender;
+         //   Location locationLocation = player.getLocation();
+
+            return true;
+        }
+
     public directions getDirection(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
