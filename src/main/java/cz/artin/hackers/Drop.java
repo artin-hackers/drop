@@ -6,6 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.event.EventHandler;
@@ -202,6 +203,7 @@ public class Drop extends JavaPlugin implements Listener {
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         Hulkazivota(event.getPlayer());
+        createbow(event.getPlayer());
         for (ItemEquip item : items) {
             item.equip(event.getPlayer());
         }
@@ -227,10 +229,19 @@ public class Drop extends JavaPlugin implements Listener {
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         Hulkazivota(event.getPlayer());
+        createbow(event.getPlayer());
         for (ItemEquip item : items) {
             item.equip(event.getPlayer());
         }
      }
+
+    @EventHandler
+    public void onHit(ProjectileHitEvent event) {
+        if (event.getEntity() instanceof Arrow) {
+            LOGGER.info("Arrow hit something");
+            setGroundFire(event.getEntity().getLocation(), 3);
+        }
+    }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
@@ -383,6 +394,16 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
+    private boolean createbow(CommandSender sender){
+        ItemStack bow = new ItemStack(Material.BOW,1);
+        ItemStack arrows = new ItemStack(Material.ARROW,30);
+        Player player = (Player) sender;
+        player.getInventory().addItem(bow);
+        player.getInventory().addItem(arrows);
+        return true;
+    }
+
+
     private boolean creategauge(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
@@ -517,7 +538,26 @@ public class Drop extends JavaPlugin implements Listener {
             }
         }
         return true;
+
+
     }
+    private boolean setGroundFire(Location location, int radius) {
+    for (int x = - radius; x<= radius;x++){
+        for (int z = - radius; z<=radius;z++){
+        final Location currentLocation= new Location(
+        location.getWorld(),
+        location.getX()+x,
+        location.getY(),
+        location.getZ()+z);
+        currentLocation.getBlock().setType(Material.FIRE);
+
+
+        }
+    }
+
+            return true;
+        }
+
     public directions getDirection(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
