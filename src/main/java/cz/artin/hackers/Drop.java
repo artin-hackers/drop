@@ -39,7 +39,7 @@ public class Drop extends JavaPlugin implements Listener {
     public void onEnable() {
         LOGGER.info("Loading DROP plugin...");
         getServer().getPluginManager().registerEvents(this, this);
-        items.add(new MagicWand(this));
+       // items.add(new MagicWand(this));
         items.add(new ZireaelSword(this));
         getServer().getWorld("world").setTime(1000);  // TODO: Development setup, remove in release version
         getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // TODO: Development setup, remove in release version
@@ -200,13 +200,13 @@ public class Drop extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         getLogger().info("A new player, " + event.getPlayer().getName() + ", just joined the fray.");
         event.getPlayer().setGameMode(GameMode.SURVIVAL);
-        Filipovasekera(event.getPlayer());
-        Zdenkovahulka(event.getPlayer());
-        Hulkazivota(event.getPlayer());
-        createbow(event.getPlayer());
         for (ItemEquip item : items) {
             item.equip(event.getPlayer());
         }
+        Filipovasekera(event.getPlayer());
+        Zdenkovahulka(event.getPlayer());
+        createbow(event.getPlayer());
+
         DropPlayer dropPlayer = new DropPlayer();
         dropPlayer.name = event.getPlayer().getName();
         dropPlayer.score = 0;
@@ -226,20 +226,22 @@ public class Drop extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        Filipovasekera(event.getPlayer());
-        Zdenkovahulka(event.getPlayer());
-        Hulkazivota(event.getPlayer());
-        createbow(event.getPlayer());
         for (ItemEquip item : items) {
             item.equip(event.getPlayer());
         }
+
+        Filipovasekera(event.getPlayer());
+        Zdenkovahulka(event.getPlayer());
+        createbow(event.getPlayer());
+
+
      }
 
     @EventHandler
     public void onHit(ProjectileHitEvent event) {
         if (event.getEntity() instanceof Arrow) {
             LOGGER.info("Arrow hit something");
-            setGroundFire(event.getEntity().getLocation(), 3);
+            setGroundFire(event.getEntity().getLocation(), 2);
         }
     }
 
@@ -396,7 +398,7 @@ public class Drop extends JavaPlugin implements Listener {
 
     private boolean createbow(CommandSender sender){
         ItemStack bow = new ItemStack(Material.BOW,1);
-        ItemStack arrows = new ItemStack(Material.ARROW,30);
+        ItemStack arrows = new ItemStack(Material.ARROW,5);
         Player player = (Player) sender;
         player.getInventory().addItem(bow);
         player.getInventory().addItem(arrows);
