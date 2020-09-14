@@ -302,13 +302,15 @@ public class Drop extends JavaPlugin implements Listener {
             }
             if (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
                 if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
-                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
-                        createhole(event.getPlayer());
+                   if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
+                               createhole(event.getPlayer());
+                               Hulkazivota2(event.getPlayer());
+                        }
                     }
                 }
             }
         }
-    }
+
 
     private int getValueInt(String[] args, int index, int default_value) {
         if (index < 0 || index >= args.length) {
