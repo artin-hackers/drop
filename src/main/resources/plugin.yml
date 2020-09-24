@@ -32,3 +32,5 @@ commands:
     description: createArena
   Hulkazivota:
     description: safe player
+  resetDeaths:
+    description: Resets death counters
