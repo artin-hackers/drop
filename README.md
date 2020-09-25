@@ -1,6 +1,16 @@
 # Diablo Rip-Off Project
 
-## To-Do
+## Refactoring
 
-* [ ] Blink effect with Zireael Sword handles teleport in the air. Do not allow or reset velocity.
-* [ ] Blink effect with Zireael Sword has a cool down.
+### Effect
+
+The class Effect is up to date.
+
+Supported effects:
+
+* launchFireball
+* blinkForward
+
+To-Do
+
+* [ ] Disable logging

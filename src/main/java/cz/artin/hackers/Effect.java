@@ -6,6 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
@@ -20,11 +21,7 @@ public abstract class Effect {
 
     public static void blinkForward(Player player, Integer distance) {
         LOGGER.info("blinkForward");
-        HashSet<Material> transparentMaterials = new HashSet<Material>();
-        transparentMaterials.add(Material.AIR);
-        transparentMaterials.add(Material.CAVE_AIR);
-        transparentMaterials.add(Material.VOID_AIR);
-        transparentMaterials.add(Material.WATER);
+        HashSet<Material> transparentMaterials = new HashSet<Material>(Arrays.asList(Material.AIR, Material.CAVE_AIR, Material.VOID_AIR, Material.WATER));
         List<Block> lineOfSight = player.getLineOfSight(transparentMaterials, distance);
         LOGGER.info("blinkForward: lineOfSight length = " + lineOfSight.size());
         Location targetLocation;
