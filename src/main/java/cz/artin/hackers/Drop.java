@@ -5,6 +5,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.*;
@@ -197,6 +198,11 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
+    @EventHandler
+    public void onPlayerRegainHealth(EntityRegainHealthEvent event) {
+        if(event.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED || event.getRegainReason() == EntityRegainHealthEvent.RegainReason.REGEN)
+            event.setCancelled(true);
+    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {

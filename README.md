@@ -10,7 +10,7 @@ Classes
 * [x] Effect
 * [x] Item
 * [ ] MagicWand
-* [ ] ZireaelSword
+* [x] ZireaelSword
 
 ## To-Do
 
