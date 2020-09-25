@@ -14,12 +14,12 @@ public abstract class Effect {
     }
 
     public static void blinkForward(Player player, Integer distance) {
-        List<Block> sight = player.getLineOfSight(null, distance);
+        List<Block> lineOfSight = player.getLineOfSight(null, distance);
         Location targetLocation;
-        if (sight.get(sight.size() - 1).getLocation().getBlock().getType().equals(Material.AIR)) {
-            targetLocation = sight.get(sight.size() - 1).getLocation();
+        if (lineOfSight.get(lineOfSight.size() - 1).getLocation().getBlock().getType().equals(Material.AIR)) {
+            targetLocation = lineOfSight.get(lineOfSight.size() - 1).getLocation();
         } else {
-            targetLocation = sight.get(sight.size() - 2).getLocation();
+            targetLocation = lineOfSight.get(lineOfSight.size() - 2).getLocation();
         }
         targetLocation.setDirection(player.getLocation().getDirection());
         player.teleport(targetLocation);
