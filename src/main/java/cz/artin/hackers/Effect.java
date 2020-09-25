@@ -21,7 +21,7 @@ public abstract class Effect {
 
     public static void blinkForward(Player player, Integer distance) {
         LOGGER.info("blinkForward");
-        HashSet<Material> transparentMaterials = new HashSet<Material>(Arrays.asList(Material.AIR, Material.CAVE_AIR, Material.VOID_AIR, Material.WATER));
+        HashSet<Material> transparentMaterials = new HashSet<>(Arrays.asList(Material.AIR, Material.CAVE_AIR, Material.VOID_AIR, Material.WATER));
         List<Block> lineOfSight = player.getLineOfSight(transparentMaterials, distance);
         LOGGER.info("blinkForward: lineOfSight length = " + lineOfSight.size());
         Location targetLocation;
