@@ -5,6 +5,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.*;
@@ -15,14 +16,12 @@ import org.bukkit.event.block.Action;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 
 public class Drop extends JavaPlugin implements Listener {
+    private static final boolean DEBUG_STICK_ALLOWED = true;
     private final Logger LOGGER = Logger.getLogger(Drop.class.getName());
     private final List<ItemEquip> items = new ArrayList<>();
     private final List<DropPlayer> dropPlayers = new ArrayList<>();
@@ -39,7 +38,9 @@ public class Drop extends JavaPlugin implements Listener {
     public void onEnable() {
         LOGGER.info("Loading DROP plugin...");
         getServer().getPluginManager().registerEvents(this, this);
-       // items.add(new MagicWand(this));
+        if (DEBUG_STICK_ALLOWED) {
+            items.add(new DebugStick(this));
+        }
         items.add(new ZireaelSword(this));
         getServer().getWorld("world").setTime(1000);  // TODO: Development setup, remove in release version
         getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // TODO: Development setup, remove in release version
@@ -57,9 +58,11 @@ public class Drop extends JavaPlugin implements Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (label.equalsIgnoreCase("equip")) {
+        if (label.equalsIgnoreCase("trigger")) {
+            LOGGER.info("Trigger command called with arguments: " + Arrays.toString(args));
+            return true;
+        } else if (label.equalsIgnoreCase("equip")) {
             return equip(sender, args);
-
         // TODO: Refactor from this point down
         } else if (label.equalsIgnoreCase("setModeDeveloper")) {
             return setModeDeveloper(sender);
@@ -206,6 +209,11 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
+    @EventHandler
+    public void onPlayerRegainHealth(EntityRegainHealthEvent event) {
+        if(event.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED || event.getRegainReason() == EntityRegainHealthEvent.RegainReason.REGEN)
+            event.setCancelled(true);
+    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
