@@ -1,6 +1,17 @@
 # Diablo Rip-Off Project
 
+## Refactoring
+
+Classes
+
+* [x] DebugStick
+* [ ] Drop
+* [ ] DropPlayer
+* [x] Effect
+* [x] Item
+* [ ] MagicWand
+* [x] ZireaelSword
+
 ## To-Do
 
-* [ ] Blink effect with Zireael Sword handles teleport in the air. Do not allow or reset velocity.
-* [ ] Blink effect with Zireael Sword has a cool down.
+* [ ] Disable detailed logging

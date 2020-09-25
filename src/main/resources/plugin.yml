@@ -3,6 +3,8 @@ version: "1.0-SNAPSHOT"
 author: Artin Hackers Team
 main: cz.artin.hackers.Drop
 commands:
+  trigger:
+    description: Triggers DROP event manually. For debug purposes only.
   equip:
     description: Equip an item.
   setModeDeveloper:
