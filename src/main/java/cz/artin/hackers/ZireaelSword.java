@@ -26,8 +26,10 @@ public class ZireaelSword extends Item implements Listener {
     public void effect(Player player, Action action) {
         LOGGER.finer("effect");
         if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
-            Effect.dealDamage(player, 4);
-            Effect.blinkForward(player, 10);
+            if (player.getHealth() > 4) {
+                Effect.dealDamage(player, 4);
+                Effect.blinkForward(player, 10);
+            }
         }
     }
 }
