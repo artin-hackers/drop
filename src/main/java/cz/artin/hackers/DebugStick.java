@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 public class DebugStick extends Item implements Listener {
     private final Logger LOGGER = Logger.getLogger(DebugStick.class.getName());
+    private int active_effect = 0;
 
     public DebugStick(JavaPlugin plugin) {
         LOGGER.finer("DebugStick");
@@ -26,9 +27,21 @@ public class DebugStick extends Item implements Listener {
     public void effect(Player player, Action action) {
         LOGGER.finer("effect");
         if (action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK)) {
-            LOGGER.info("effect: action " + action.toString());
+            LOGGER.fine("effect: apply effect " + active_effect);
+            switch (active_effect) {
+                case 0:
+                    Effect.launchFireball(player);
+                    break;
+                case 1:
+                    Effect.blinkForward(player, 10);
+                    break;
+                default:
+                    LOGGER.warning("Invalid effect ID");
+            }
         } else if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
-            LOGGER.info("effect: action " + action.toString());
+            active_effect = (active_effect + 1) % 2;
+            LOGGER.fine("effect: effect changed to " + active_effect);
+            player.sendMessage("Active effect " + active_effect);
         }
     }
 }
