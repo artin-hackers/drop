@@ -34,4 +34,9 @@ public abstract class Effect {
         player.teleport(targetLocation);
         player.setFallDistance(0);
     }
+
+    public static void dealDamage(Player player, Integer amount) {
+        LOGGER.finer("dealDamage");
+        player.damage(amount);
+    }
 }

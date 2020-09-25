@@ -4,7 +4,7 @@
 
 Classes
 
-* [ ] DebugStick
+* [x] DebugStick
 * [ ] Drop
 * [ ] DropPlayer
 * [x] Effect

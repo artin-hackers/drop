@@ -35,11 +35,14 @@ public class DebugStick extends Item implements Listener {
                 case 1:
                     Effect.blinkForward(player, 10);
                     break;
+                case 2:
+                    Effect.dealDamage(player, 2);
+                    break;
                 default:
                     LOGGER.warning("Invalid effect ID");
             }
         } else if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
-            active_effect = (active_effect + 1) % 2;
+            active_effect = (active_effect + 1) % 3;
             LOGGER.fine("effect: effect changed to " + active_effect);
             player.sendMessage("Active effect " + active_effect);
         }
