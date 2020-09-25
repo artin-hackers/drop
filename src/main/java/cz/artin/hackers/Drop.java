@@ -15,10 +15,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 
@@ -57,9 +54,11 @@ public class Drop extends JavaPlugin implements Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (label.equalsIgnoreCase("equip")) {
+        if (label.equalsIgnoreCase("trigger")) {
+            LOGGER.info("Trigger command called with arguments: " + Arrays.toString(args));
+            return true;
+        } else if (label.equalsIgnoreCase("equip")) {
             return equip(sender, args);
-
         // TODO: Refactor from this point down
         } else if (label.equalsIgnoreCase("setModeDeveloper")) {
             return setModeDeveloper(sender);
