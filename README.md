@@ -2,15 +2,16 @@
 
 ## Refactoring
 
-### Effect
+Classes
 
-The class Effect is up to date.
+* [ ] DebugStick
+* [ ] Drop
+* [ ] DropPlayer
+* [x] Effect
+* [x] Item
+* [ ] MagicWand
+* [ ] ZireaelSword
 
-Supported effects:
+## To-Do
 
-* launchFireball
-* blinkForward
-
-To-Do
-
-* [ ] Disable logging
+* [ ] Disable detailed logging

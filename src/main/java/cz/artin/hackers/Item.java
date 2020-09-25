@@ -10,7 +10,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.logging.Logger;
 
-// TODO: Implements Listener
 public abstract class Item implements Drop.ItemEquip {
     private final Logger LOGGER = Logger.getLogger(Item.class.getName());
 
@@ -18,12 +17,14 @@ public abstract class Item implements Drop.ItemEquip {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
+        LOGGER.finer("onInteract");
         if (isItemInMainHand(event, this.getClass().getName())) {
             effect(event.getPlayer(), event.getAction());
         }
     }
 
     public void equip(Player player, Material material, String displayName) {
+        LOGGER.finer("equip");
         ItemStack item = new ItemStack(material, 1);
         ItemMeta meta = item.getItemMeta();
         if (meta == null) {
@@ -36,6 +37,7 @@ public abstract class Item implements Drop.ItemEquip {
     }
 
     private boolean isItemInMainHand(PlayerInteractEvent event, String displayName) {
+        LOGGER.finer("isItemInMainHand");
         ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
         if (itemInMainHand.getItemMeta() != null) {
             return itemInMainHand.getItemMeta().getDisplayName().equals(displayName);

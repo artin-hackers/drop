@@ -20,6 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 
 public class Drop extends JavaPlugin implements Listener {
+    private static final boolean DEBUG_STICK_ALLOWED = true;
     private final Logger LOGGER = Logger.getLogger(Drop.class.getName());
     private final List<ItemEquip> items = new ArrayList<>();
     private final List<DropPlayer> dropPlayers = new ArrayList<>();
@@ -36,8 +37,10 @@ public class Drop extends JavaPlugin implements Listener {
     public void onEnable() {
         LOGGER.info("Loading DROP plugin...");
         getServer().getPluginManager().registerEvents(this, this);
-       // items.add(new MagicWand(this));
         items.add(new ZireaelSword(this));
+        if (DEBUG_STICK_ALLOWED) {
+            items.add(new DebugStick(this));
+        }
         getServer().getWorld("world").setTime(1000);  // TODO: Development setup, remove in release version
         getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // TODO: Development setup, remove in release version
 

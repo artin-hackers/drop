@@ -15,15 +15,15 @@ public abstract class Effect {
     private static final Logger LOGGER = Logger.getLogger(Effect.class.getName());
 
     public static void launchFireball(Player player) {
-        LOGGER.info("launchFireball");
+        LOGGER.finer("launchFireball");
         player.launchProjectile(Fireball.class);
     }
 
     public static void blinkForward(Player player, Integer distance) {
-        LOGGER.info("blinkForward");
+        LOGGER.finer("blinkForward");
         HashSet<Material> transparentMaterials = new HashSet<>(Arrays.asList(Material.AIR, Material.CAVE_AIR, Material.VOID_AIR, Material.WATER));
         List<Block> lineOfSight = player.getLineOfSight(transparentMaterials, distance);
-        LOGGER.info("blinkForward: lineOfSight length = " + lineOfSight.size());
+        LOGGER.fine("blinkForward: lineOfSight length = " + lineOfSight.size());
         Location targetLocation;
         if (lineOfSight.get(lineOfSight.size() - 1).getLocation().getBlock().getType().equals(Material.AIR)) {
             targetLocation = lineOfSight.get(lineOfSight.size() - 1).getLocation();
