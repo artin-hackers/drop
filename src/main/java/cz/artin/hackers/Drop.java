@@ -103,8 +103,14 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     private boolean showScore(CommandSender sender) {
-        sender.sendMessage("Ahoj");
         LOGGER.info("showScore");
+        Player player = (Player) sender;
+        if (player != null) {
+            for (DropPlayer dropPlayer : dropPlayers) {
+                sender.sendMessage(dropPlayer.name + ": " + dropPlayer.score + "/" + dropPlayer.deaths);
+            }
+        }
+
         return true;
     }
 
