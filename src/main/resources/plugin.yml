@@ -36,3 +36,5 @@ commands:
     description: safe player
   resetDeaths:
     description: Resets death counters
+  showscore:
+    description: Shows current scrore

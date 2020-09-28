@@ -21,7 +21,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 
 public class Drop extends JavaPlugin implements Listener {
-    private static final boolean DEBUG_STICK_ALLOWED = false;
+    private static final boolean DEBUG_STICK_ALLOWED = true;
     private final Logger LOGGER = Logger.getLogger(Drop.class.getName());
     private final List<ItemEquip> items = new ArrayList<>();
     private final List<DropPlayer> dropPlayers = new ArrayList<>();
