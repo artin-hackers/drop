@@ -93,11 +93,18 @@ public class Drop extends JavaPlugin implements Listener {
             return creategauge(sender);
         } else if (label.equalsIgnoreCase("createArena")) {
             return createArena(sender);
+        } else if (label.equalsIgnoreCase("showscore")) {
+            return showScore(sender);
         } else if (label.equalsIgnoreCase("resetDeaths")) {
             return resetDeaths();
         } else {
             return false;
         }
+    }
+
+    private boolean showScore(CommandSender sender) {
+        LOGGER.info("showScore");
+        return true;
     }
 
     private boolean resetDeaths() {
