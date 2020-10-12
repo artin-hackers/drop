@@ -266,7 +266,7 @@ public class Drop extends JavaPlugin implements Listener {
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         createbow(event.getPlayer());
-
+        addMana(event.getPlayer());
 
      }
 
@@ -683,5 +683,13 @@ public class Drop extends JavaPlugin implements Listener {
             }
         }
         return true;
+    }
+
+    private void addMana(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            ItemStack mana = new ItemStack(Material.CYAN_DYE,3);
+            player.getInventory().addItem(mana);
+        }
     }
 }
