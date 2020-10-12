@@ -93,9 +93,34 @@ public class Drop extends JavaPlugin implements Listener {
             return creategauge(sender);
         } else if (label.equalsIgnoreCase("createArena")) {
             return createArena(sender);
+        } else if (label.equalsIgnoreCase("showscore")) {
+            return showScore(sender);
+        } else if (label.equalsIgnoreCase("resetDeaths")) {
+            return resetDeaths();
         } else {
             return false;
         }
+    }
+
+    private boolean showScore(CommandSender sender) {
+        LOGGER.info("showScore");
+        Player player = (Player) sender;
+        if (player != null) {
+            for (DropPlayer dropPlayer : dropPlayers) {
+                sender.sendMessage(dropPlayer.name + ": " + dropPlayer.score + "/" + dropPlayer.deaths);
+            }
+        }
+
+        return true;
+    }
+
+    private boolean resetDeaths() {
+        for (DropPlayer dropPlayer : dropPlayers) {
+            dropPlayer.deaths = 0;
+            dropPlayer.score = 0;
+            Bukkit.broadcastMessage(dropPlayer.name + ": " + dropPlayer.score + "/" + dropPlayer.deaths);
+        }
+        return true;
     }
 
     private boolean equip(CommandSender sender, String[] args) {
