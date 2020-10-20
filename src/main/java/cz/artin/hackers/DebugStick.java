@@ -10,41 +10,45 @@ import java.util.logging.Logger;
 
 public class DebugStick extends Item implements Listener {
     private final Logger LOGGER = Logger.getLogger(DebugStick.class.getName());
-    private int active_effect = 0;
+    private int activeEffect = 0;
 
     public DebugStick(JavaPlugin plugin) {
-        LOGGER.finer("DebugStick");
+        LOGGER.finer("DebugStick()");
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     @Override
     public void equip(Player player) {
-        LOGGER.finer("equip");
+        LOGGER.finer("equip()");
         equip(player, Material.DEBUG_STICK, DebugStick.class.getName());
     }
 
     @Override
     public void effect(Player player, Action action) {
-        LOGGER.finer("effect");
+        LOGGER.finer("effect()");
         if (action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK)) {
-            LOGGER.fine("effect: apply effect " + active_effect);
-            switch (active_effect) {
+            switch (activeEffect) {
                 case 0:
-                    Effect.launchFireball(player);
+                    Effect.addMana(player, Mana.Colours.BLACK, 1);
                     break;
                 case 1:
-                    Effect.blinkForward(player, 10);
+                    Effect.removeMana(player, Mana.Colours.BLACK, 1);
                     break;
                 case 2:
+                    Effect.blinkForward(player, 10);
+                    break;
+                case 3:
                     Effect.dealDamage(player, 2);
                     break;
+                case 4:
+                    Effect.launchFireball(player);
+                    break;
                 default:
-                    LOGGER.warning("Invalid effect ID");
+                    LOGGER.warning("effect(): Invalid effect ID");
             }
         } else if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
-            active_effect = (active_effect + 1) % 3;
-            LOGGER.fine("effect: effect changed to " + active_effect);
-            player.sendMessage("Active effect " + active_effect);
+            activeEffect = (activeEffect + 1) % 5;
+            player.sendMessage("Active effect " + activeEffect);
         }
     }
 }
