@@ -16,6 +16,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import sun.util.resources.da.CalendarData_da;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -286,6 +287,9 @@ public class Drop extends JavaPlugin implements Listener {
         Zdenkovahulka(event.getPlayer());
         createbow(event.getPlayer());
         addGreenMana(event.getPlayer());
+        addRedMana(event.getPlayer());
+        addBlueMana(event.getPlayer());
+        addBlackMana(event.getPlayer());
 
         DropPlayer dropPlayer = new DropPlayer();
         dropPlayer.name = event.getPlayer().getName();
@@ -315,6 +319,9 @@ public class Drop extends JavaPlugin implements Listener {
         createbow(event.getPlayer());
         addMana(event.getPlayer());
         addGreenMana(event.getPlayer());
+        addRedMana(event.getPlayer());
+        addBlueMana(event.getPlayer());
+        addBlackMana(event.getPlayer());
 
     }
 
@@ -711,10 +718,34 @@ public class Drop extends JavaPlugin implements Listener {
 
         }
     }
+    private void addRedMana(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            ItemStack mana = new ItemStack(Material.RED_DYE, 8);
+            player.getInventory().addItem(mana);
+
+        }
+    }
     private void addGreenMana(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             ItemStack mana = new ItemStack(Material.GREEN_DYE, 6);
+            player.getInventory().addItem(mana);
+
+        }
+    }
+    private void addBlueMana(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            ItemStack mana = new ItemStack(Material.BLUE_DYE, 15);
+            player.getInventory().addItem(mana);
+
+        }
+    }
+    private void addBlackMana(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            ItemStack mana = new ItemStack(Material.BLACK_DYE, 5);
             player.getInventory().addItem(mana);
 
         }
@@ -744,7 +775,42 @@ public class Drop extends JavaPlugin implements Listener {
         }
         return false;
     }
-
+    private boolean removeRedMana(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            if (player.getInventory().containsAtLeast(new ItemStack(Material.RED_DYE), 1)) {
+                removeItems(player.getInventory(), Material.RED_DYE, 1);
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+    private boolean removeBlackMana(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            if (player.getInventory().containsAtLeast(new ItemStack(Material.BLACK_DYE), 1)) {
+                removeItems(player.getInventory(), Material.BLACK_DYE, 1);
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+    private boolean removeBlueMana(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            if (player.getInventory().containsAtLeast(new ItemStack(Material.BLUE_DYE), 1)) {
+                removeItems(player.getInventory(), Material.BLUE_DYE, 1);
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
     private enum directions {
         NORTH,
         EAST,
