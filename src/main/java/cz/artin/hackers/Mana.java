@@ -3,6 +3,7 @@ package cz.artin.hackers;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class Mana {
@@ -11,7 +12,6 @@ public class Mana {
             Player player = (Player) sender;
             ItemStack mana = new ItemStack(Material.BLACK_DYE, amount);
             player.getInventory().addItem(mana);
-
         }
     }
 
@@ -20,7 +20,6 @@ public class Mana {
             Player player = (Player) sender;
             ItemStack mana = new ItemStack(Material.BLUE_DYE, amount);
             player.getInventory().addItem(mana);
-
         }
     }
 
@@ -29,7 +28,6 @@ public class Mana {
             Player player = (Player) sender;
             ItemStack mana = new ItemStack(Material.GREEN_DYE, amount);
             player.getInventory().addItem(mana);
-
         }
     }
 
@@ -38,7 +36,6 @@ public class Mana {
             Player player = (Player) sender;
             ItemStack mana = new ItemStack(Material.RED_DYE, amount);
             player.getInventory().addItem(mana);
-
         }
     }
 
@@ -47,7 +44,6 @@ public class Mana {
             Player player = (Player) sender;
             ItemStack mana = new ItemStack(Material.WHITE_DYE, amount);
             player.getInventory().addItem(mana);
-
         }
     }
 
@@ -114,5 +110,31 @@ public class Mana {
             }
         }
         return false;
+    }
+
+    private void removeItems(Inventory inventory, Material type, int amount) {
+        if (amount <= 0) {
+            return;
+        }
+        int size = inventory.getSize();
+        for (int slot = 0; slot < size; slot++) {
+            ItemStack is = inventory.getItem(slot);
+            if (is == null) {
+                continue;
+            }
+            if (type == is.getType()) {
+                int newAmount = is.getAmount() - amount;
+                if (newAmount > 0) {
+                    is.setAmount(newAmount);
+                    break;
+                } else {
+                    inventory.clear(slot);
+                    amount = -newAmount;
+                    if (amount == 0) {
+                        break;
+                    }
+                }
+            }
+        }
     }
 }
