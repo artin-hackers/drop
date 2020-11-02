@@ -16,7 +16,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import sun.util.resources.da.CalendarData_da;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -156,7 +155,6 @@ public class Drop extends JavaPlugin implements Listener {
                 sender.sendMessage(dropPlayer.name + ": " + dropPlayer.score + "/" + dropPlayer.deaths);
             }
         }
-        removeMana(sender);
 
         return true;
     }
@@ -286,10 +284,11 @@ public class Drop extends JavaPlugin implements Listener {
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         createbow(event.getPlayer());
+        addBlackMana(event.getPlayer(), 3);
+        addBlueMana(event.getPlayer(), 3);
         addGreenMana(event.getPlayer(), 3);
-        addRedMana(event.getPlayer());
-        addBlueMana(event.getPlayer());
-        addBlackMana(event.getPlayer());
+        addRedMana(event.getPlayer(), 3);
+        addWhiteMana(event.getPlayer(), 3);
 
         DropPlayer dropPlayer = new DropPlayer();
         dropPlayer.name = event.getPlayer().getName();
@@ -317,12 +316,11 @@ public class Drop extends JavaPlugin implements Listener {
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         createbow(event.getPlayer());
-        addMana(event.getPlayer());
+        addBlackMana(event.getPlayer(), 3);
+        addBlueMana(event.getPlayer(), 3);
         addGreenMana(event.getPlayer(), 3);
-        addRedMana(event.getPlayer());
-        addBlueMana(event.getPlayer());
-        addBlackMana(event.getPlayer());
-
+        addRedMana(event.getPlayer(), 3);
+        addWhiteMana(event.getPlayer(), 3);
     }
 
     @EventHandler
@@ -713,22 +711,24 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
-    private void addMana(CommandSender sender) {
+    private void addBlackMana(CommandSender sender, Integer amount) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            ItemStack mana = new ItemStack(Material.CYAN_DYE, 3);
+            ItemStack mana = new ItemStack(Material.BLACK_DYE, amount);
             player.getInventory().addItem(mana);
 
         }
     }
-    private void addRedMana(CommandSender sender) {
+
+    private void addBlueMana(CommandSender sender, Integer amount) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            ItemStack mana = new ItemStack(Material.RED_DYE, 8);
+            ItemStack mana = new ItemStack(Material.BLUE_DYE, amount);
             player.getInventory().addItem(mana);
 
         }
     }
+
     private void addGreenMana(CommandSender sender, Integer amount) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
@@ -737,28 +737,30 @@ public class Drop extends JavaPlugin implements Listener {
 
         }
     }
-    private void addBlueMana(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            ItemStack mana = new ItemStack(Material.BLUE_DYE, 15);
-            player.getInventory().addItem(mana);
 
-        }
-    }
-    private void addBlackMana(CommandSender sender) {
+    private void addRedMana(CommandSender sender, Integer amount) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            ItemStack mana = new ItemStack(Material.BLACK_DYE, 5);
+            ItemStack mana = new ItemStack(Material.RED_DYE, amount);
             player.getInventory().addItem(mana);
 
         }
     }
 
-    private boolean removeMana(CommandSender sender) {
+    private void addWhiteMana(CommandSender sender, Integer amount) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            if (player.getInventory().containsAtLeast(new ItemStack(Material.CYAN_DYE), 1)) {
-                removeItems(player.getInventory(), Material.CYAN_DYE, 1);
+            ItemStack mana = new ItemStack(Material.WHITE_DYE, amount);
+            player.getInventory().addItem(mana);
+
+        }
+    }
+
+    private boolean removeBlackMana(CommandSender sender, Integer amount) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            if (player.getInventory().containsAtLeast(new ItemStack(Material.BLACK_DYE), amount)) {
+                removeItems(player.getInventory(), Material.BLACK_DYE, amount);
                 return true;
             } else {
                 return false;
@@ -766,6 +768,20 @@ public class Drop extends JavaPlugin implements Listener {
         }
         return false;
     }
+
+    private boolean removeBlueMana(CommandSender sender, Integer amount) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            if (player.getInventory().containsAtLeast(new ItemStack(Material.BLUE_DYE), amount)) {
+                removeItems(player.getInventory(), Material.BLUE_DYE, amount);
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
     private boolean removeGreenMana(CommandSender sender, Integer amount) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
@@ -778,11 +794,12 @@ public class Drop extends JavaPlugin implements Listener {
         }
         return false;
     }
-    private boolean removeRedMana(CommandSender sender) {
+
+    private boolean removeRedMana(CommandSender sender, Integer amount) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            if (player.getInventory().containsAtLeast(new ItemStack(Material.RED_DYE), 1)) {
-                removeItems(player.getInventory(), Material.RED_DYE, 1);
+            if (player.getInventory().containsAtLeast(new ItemStack(Material.RED_DYE), amount)) {
+                removeItems(player.getInventory(), Material.RED_DYE, amount);
                 return true;
             } else {
                 return false;
@@ -790,11 +807,12 @@ public class Drop extends JavaPlugin implements Listener {
         }
         return false;
     }
-    private boolean removeBlackMana(CommandSender sender) {
+
+    private boolean removeWhiteMana(CommandSender sender, Integer amount) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            if (player.getInventory().containsAtLeast(new ItemStack(Material.BLACK_DYE), 1)) {
-                removeItems(player.getInventory(), Material.BLACK_DYE, 1);
+            if (player.getInventory().containsAtLeast(new ItemStack(Material.WHITE_DYE), amount)) {
+                removeItems(player.getInventory(), Material.WHITE_DYE, amount);
                 return true;
             } else {
                 return false;
@@ -802,18 +820,7 @@ public class Drop extends JavaPlugin implements Listener {
         }
         return false;
     }
-    private boolean removeBlueMana(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            if (player.getInventory().containsAtLeast(new ItemStack(Material.BLUE_DYE), 1)) {
-                removeItems(player.getInventory(), Material.BLUE_DYE, 1);
-                return true;
-            } else {
-                return false;
-            }
-        }
-        return false;
-    }
+
     private enum directions {
         NORTH,
         EAST,
