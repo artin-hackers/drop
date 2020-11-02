@@ -30,4 +30,3 @@ public class ZireaelSword extends Item implements Listener {
         }
     }
 }
-
