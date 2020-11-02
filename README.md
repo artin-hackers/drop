@@ -54,6 +54,11 @@ Drop
    └─ ZireaelSword
 ```
 
+* Item
+    * Superclass/Template for game items (weapons, armour, resources)
+    * Abstract class for game plugin which allows equipping various items
+
 ## Notes
 
 * The method Effect.removeMana() considers meta data when checking the amount of mana but removal works with the Material only. It may happen that using mana removes actual material not mana (material with specific meta data).
+* The methods for checking the item like Item.isItemInMainHand() should be checking material, name and lore

@@ -20,11 +20,11 @@ public class DebugStick extends Item implements Listener {
     @Override
     public void equip(Player player) {
         LOGGER.finer("equip()");
-        equip(player, Material.DEBUG_STICK, DebugStick.class.getName());
+        add(player, Material.DEBUG_STICK, DebugStick.class.getName());
     }
 
     @Override
-    public void effect(Player player, Action action) {
+    public void interact(Player player, Action action) {
         LOGGER.finer("effect()");
         if (action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK)) {
             switch (activeEffect) {
