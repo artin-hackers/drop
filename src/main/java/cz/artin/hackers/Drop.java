@@ -21,61 +21,36 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 
 public class Drop extends JavaPlugin implements Listener {
+    private static final Logger LOGGER = Logger.getLogger(Drop.class.getName());
     private static final boolean DEBUG_STICK_ALLOWED = true;
+    private static final List<DropPlayer> dropPlayers = new ArrayList<>();
+    private static final List<ItemEquip> items = new ArrayList<>();
     private static final int DEFAULT_DUMMY_COUNT = 10;  // TODO: Move to a sub-class
     private static final int DEFAULT_DUMMY_RADIUS = 10;  // TODO: Move to a sub-class
-    private final Logger LOGGER = Logger.getLogger(Drop.class.getName());
-    private final List<ItemEquip> items = new ArrayList<>();
-    private final List<DropPlayer> dropPlayers = new ArrayList<>();
-    private Location PORTAL_EXIT = null;  // TODO: Move to a sub-class
-
-    public static Entity getNearestLivingEntityInSight(Player player, int range) {
-        ArrayList<Entity> nearbyEntities = (ArrayList<Entity>) player.getNearbyEntities(range, range, range);
-        ArrayList<Entity> nearbyLivingEntities = new ArrayList<Entity>();
-        for (Entity entity : nearbyEntities) {
-            if (entity instanceof LivingEntity) {
-                nearbyLivingEntities.add(entity);
-            }
-        }
-        ArrayList<Block> sightBlocks = (ArrayList<Block>) player.getLineOfSight(null, range);
-        for (Block block : sightBlocks) {
-            Location location = block.getLocation();
-            for (Entity entity : nearbyLivingEntities) {
-                if (Math.abs(entity.getLocation().getX() - location.getX()) < 1.3
-                        && Math.abs(entity.getLocation().getY() - location.getY()) < 1.5
-                        && Math.abs(entity.getLocation().getZ() - location.getZ()) < 1.3
-                ) {
-                    return entity;
-                }
-            }
-        }
-        return null;
-    }
+    private static Location PORTAL_EXIT = null;  // TODO: Move to a sub-class
 
     @Override
     public void onEnable() {
         LOGGER.info("Loading DROP plugin...");
         getServer().getPluginManager().registerEvents(this, this);
+
         if (DEBUG_STICK_ALLOWED) {
             items.add(new DebugStick(this));
         }
         items.add(new ZireaelSword(this));
-        getServer().getWorld("world").setTime(1000);  // TODO: Development setup, remove in release version
-        getServer().getWorld("world").setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // TODO: Development setup, remove in release version
+
+        Objects.requireNonNull(getServer().getWorld("world")).setTime(1000);  // TODO: Development setup, remove in release version
+        Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // TODO: Development setup, remove in release version
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            DropPlayer dropPlayer = new DropPlayer();
-            dropPlayer.name = player.getName();
-            dropPlayer.score = 0;
-            dropPlayer.deaths = 0;
-            dropPlayers.add(dropPlayer);
+            dropPlayers.add(new DropPlayer(player));
         }
 
         LOGGER.info("...plugin successfully loaded.");
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {  // TODO: Review
         if (label.equalsIgnoreCase("trigger")) {
             LOGGER.info("Trigger command called with arguments: " + Arrays.toString(args));
             return true;
@@ -119,6 +94,35 @@ public class Drop extends JavaPlugin implements Listener {
             return false;
         }
     }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        LOGGER.info("A new player, " + event.getPlayer().getName() + ", just joined the fray.");
+        dropPlayers.add(new DropPlayer(event.getPlayer()));
+        event.getPlayer().setGameMode(GameMode.SURVIVAL);
+        for (ItemEquip item : items) {
+            item.equip(event.getPlayer());
+        }
+
+        Filipovasekera(event.getPlayer());  // TODO: Move to items
+        Zdenkovahulka(event.getPlayer());  // TODO: Move to items
+        createbow(event.getPlayer());  // TODO: Move to items
+        Mana mana = new Mana();  // TODO: Move to player setup
+        mana.add(event.getPlayer(), Mana.Colour.BLUE, 3);
+        mana.add(event.getPlayer(), Mana.Colour.GREEN, 3);
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        dropPlayers.removeIf(dropPlayer -> dropPlayer.getPlayer().equals(event.getPlayer()));
+    }
+
+    @EventHandler
+    public void onPlayerKick(PlayerKickEvent event) {
+        dropPlayers.removeIf(dropPlayer -> dropPlayer.getPlayer().equals(event.getPlayer()));
+    }
+
+    // TODO: Review from here
 
     private boolean showScore(CommandSender sender) {
         LOGGER.info("showScore");
@@ -246,36 +250,6 @@ public class Drop extends JavaPlugin implements Listener {
             event.setCancelled(true);
     }
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        getLogger().info("A new player, " + event.getPlayer().getName() + ", just joined the fray.");
-        event.getPlayer().setGameMode(GameMode.SURVIVAL);
-        for (ItemEquip item : items) {
-            item.equip(event.getPlayer());
-        }
-        Filipovasekera(event.getPlayer());
-        Zdenkovahulka(event.getPlayer());
-        createbow(event.getPlayer());
-        Mana mana = new Mana();
-        mana.add(event.getPlayer(), Mana.Colour.BLUE, 3);
-        mana.add(event.getPlayer(), Mana.Colour.GREEN, 3);
-
-        DropPlayer dropPlayer = new DropPlayer();
-        dropPlayer.name = event.getPlayer().getName();
-        dropPlayer.score = 0;
-        dropPlayer.deaths = 0;
-        dropPlayers.add(dropPlayer);
-    }
-
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        dropPlayers.removeIf(dropPlayer -> dropPlayer.name.equals(event.getPlayer().getName()));
-    }
-
-    @EventHandler
-    public void onPlayerKick(PlayerKickEvent event) {
-        dropPlayers.removeIf(dropPlayer -> dropPlayer.name.equals(event.getPlayer().getName()));
-    }
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
@@ -678,6 +652,29 @@ public class Drop extends JavaPlugin implements Listener {
             }
         }
         return true;
+    }
+
+    public Entity getNearestLivingEntityInSight(Player player, int range) {
+        ArrayList<Entity> nearbyEntities = (ArrayList<Entity>) player.getNearbyEntities(range, range, range);
+        ArrayList<Entity> nearbyLivingEntities = new ArrayList<Entity>();
+        for (Entity entity : nearbyEntities) {
+            if (entity instanceof LivingEntity) {
+                nearbyLivingEntities.add(entity);
+            }
+        }
+        ArrayList<Block> sightBlocks = (ArrayList<Block>) player.getLineOfSight(null, range);
+        for (Block block : sightBlocks) {
+            Location location = block.getLocation();
+            for (Entity entity : nearbyLivingEntities) {
+                if (Math.abs(entity.getLocation().getX() - location.getX()) < 1.3
+                        && Math.abs(entity.getLocation().getY() - location.getY()) < 1.5
+                        && Math.abs(entity.getLocation().getZ() - location.getZ()) < 1.3
+                ) {
+                    return entity;
+                }
+            }
+        }
+        return null;
     }
 
     private enum directions {
