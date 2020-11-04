@@ -22,7 +22,7 @@ public abstract class Item implements Drop.ItemEquip {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        if (isItemInMainHand(event, this.getClass().getName())) {
+        if (isItemInMainHand(event.getPlayer(), this.getClass().getName())) {
             interact(event.getPlayer(), event.getAction());
         }
     }
@@ -109,8 +109,8 @@ public abstract class Item implements Drop.ItemEquip {
         }
     }
 
-    private boolean isItemInMainHand(PlayerInteractEvent event, String displayName) {
-        ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
+    private boolean isItemInMainHand(Player player, String displayName) {
+        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         if (itemInMainHand.getItemMeta() != null) {
             return itemInMainHand.getItemMeta().getDisplayName().equals(displayName);
         } else {

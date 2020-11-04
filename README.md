@@ -60,5 +60,4 @@ Drop
 
 ## Notes
 
-* The method Effect.removeMana() considers meta data when checking the amount of mana but removal works with the Material only. It may happen that using mana removes actual material not mana (material with specific meta data).
-* The methods for checking the item like Item.isItemInMainHand() should be checking material, name and lore
+* The methods for checking the item like Item.isItemInMainHand should be checking material, name and lore
