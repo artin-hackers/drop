@@ -20,7 +20,7 @@ Features:
     * [ ] Drop
     * [ ] DropPlayer
     * [ ] Effect - In progress: addMana and removeMana share code, maybe handle mana colours as an array
-    * [ ] Item
+    * [x] Item
     * [ ] MagicWand
     * [ ] ZireaelSword
 * [ ] Reimplement DebugStick - Current version is ugly and not optimal
