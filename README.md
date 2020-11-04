@@ -22,7 +22,7 @@ Features:
     * [ ] Effect
     * [ ] Item
     * [ ] MagicWand
-    * [ ] Mana
+    * [x] Mana
     * [ ] ZireaelSword
 * [ ] Reimplement DebugStick - Current version is ugly and not optimal
 * [ ] Review logging

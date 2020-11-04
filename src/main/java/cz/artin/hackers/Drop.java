@@ -56,7 +56,6 @@ public class Drop extends JavaPlugin implements Listener {
             return true;
         } else if (label.equalsIgnoreCase("equip")) {
             return equip(sender, args);
-            // TODO: Refactor from this point down
         } else if (label.equalsIgnoreCase("setModeDeveloper")) {
             return setModeDeveloper(sender);
         } else if (label.equalsIgnoreCase("setModeNormal")) {
@@ -308,13 +307,13 @@ public class Drop extends JavaPlugin implements Listener {
                     if (itemInMainHand.getItemMeta().getDisplayName().equals("Filipovasekera")) {
                         event.getPlayer().launchProjectile(Fireball.class);
                     }
-                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {  // TODO: Remove mana
-//                        Mana mana = new Mana();
-//                        if (mana.remove(event.getPlayer(), Mana.Colour.GREEN, 1)) {
-                        creategauge(event.getPlayer());
-//                        } else {
-//                            event.getPlayer().sendMessage("no mana");
-//                        }
+                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
+                        Mana mana = new Mana();
+                        if (mana.remove(event.getPlayer(), Mana.Colour.GREEN, 1)) {
+                            creategauge(event.getPlayer());
+                        } else {
+                            event.getPlayer().sendMessage("no mana");
+                        }
                     }
                     if (itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
                         Hulkazivota2(event.getPlayer());
@@ -323,10 +322,10 @@ public class Drop extends JavaPlugin implements Listener {
             }
             if (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
                 if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
-                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {  // TODO: Add mana
-//                        Mana mana = new Mana();
+                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
+                        Mana mana = new Mana();
                         createhole(event.getPlayer());
-//                        mana.add(event.getPlayer(), Mana.Colour.GREEN, 1);
+                        mana.add(event.getPlayer(), Mana.Colour.GREEN, 1);
                         Hulkazivota2(event.getPlayer());
                     }
                 }

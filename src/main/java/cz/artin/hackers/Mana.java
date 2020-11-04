@@ -7,23 +7,16 @@ import org.bukkit.event.block.Action;
 import java.util.logging.Logger;
 
 public class Mana extends Item {
-    private static final Logger LOGGER = Logger.getLogger(Item.class.getName());
-    private final Player player;
-    private final Colour colour;
+    private static final Logger LOGGER = Logger.getLogger(Mana.class.getName());
 
-    public Mana(Player player, Colour colour) {
+    public Mana() {
         LOGGER.finer("Mana");
-        this.player = player;
-        this.colour = colour;
     }
 
     public void add(Player player) {
     }
 
-    public void interact(Player player, Action action) {
-    }
-
-    public boolean add(Player player, Colour colour, Integer amount) {
+    public void add(Player player, Mana.Colour colour, int amount) {
         switch (colour) {
             case BLACK:
                 add(player, Material.BLACK_DYE, "Black Mana", amount);
@@ -42,12 +35,10 @@ public class Mana extends Item {
                 break;
             default:
                 LOGGER.warning("Unknown mana colour");
-                return false;
         }
-        return true;
     }
 
-    public boolean remove(Player player, Colour colour, Integer amount) {
+    public boolean remove(Player player, Mana.Colour colour, int amount) {
         switch (colour) {
             case BLACK:
                 return remove(player, Material.BLACK_DYE, "Black Mana", amount);
@@ -63,6 +54,9 @@ public class Mana extends Item {
                 LOGGER.warning("Unknown mana colour");
                 return false;
         }
+    }
+
+    public void interact(Player player, Action action) {
     }
 
     enum Colour {

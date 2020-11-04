@@ -14,14 +14,12 @@ import java.util.logging.Logger;
 public abstract class Effect {
     private static final Logger LOGGER = Logger.getLogger(Effect.class.getName());
 
-    public static void addMana(Player player, Mana.Colour colour, Integer amount) {  // TODO: Add mana
-//        Mana mana = new Mana();
-//        mana.add(player, colour, amount);
+    public static void addMana(Player player, Mana.Colour colour, Integer amount) {
+        (new Mana()).add(player, colour, amount);
     }
 
-    public static void removeMana(Player player, Mana.Colour colour, Integer amount) {  // TODO: Remove mana
-//        Mana mana = new Mana();
-//        mana.remove(player, colour, amount);
+    public static void removeMana(Player player, Mana.Colour colour, Integer amount) {
+        (new Mana()).remove(player, colour, amount);
     }
 
     public static void blinkForward(Player player, Integer distance) {
