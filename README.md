@@ -63,3 +63,5 @@ Drop
 * The methods for checking the item like Item.isItemInMainHand should be checking material, name and lore
 * Why Mana cannot be static? Why Item cannot be static?
 * Mana.equip and Mana.interact might not be necessary if Drop interface and Item.interact are defined differently. 
+* Mana and items will be properties of DropPlayer. They will have limits based on the played.
+* Bug: When charging green mana, if using ground beneath the player, 3 green are added.

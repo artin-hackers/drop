@@ -88,7 +88,7 @@ public abstract class Item implements Drop.ItemEquip {
             if (slotItemStack.getItemMeta() == null) {
                 continue;
             }
-            if (slotItemStack.getType() != material) {
+            if (slotItemStack.getType().equals(material)) {
                 continue;
             }
             if (!slotItemStack.getItemMeta().getDisplayName().equals(displayName)) {

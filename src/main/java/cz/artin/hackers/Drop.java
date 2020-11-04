@@ -257,8 +257,8 @@ public class Drop extends JavaPlugin implements Listener {
         Zdenkovahulka(event.getPlayer());
         createbow(event.getPlayer());
         Mana mana = new Mana();
-        mana.addBlueMana(event.getPlayer(), 3);
-        mana.addGreenMana(event.getPlayer(), 3);
+        mana.add(event.getPlayer(), Mana.Colour.BLUE, 3);
+        mana.add(event.getPlayer(), Mana.Colour.GREEN, 3);
 
         DropPlayer dropPlayer = new DropPlayer();
         dropPlayer.name = event.getPlayer().getName();
@@ -287,8 +287,8 @@ public class Drop extends JavaPlugin implements Listener {
         Zdenkovahulka(event.getPlayer());
         createbow(event.getPlayer());
         Mana mana = new Mana();
-        mana.addBlueMana(event.getPlayer(), 3);
-        mana.addGreenMana(event.getPlayer(), 3);
+        mana.add(event.getPlayer(), Mana.Colour.BLUE, 3);
+        mana.add(event.getPlayer(), Mana.Colour.GREEN, 3);
     }
 
     @EventHandler
@@ -348,7 +348,7 @@ public class Drop extends JavaPlugin implements Listener {
                     }
                     if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
                         Mana mana = new Mana();
-                        if (mana.removeGreenMana(event.getPlayer(), 1)) {
+                        if (mana.remove(event.getPlayer(), Mana.Colour.GREEN, 1)) {
                             creategauge(event.getPlayer());
                         } else {
                             event.getPlayer().sendMessage("no mana");
@@ -364,7 +364,7 @@ public class Drop extends JavaPlugin implements Listener {
                     if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
                         Mana mana = new Mana();
                         createhole(event.getPlayer());
-                        mana.addGreenMana(event.getPlayer(), 1);
+                        mana.add(event.getPlayer(), Mana.Colour.GREEN, 1);
                         Hulkazivota2(event.getPlayer());
                     }
                 }
