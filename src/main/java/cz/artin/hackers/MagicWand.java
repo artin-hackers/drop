@@ -14,11 +14,11 @@ public class MagicWand extends Item implements Listener {
 
     @Override
     public void equip(Player player) {
-        equip(player, Material.STICK, MagicWand.class.getName());
+        add(player, Material.STICK, MagicWand.class.getName());
     }
 
     @Override
-    public void effect(Player player, Action action) {
+    public void interact(Player player, Action action) {
         if (action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK)) {
             Effect.launchFireball(player);
         }

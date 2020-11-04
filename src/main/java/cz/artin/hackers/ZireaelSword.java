@@ -19,11 +19,11 @@ public class ZireaelSword extends Item implements Listener {
     @Override
     public void equip(Player player) {
         LOGGER.finer("equip");
-        equip(player, Material.DIAMOND_SWORD, ZireaelSword.class.getName());
+        add(player, Material.DIAMOND_SWORD, ZireaelSword.class.getName());
     }
 
     @Override
-    public void effect(Player player, Action action) {
+    public void interact(Player player, Action action) {
         LOGGER.finer("effect");
         if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
             Effect.blinkForward(player, 10);

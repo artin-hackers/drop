@@ -7,6 +7,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class Mana {
+    enum Colours {
+        BLACK,
+        BLUE,
+        GREEN,
+        RED,
+        WHITE
+    }
+
     public void addBlackMana(CommandSender sender, Integer amount) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
