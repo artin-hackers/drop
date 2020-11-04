@@ -94,7 +94,6 @@ public abstract class Item implements Drop.ItemEquip {
             if (!slotItemStack.getItemMeta().getDisplayName().equals(displayName)) {
                 continue;
             }
-
             int newAmount = slotItemStack.getAmount() - remainsToRemove;
             if (newAmount > 0) {
                 slotItemStack.setAmount(newAmount);

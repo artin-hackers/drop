@@ -13,7 +13,7 @@ public class MagicWand extends Item implements Listener {
     }
 
     @Override
-    public void equip(Player player) {
+    public void add(Player player) {
         add(player, Material.STICK, MagicWand.class.getName());
     }
 

@@ -18,7 +18,7 @@ public class DebugStick extends Item implements Listener {
     }
 
     @Override
-    public void equip(Player player) {
+    public void add(Player player) {
         LOGGER.finer("equip()");
         add(player, Material.DEBUG_STICK, DebugStick.class.getName());
     }

@@ -7,13 +7,17 @@ import org.bukkit.event.block.Action;
 import java.util.logging.Logger;
 
 public class Mana extends Item {
-    private final Logger LOGGER = Logger.getLogger(Item.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Item.class.getName());
+    private final Player player;
+    private final Colour colour;
 
-    public Mana() {
-        LOGGER.finer("Mana()");
+    public Mana(Player player, Colour colour) {
+        LOGGER.finer("Mana");
+        this.player = player;
+        this.colour = colour;
     }
 
-    public void equip(Player player) {
+    public void add(Player player) {
     }
 
     public void interact(Player player, Action action) {

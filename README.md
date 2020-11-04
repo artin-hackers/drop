@@ -18,10 +18,11 @@ Features:
 * [ ] Code Cleanup
     * [ ] DebugStick
     * [ ] Drop
-    * [ ] DropPlayer
-    * [ ] Effect - In progress: addMana and removeMana share code, maybe handle mana colours as an array
-    * [x] Item
+    * [x] DropPlayer
+    * [ ] Effect
+    * [ ] Item
     * [ ] MagicWand
+    * [ ] Mana
     * [ ] ZireaelSword
 * [ ] Reimplement DebugStick - Current version is ugly and not optimal
 * [ ] Review logging

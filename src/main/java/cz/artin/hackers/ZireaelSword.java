@@ -17,7 +17,7 @@ public class ZireaelSword extends Item implements Listener {
     }
 
     @Override
-    public void equip(Player player) {
+    public void add(Player player) {
         LOGGER.finer("equip");
         add(player, Material.DIAMOND_SWORD, ZireaelSword.class.getName());
     }

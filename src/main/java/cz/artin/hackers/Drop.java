@@ -99,15 +99,15 @@ public class Drop extends JavaPlugin implements Listener {
         dropPlayers.add(new DropPlayer(event.getPlayer()));
         event.getPlayer().setGameMode(GameMode.SURVIVAL);
         for (ItemEquip item : items) {
-            item.equip(event.getPlayer());
+            item.add(event.getPlayer());
         }
 
         Filipovasekera(event.getPlayer());  // REFACTORING: Move to items
         Zdenkovahulka(event.getPlayer());  // REFACTORING: Move to items
         createbow(event.getPlayer());  // REFACTORING: Move to items
-        Mana mana = new Mana();  // REFACTORING: Move to player setup
-        mana.add(event.getPlayer(), Mana.Colour.BLUE, 3);
-        mana.add(event.getPlayer(), Mana.Colour.GREEN, 3);
+//        Mana mana = new Mana();  // REFACTORING: Move to player setup
+//        mana.add(event.getPlayer(), Mana.Colour.BLUE, 3);
+//        mana.add(event.getPlayer(), Mana.Colour.GREEN, 3);
     }
 
     @EventHandler
@@ -146,11 +146,11 @@ public class Drop extends JavaPlugin implements Listener {
             String itemName = args[0];
             if (itemName.equalsIgnoreCase("MagicWand")) {
                 MagicWand magicWand = new MagicWand(this);
-                magicWand.equip(player);
+                magicWand.add(player);
                 return true;
             } else if (itemName.equalsIgnoreCase("ZireaelSword")) {
                 ZireaelSword zireaelSword = new ZireaelSword(this);
-                zireaelSword.equip(player);
+                zireaelSword.add(player);
                 return true;
             } else {
                 LOGGER.warning("Unknown item requested");
@@ -243,15 +243,15 @@ public class Drop extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         for (ItemEquip item : items) {
-            item.equip(event.getPlayer());
+            item.add(event.getPlayer());
         }
 
         Filipovasekera(event.getPlayer());
         Zdenkovahulka(event.getPlayer());
         createbow(event.getPlayer());
-        Mana mana = new Mana();
-        mana.add(event.getPlayer(), Mana.Colour.BLUE, 3);
-        mana.add(event.getPlayer(), Mana.Colour.GREEN, 3);
+//        Mana mana = new Mana();
+//        mana.add(event.getPlayer(), Mana.Colour.BLUE, 3);
+//        mana.add(event.getPlayer(), Mana.Colour.GREEN, 3);
     }
 
     @EventHandler
@@ -308,13 +308,13 @@ public class Drop extends JavaPlugin implements Listener {
                     if (itemInMainHand.getItemMeta().getDisplayName().equals("Filipovasekera")) {
                         event.getPlayer().launchProjectile(Fireball.class);
                     }
-                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
-                        Mana mana = new Mana();
-                        if (mana.remove(event.getPlayer(), Mana.Colour.GREEN, 1)) {
-                            creategauge(event.getPlayer());
-                        } else {
-                            event.getPlayer().sendMessage("no mana");
-                        }
+                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {  // TODO: Remove mana
+//                        Mana mana = new Mana();
+//                        if (mana.remove(event.getPlayer(), Mana.Colour.GREEN, 1)) {
+                        creategauge(event.getPlayer());
+//                        } else {
+//                            event.getPlayer().sendMessage("no mana");
+//                        }
                     }
                     if (itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
                         Hulkazivota2(event.getPlayer());
@@ -323,10 +323,10 @@ public class Drop extends JavaPlugin implements Listener {
             }
             if (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
                 if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
-                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
-                        Mana mana = new Mana();
+                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {  // TODO: Add mana
+//                        Mana mana = new Mana();
                         createhole(event.getPlayer());
-                        mana.add(event.getPlayer(), Mana.Colour.GREEN, 1);
+//                        mana.add(event.getPlayer(), Mana.Colour.GREEN, 1);
                         Hulkazivota2(event.getPlayer());
                     }
                 }
@@ -673,6 +673,6 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     public interface ItemEquip {
-        void equip(Player player);
+        void add(Player player);
     }
 }
