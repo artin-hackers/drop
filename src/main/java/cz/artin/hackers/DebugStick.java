@@ -29,10 +29,10 @@ public class DebugStick extends Item implements Listener {
         if (action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK)) {
             switch (activeEffect) {
                 case 0:
-                    Effect.addMana(player, Mana.Colours.BLACK, 1);
+                    Effect.addMana(player, Mana.Colour.BLACK, 1);
                     break;
                 case 1:
-                    Effect.removeMana(player, Mana.Colours.BLACK, 1);
+                    Effect.removeMana(player, Mana.Colour.BLACK, 1);
                     break;
                 case 2:
                     Effect.blinkForward(player, 10);

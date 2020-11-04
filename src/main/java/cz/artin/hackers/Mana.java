@@ -7,12 +7,20 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class Mana {
-    enum Colours {
+    enum Colour {
         BLACK,
         BLUE,
         GREEN,
         RED,
         WHITE
+    }
+
+    public boolean add(Player player, Colour colour, Integer amount) {
+        return false;
+    }
+
+    public boolean remove(Player player, Colour colour, Integer amount) {
+        return false;
     }
 
     public void addBlackMana(CommandSender sender, Integer amount) {

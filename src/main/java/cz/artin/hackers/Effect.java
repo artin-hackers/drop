@@ -3,7 +3,6 @@ package cz.artin.hackers;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -18,7 +17,7 @@ import java.util.logging.Logger;
 public abstract class Effect {
     private static final Logger LOGGER = Logger.getLogger(Effect.class.getName());
 
-    public static void addMana(Player player, Mana.Colours colour, Integer amount) {
+    public static void addMana(Player player, Mana.Colour colour, Integer amount) {
         LOGGER.finer("addMana()");
         Material manaMaterial;
         String displayName;
@@ -58,7 +57,7 @@ public abstract class Effect {
         player.getInventory().addItem(mana);
     }
 
-    public static boolean removeMana(Player player, Mana.Colours colour, Integer amount) {
+    public static boolean removeMana(Player player, Mana.Colour colour, Integer amount) {
         LOGGER.finer("removeMana()");
         Material manaMaterial;
         String displayName;
