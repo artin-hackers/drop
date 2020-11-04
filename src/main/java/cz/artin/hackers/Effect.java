@@ -5,9 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -18,115 +15,13 @@ public abstract class Effect {
     private static final Logger LOGGER = Logger.getLogger(Effect.class.getName());
 
     public static void addMana(Player player, Mana.Colour colour, Integer amount) {
-        LOGGER.finer("addMana()");
-        Material manaMaterial;
-        String displayName;
-        switch (colour) {
-            case BLACK:
-                manaMaterial = Material.BLACK_DYE;
-                displayName = "Black Mana";
-                break;
-            case BLUE:
-                manaMaterial = Material.BLUE_DYE;
-                displayName = "Blue Mana";
-                break;
-            case GREEN:
-                manaMaterial = Material.GREEN_DYE;
-                displayName = "Green Mana";
-                break;
-            case RED:
-                manaMaterial = Material.RED_DYE;
-                displayName = "Red Mana";
-                break;
-            case WHITE:
-                manaMaterial = Material.WHITE_DYE;
-                displayName = "White Mana";
-                break;
-            default:
-                LOGGER.warning("addMana(): Unknown mana colour");
-                return;
-        }
-        ItemStack mana = new ItemStack(manaMaterial, amount);
-        ItemMeta meta = mana.getItemMeta();
-        if (meta == null) {
-            LOGGER.warning("Cannot get item meta data");
-            return;
-        }
-        meta.setDisplayName(displayName);
-        mana.setItemMeta(meta);
-        player.getInventory().addItem(mana);
+        Mana mana = new Mana();
+        mana.add(player, colour, amount);
     }
 
-    public static boolean removeMana(Player player, Mana.Colour colour, Integer amount) {
-        LOGGER.finer("removeMana()");
-        Material manaMaterial;
-        String displayName;
-        switch (colour) {
-            case BLACK:
-                manaMaterial = Material.BLACK_DYE;
-                displayName = "Black Mana";
-                break;
-            case BLUE:
-                manaMaterial = Material.BLUE_DYE;
-                displayName = "Blue Mana";
-                break;
-            case GREEN:
-                manaMaterial = Material.GREEN_DYE;
-                displayName = "Green Mana";
-                break;
-            case RED:
-                manaMaterial = Material.RED_DYE;
-                displayName = "Red Mana";
-                break;
-            case WHITE:
-                manaMaterial = Material.WHITE_DYE;
-                displayName = "White Mana";
-                break;
-            default:
-                LOGGER.warning("addMana(): Unknown mana colour");
-                return false;
-        }
-        ItemStack mana = new ItemStack(manaMaterial);
-        ItemMeta meta = mana.getItemMeta();
-        if (meta == null) {
-            LOGGER.warning("Cannot get item meta data");
-            return false;
-        }
-        meta.setDisplayName(displayName);
-        mana.setItemMeta(meta);
-
-        if (player.getInventory().containsAtLeast(mana, amount)) {
-            removeItems(player.getInventory(), manaMaterial, amount);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private static void removeItems(Inventory inventory, Material type, Integer amount) {
-        if (amount <= 0) {
-            return;
-        }
-        int size = inventory.getSize();
-        for (int slot = 0; slot < size; slot++) {
-            ItemStack is = inventory.getItem(slot);
-            if (is == null) {
-                continue;
-            }
-            if (type == is.getType()) {
-                int newAmount = is.getAmount() - amount;
-                if (newAmount > 0) {
-                    is.setAmount(newAmount);
-                    break;
-                } else {
-                    inventory.clear(slot);
-                    amount = -newAmount;
-                    if (amount == 0) {
-                        break;
-                    }
-                }
-            }
-        }
+    public static void removeMana(Player player, Mana.Colour colour, Integer amount) {
+        Mana mana = new Mana();
+        mana.remove(player, colour, amount);
     }
 
     public static void blinkForward(Player player, Integer distance) {

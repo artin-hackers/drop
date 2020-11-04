@@ -61,3 +61,5 @@ Drop
 ## Notes
 
 * The methods for checking the item like Item.isItemInMainHand should be checking material, name and lore
+* Why Mana cannot be static? Why Item cannot be static?
+* Mana.equip and Mana.interact might not be necessary if Drop interface and Item.interact are defined differently. 
