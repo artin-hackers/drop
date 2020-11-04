@@ -4,13 +4,12 @@ import org.bukkit.entity.Player;
 
 public class DropPlayer {
     private final Player player;
-
-    public int score;
-    public int deaths;
+    private int kills;
+    private int deaths;
 
     DropPlayer(Player player) {
         this.player = player;
-        this.score = 0;
+        this.kills = 0;
         this.deaths = 0;
     }
 
@@ -20,5 +19,21 @@ public class DropPlayer {
 
     public String getName() {
         return this.player.getName();
+    }
+
+    public int getKills() {
+        return this.kills;
+    }
+
+    public int getDeaths() {
+        return this.deaths;
+    }
+
+    public void addKill() {
+        this.kills++;
+    }
+
+    public void addDeath() {
+        this.deaths++;
     }
 }

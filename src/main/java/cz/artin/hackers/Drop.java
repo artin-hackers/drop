@@ -88,8 +88,6 @@ public class Drop extends JavaPlugin implements Listener {
             return createArena(sender);
         } else if (label.equalsIgnoreCase("showscore")) {
             return showScore(sender);
-        } else if (label.equalsIgnoreCase("resetDeaths")) {
-            return resetDeaths();
         } else {
             return false;
         }
@@ -129,17 +127,8 @@ public class Drop extends JavaPlugin implements Listener {
         Player player = (Player) sender;
         if (player != null) {
             for (DropPlayer dropPlayer : dropPlayers) {
-                sender.sendMessage(dropPlayer.getName() + ": " + dropPlayer.score + "/" + dropPlayer.deaths);
+                sender.sendMessage(dropPlayer.getName() + ": " + dropPlayer.getKills() + "/" + dropPlayer.getDeaths());
             }
-        }
-        return true;
-    }
-
-    private boolean resetDeaths() {
-        for (DropPlayer dropPlayer : dropPlayers) {
-            dropPlayer.deaths = 0;
-            dropPlayer.score = 0;
-            Bukkit.broadcastMessage(dropPlayer.getName() + ": " + dropPlayer.score + "/" + dropPlayer.deaths);
         }
         return true;
     }
@@ -279,15 +268,15 @@ public class Drop extends JavaPlugin implements Listener {
         if (player != null) {
             for (DropPlayer dropPlayer : dropPlayers) {
                 if (dropPlayer.getName().equals(player.getName())) {
-                    dropPlayer.deaths++;
+                    dropPlayer.addDeath();
                 }
                 Player killer = player.getKiller();
                 if (killer != null) {
                     if (dropPlayer.getName().equals(killer.getName())) {
-                        dropPlayer.score++;
+                        dropPlayer.addKill();
                     }
                 }
-                Bukkit.broadcastMessage(dropPlayer.getName() + ": " + dropPlayer.score + "/" + dropPlayer.deaths);
+                Bukkit.broadcastMessage(dropPlayer.getName() + ": " + dropPlayer.getKills() + "/" + dropPlayer.getDeaths());
             }
         }
     }
