@@ -25,9 +25,9 @@ public class Drop extends JavaPlugin implements Listener {
     private static final boolean DEBUG_STICK_ALLOWED = true;
     private static final List<DropPlayer> dropPlayers = new ArrayList<>();
     private static final List<ItemEquip> items = new ArrayList<>();
-    private static final int DEFAULT_DUMMY_COUNT = 10;  // TODO: Move to a sub-class
-    private static final int DEFAULT_DUMMY_RADIUS = 10;  // TODO: Move to a sub-class
-    private static Location PORTAL_EXIT = null;  // TODO: Move to a sub-class
+    private static final int DEFAULT_DUMMY_COUNT = 10;  // REFACTORING: Move to a sub-class
+    private static final int DEFAULT_DUMMY_RADIUS = 10;  // REFACTORING: Move to a sub-class
+    private static Location PORTAL_EXIT = null;  // REFACTORING: Move to a sub-class
 
     @Override
     public void onEnable() {
@@ -39,8 +39,8 @@ public class Drop extends JavaPlugin implements Listener {
         }
         items.add(new ZireaelSword(this));
 
-        Objects.requireNonNull(getServer().getWorld("world")).setTime(1000);  // TODO: Development setup, remove in release version
-        Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // TODO: Development setup, remove in release version
+        Objects.requireNonNull(getServer().getWorld("world")).setTime(1000);  // Development setup, remove in release version
+        Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // Development setup, remove in release version
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             dropPlayers.add(new DropPlayer(player));
@@ -50,7 +50,7 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {  // TODO: Review
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {  // REFACTORING: Review
         if (label.equalsIgnoreCase("trigger")) {
             LOGGER.info("Trigger command called with arguments: " + Arrays.toString(args));
             return true;
@@ -104,10 +104,10 @@ public class Drop extends JavaPlugin implements Listener {
             item.equip(event.getPlayer());
         }
 
-        Filipovasekera(event.getPlayer());  // TODO: Move to items
-        Zdenkovahulka(event.getPlayer());  // TODO: Move to items
-        createbow(event.getPlayer());  // TODO: Move to items
-        Mana mana = new Mana();  // TODO: Move to player setup
+        Filipovasekera(event.getPlayer());  // REFACTORING: Move to items
+        Zdenkovahulka(event.getPlayer());  // REFACTORING: Move to items
+        createbow(event.getPlayer());  // REFACTORING: Move to items
+        Mana mana = new Mana();  // REFACTORING: Move to player setup
         mana.add(event.getPlayer(), Mana.Colour.BLUE, 3);
         mana.add(event.getPlayer(), Mana.Colour.GREEN, 3);
     }
@@ -122,14 +122,14 @@ public class Drop extends JavaPlugin implements Listener {
         dropPlayers.removeIf(dropPlayer -> dropPlayer.getPlayer().equals(event.getPlayer()));
     }
 
-    // TODO: Review from here
+    // REFACTORING: Review from here
 
     private boolean showScore(CommandSender sender) {
         LOGGER.info("showScore");
         Player player = (Player) sender;
         if (player != null) {
             for (DropPlayer dropPlayer : dropPlayers) {
-                sender.sendMessage(dropPlayer.name + ": " + dropPlayer.score + "/" + dropPlayer.deaths);
+                sender.sendMessage(dropPlayer.getName() + ": " + dropPlayer.score + "/" + dropPlayer.deaths);
             }
         }
         return true;
@@ -139,7 +139,7 @@ public class Drop extends JavaPlugin implements Listener {
         for (DropPlayer dropPlayer : dropPlayers) {
             dropPlayer.deaths = 0;
             dropPlayer.score = 0;
-            Bukkit.broadcastMessage(dropPlayer.name + ": " + dropPlayer.score + "/" + dropPlayer.deaths);
+            Bukkit.broadcastMessage(dropPlayer.getName() + ": " + dropPlayer.score + "/" + dropPlayer.deaths);
         }
         return true;
     }
@@ -152,7 +152,7 @@ public class Drop extends JavaPlugin implements Listener {
             LOGGER.warning("Invalid argument in equip command");
             return false;
         } else {
-            // TODO: Call functions from items list
+            // REFACTORING: Call functions from items list
             Player player = (Player) sender;
             String itemName = args[0];
             if (itemName.equalsIgnoreCase("MagicWand")) {
@@ -278,16 +278,16 @@ public class Drop extends JavaPlugin implements Listener {
         Player player = event.getEntity().getPlayer();
         if (player != null) {
             for (DropPlayer dropPlayer : dropPlayers) {
-                if (dropPlayer.name.equals(player.getName())) {
+                if (dropPlayer.getName().equals(player.getName())) {
                     dropPlayer.deaths++;
                 }
                 Player killer = player.getKiller();
                 if (killer != null) {
-                    if (dropPlayer.name.equals(killer.getName())) {
+                    if (dropPlayer.getName().equals(killer.getName())) {
                         dropPlayer.score++;
                     }
                 }
-                Bukkit.broadcastMessage(dropPlayer.name + ": " + dropPlayer.score + "/" + dropPlayer.deaths);
+                Bukkit.broadcastMessage(dropPlayer.getName() + ": " + dropPlayer.score + "/" + dropPlayer.deaths);
             }
         }
     }
@@ -305,7 +305,6 @@ public class Drop extends JavaPlugin implements Listener {
                 }
             }
 
-            // Refactor from this point
             if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
                 if (event.getClickedBlock().getType().equals(Material.DIAMOND_BLOCK)) {
                     if (PORTAL_EXIT != null) {
@@ -626,8 +625,8 @@ public class Drop extends JavaPlugin implements Listener {
             Location playerLocation = player.getLocation().clone();
             int count = getValueInt(args, 0, DEFAULT_DUMMY_COUNT);
             int radius = getValueInt(args, 1, DEFAULT_DUMMY_RADIUS);
-            // TODO: Raise an exception if count is negative
-            // TODO: Raise an exception if radius is zero or negative
+            // REFACTORING: Raise an exception if count is negative
+            // REFACTORING: Raise an exception if radius is zero or negative
             for (int i = 0; i < count; i++) {
                 int randomX = ThreadLocalRandom.current().nextInt(-radius, radius);
                 int randomZ = ThreadLocalRandom.current().nextInt(-radius, radius);
