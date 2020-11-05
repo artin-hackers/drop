@@ -11,7 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.logging.Logger;
 
-public abstract class Item implements Drop.ItemEquip {
+public abstract class Item implements Drop.ItemAdd {
     private static final Logger LOGGER = Logger.getLogger(Item.class.getName());
 
     Item() {
@@ -37,10 +37,6 @@ public abstract class Item implements Drop.ItemEquip {
             return;
         }
         player.getInventory().addItem(itemStack);
-    }
-
-    public boolean remove(Player player, Material material, String displayName) {
-        return remove(player, material, displayName, 1);
     }
 
     public boolean remove(Player player, Material material, String displayName, Integer amount) {

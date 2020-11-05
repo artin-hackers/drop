@@ -17,15 +17,12 @@ public class DebugStick extends Item implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    @Override
     public void add(Player player) {
-        LOGGER.finer("equip()");
         add(player, Material.DEBUG_STICK, DebugStick.class.getName());
     }
 
     @Override
     public void interact(Player player, Action action) {
-        LOGGER.finer("effect()");
         if (action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK)) {
             switch (activeEffect) {
                 case 0:

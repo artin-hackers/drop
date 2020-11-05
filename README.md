@@ -67,7 +67,10 @@ Drop
 ## Notes
 
 * The methods for checking the item like Item.isItemInMainHand should be checking material, name and lore
-* Why Mana cannot be static? Why Item cannot be static?
+* Why Mana cannot be static? Why Item cannot be static? Item is abstract, so requires override from subclases. 
 * Mana.equip and Mana.interact might not be necessary if Drop interface and Item.interact are defined differently. 
 * Mana and items will be properties of DropPlayer. They will have limits based on the played.
 * Bug: When charging green mana, if using ground beneath the player, 3 green are added.
+* One of the following:
+    * ~~Register listener in Item, not in ZireaelSword, ...? onInteract will be available for all items~~
+    * Remove onInteract from Item, it will have only isItemInMain hand, event handler will be in specific class if needed

@@ -16,15 +16,12 @@ public class ZireaelSword extends Item implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    @Override
     public void add(Player player) {
-        LOGGER.finer("equip");
         add(player, Material.DIAMOND_SWORD, ZireaelSword.class.getName());
     }
 
     @Override
     public void interact(Player player, Action action) {
-        LOGGER.finer("effect");
         if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
             Effect.blinkForward(player, 10);
         }

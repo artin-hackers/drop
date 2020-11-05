@@ -16,7 +16,6 @@ public class MagicWand extends Item implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    @Override
     public void add(Player player) {
         add(player, Material.STICK, MagicWand.class.getName());
     }

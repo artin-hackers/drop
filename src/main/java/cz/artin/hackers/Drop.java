@@ -24,7 +24,7 @@ public class Drop extends JavaPlugin implements Listener {
     private static final Logger LOGGER = Logger.getLogger(Drop.class.getName());
     private static final boolean DEBUG_STICK_ALLOWED = true;
     private static final List<DropPlayer> dropPlayers = new ArrayList<>();
-    private static final List<ItemEquip> items = new ArrayList<>();
+    private static final List<ItemAdd> items = new ArrayList<>();
     private static final int DEFAULT_DUMMY_COUNT = 10;  // REFACTORING: Move to a sub-class
     private static final int DEFAULT_DUMMY_RADIUS = 10;  // REFACTORING: Move to a sub-class
     private static Location PORTAL_EXIT = null;  // REFACTORING: Move to a sub-class
@@ -101,7 +101,7 @@ public class Drop extends JavaPlugin implements Listener {
         LOGGER.info("A new player, " + event.getPlayer().getName() + ", just joined the fray.");
         dropPlayers.add(new DropPlayer(event.getPlayer()));
         event.getPlayer().setGameMode(GameMode.SURVIVAL);
-        for (ItemEquip item : items) {
+        for (ItemAdd item : items) {
             item.add(event.getPlayer());
         }
 
@@ -245,7 +245,7 @@ public class Drop extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        for (ItemEquip item : items) {
+        for (ItemAdd item : items) {
             item.add(event.getPlayer());
         }
 
@@ -675,7 +675,7 @@ public class Drop extends JavaPlugin implements Listener {
         WEST
     }
 
-    public interface ItemEquip {
+    public interface ItemAdd {
         void add(Player player);
     }
 }
