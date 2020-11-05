@@ -19,11 +19,11 @@ Features:
     * [ ] DebugStick
     * [ ] Drop
     * [x] DropPlayer
-    * [ ] Effect
+    * [x] Effect
     * [x] Item
     * [ ] MagicWand
     * [x] Mana
-    * [ ] ZireaelSword
+    * [x] ZireaelSword
 * [ ] Reimplement DebugStick - Current version is ugly and not optimal
 * [ ] Review logging
 

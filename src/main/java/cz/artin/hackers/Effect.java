@@ -22,15 +22,14 @@ public abstract class Effect {
         (new Mana()).add(player, colour, amount);
     }
 
-    public static void removeMana(Player player, Mana.Colour colour, Integer amount) {
-        (new Mana()).remove(player, colour, amount);
+    public static boolean removeMana(Player player, Mana.Colour colour, Integer amount) {
+        return (new Mana()).remove(player, colour, amount);
     }
 
     public static void blinkForward(Player player, Integer distance) {
-        LOGGER.finer("blinkForward()");
         HashSet<Material> transparentMaterials = new HashSet<>(Arrays.asList(Material.AIR, Material.CAVE_AIR, Material.VOID_AIR, Material.WATER));
         List<Block> lineOfSight = player.getLineOfSight(transparentMaterials, distance);
-        LOGGER.fine("blinkForward(): lineOfSight length = " + lineOfSight.size());
+        LOGGER.fine("Effect.blinkForward: lineOfSight length = " + lineOfSight.size());
         Location targetLocation;
         if (lineOfSight.get(lineOfSight.size() - 1).getLocation().getBlock().getType().equals(Material.AIR)) {
             targetLocation = lineOfSight.get(lineOfSight.size() - 1).getLocation();
@@ -43,12 +42,10 @@ public abstract class Effect {
     }
 
     public static void dealDamage(Player player, Integer amount) {
-        LOGGER.finer("dealDamage()");
         player.damage(amount);
     }
 
     public static void launchFireball(Player player) {
-        LOGGER.finer("launchFireball()");
         player.launchProjectile(Fireball.class);
     }
 }
