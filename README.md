@@ -18,16 +18,14 @@ Features:
 * [ ] Code Cleanup
     * [ ] DebugStick
     * [ ] Drop
-    * [ ] DropPlayer
-    * [ ] Effect - In progress: addMana and removeMana share code, maybe handle mana colours as an array
+    * [x] DropPlayer
+    * [ ] Effect
     * [x] Item
     * [ ] MagicWand
+    * [x] Mana
     * [ ] ZireaelSword
 * [ ] Reimplement DebugStick - Current version is ugly and not optimal
 * [ ] Review logging
-    * Fine - Method entry points
-    * Finer - Method debug information
-    * Finest - Method cycle-iteration debug information
 
 ### Code Cleanup
 
@@ -36,11 +34,19 @@ Features:
 * [ ] Add points to the player if opponent dies from burning, suffocating, etc.
 * [ ] Display resources (mana, arrows, etc.) on the belt
 * [ ] Add resources (mana, soil, arrows)
-* [ ] Use resources while casting a spell
+* [x] Use resources while casting a spell
 * [ ] Regenerate resources
-* [ ] Implement cooldown
-* [ ] Earth Wand generates resource
+* [ ] Implement cool-down
+* [x] Earth Wand generates resource
 * [ ] Rename items in game
+
+## Rules
+
+* Each class has a constructor with logger message
+* Logger
+    * Fine - Debug information
+    * Finer - Method entry points
+    * Finest - Cycle-iteration
 
 ## Structure
 
@@ -60,5 +66,26 @@ Drop
 
 ## Notes
 
-* The method Effect.removeMana() considers meta data when checking the amount of mana but removal works with the Material only. It may happen that using mana removes actual material not mana (material with specific meta data).
-* The methods for checking the item like Item.isItemInMainHand() should be checking material, name and lore
+* The methods for checking the item like Item.isItemInMainHand should be checking material, name and lore
+* Why Mana cannot be static? Why Item cannot be static? Item is abstract, so requires override from subclases. 
+* Mana.equip and Mana.interact might not be necessary if Drop interface and Item.interact are defined differently. 
+* Mana and items will be properties of DropPlayer. They will have limits based on the played.
+* Bug: When charging green mana, if using ground beneath the player, 3 green are added.
+* One of the following:
+    * ~~Register listener in Item, not in ZireaelSword, ...? onInteract will be available for all items~~
+    * Remove onInteract from Item, it will have only isItemInMain hand, event handler will be in specific class if needed
+* Implement Mana add/remove methods better
+* There cannot be constructor for Drop class. Plugin would stop working.
+* Mana could kill player if interacted with
+
+No idea how `Item.removeItems` can work with following code. It should be negated. - It is always false.
+```text
+if (itemStack.getType().equals(material)) {
+    continue;
+}
+```
+Minecraft messes up materials (Material.BLUE_DYE, Material.GREEN_DYE)
+```text
+[10:28:24] [Server thread/INFO]: Item.removeItems: material = AIR, displayName = Blue Mana
+[10:28:24] [Server thread/INFO]: Item.removeItems: material = INK_SACK, displayName = Green Mana
+```

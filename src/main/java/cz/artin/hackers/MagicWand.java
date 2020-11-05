@@ -6,14 +6,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.logging.Logger;
+
 public class MagicWand extends Item implements Listener {
-    // TODO: Move to Item class
-    public MagicWand(JavaPlugin plugin) {
+    private static final Logger LOGGER = Logger.getLogger(MagicWand.class.getName());
+
+    MagicWand(JavaPlugin plugin) {
+        LOGGER.finer("MagicWand");
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    @Override
-    public void equip(Player player) {
+    public void add(Player player) {
         add(player, Material.STICK, MagicWand.class.getName());
     }
 

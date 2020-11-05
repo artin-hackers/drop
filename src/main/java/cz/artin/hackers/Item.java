@@ -11,18 +11,18 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.logging.Logger;
 
-public abstract class Item implements Drop.ItemEquip {
-    private final Logger LOGGER = Logger.getLogger(Item.class.getName());
+public abstract class Item implements Drop.ItemAdd {
+    private static final Logger LOGGER = Logger.getLogger(Item.class.getName());
 
-    public Item() {
-        LOGGER.finer("Item()");
+    Item() {
+        LOGGER.finer("Item");
     }
 
     public abstract void interact(Player player, Action action);
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        if (isItemInMainHand(event, this.getClass().getName())) {
+        if (isItemInMainHand(event.getPlayer(), this.getClass().getName())) {
             interact(event.getPlayer(), event.getAction());
         }
     }
@@ -39,10 +39,6 @@ public abstract class Item implements Drop.ItemEquip {
         player.getInventory().addItem(itemStack);
     }
 
-    public boolean remove(Player player, Material material, String displayName) {
-        return remove(player, material, displayName, 1);
-    }
-
     public boolean remove(Player player, Material material, String displayName, Integer amount) {
         if (amount <= 0) {
             LOGGER.warning("Invalid amount");
@@ -54,7 +50,7 @@ public abstract class Item implements Drop.ItemEquip {
         }
 
         if (player.getInventory().containsAtLeast(itemStack, amount)) {
-            removeItems(player, material, displayName, amount);
+            removeItems(player.getInventory(), displayName, amount);
             return true;
         } else {
             return false;
@@ -77,40 +73,36 @@ public abstract class Item implements Drop.ItemEquip {
         return itemStack;
     }
 
-    private void removeItems(Player player, Material material, String displayName, Integer amount) {
-        Integer remainsToRemove = amount;
-        Inventory inventory = player.getInventory();
+    private void removeItems(Inventory inventory, String displayName, int amount) {
+        int remainsToRemove = amount;
         for (int slot = 0; slot < inventory.getSize(); slot++) {
-            ItemStack slotItemStack = inventory.getItem(slot);
-            if (slotItemStack == null) {
+            ItemStack itemStack = inventory.getItem(slot);
+            if (itemStack == null) {
                 continue;
             }
-            if (slotItemStack.getItemMeta() == null) {
+            if (itemStack.getItemMeta() == null) {
                 continue;
             }
-            if (slotItemStack.getType() != material) {
-                continue;
-            }
-            if (!slotItemStack.getItemMeta().getDisplayName().equals(displayName)) {
+            LOGGER.finest("Item.removeItems: material = " + itemStack.getType().toString() + ", displayName = " + itemStack.getItemMeta().getDisplayName());
+            if (!itemStack.getItemMeta().getDisplayName().equals(displayName)) {
                 continue;
             }
 
-            int newAmount = slotItemStack.getAmount() - remainsToRemove;
-            if (newAmount > 0) {
-                slotItemStack.setAmount(newAmount);
+            if (itemStack.getAmount() == remainsToRemove) {
+                inventory.clear(slot);
+                break;
+            } else if (itemStack.getAmount() > remainsToRemove) {
+                itemStack.setAmount(itemStack.getAmount() - remainsToRemove);
                 break;
             } else {
                 inventory.clear(slot);
-                remainsToRemove = -newAmount;
-                if (remainsToRemove == 0) {
-                    break;
-                }
+                remainsToRemove -= itemStack.getAmount();
             }
         }
     }
 
-    private boolean isItemInMainHand(PlayerInteractEvent event, String displayName) {
-        ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
+    private boolean isItemInMainHand(Player player, String displayName) {
+        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         if (itemInMainHand.getItemMeta() != null) {
             return itemInMainHand.getItemMeta().getDisplayName().equals(displayName);
         } else {
