@@ -14,8 +14,8 @@ import java.util.logging.Logger;
 public abstract class Item implements Drop.ItemEquip {
     private static final Logger LOGGER = Logger.getLogger(Item.class.getName());
 
-    public Item() {
-        LOGGER.finer("Item()");
+    Item() {
+        LOGGER.finer("Item");
     }
 
     public abstract void interact(Player player, Action action);

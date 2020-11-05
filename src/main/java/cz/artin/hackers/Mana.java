@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 public class Mana extends Item {
     private static final Logger LOGGER = Logger.getLogger(Mana.class.getName());
 
-    public Mana() {
+    Mana() {
         LOGGER.finer("Mana");
     }
 

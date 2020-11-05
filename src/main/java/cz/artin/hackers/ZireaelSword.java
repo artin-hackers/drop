@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 public class ZireaelSword extends Item implements Listener {
     private static final Logger LOGGER = Logger.getLogger(ZireaelSword.class.getName());
 
-    public ZireaelSword(JavaPlugin plugin) {
+    ZireaelSword(JavaPlugin plugin) {
         LOGGER.finer("ZireaelSword");
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }

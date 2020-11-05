@@ -26,9 +26,6 @@ Features:
     * [ ] ZireaelSword
 * [ ] Reimplement DebugStick - Current version is ugly and not optimal
 * [ ] Review logging
-    * Fine - Method entry points
-    * Finer - Method debug information
-    * Finest - Method cycle-iteration debug information
 
 ### Code Cleanup
 
@@ -37,11 +34,19 @@ Features:
 * [ ] Add points to the player if opponent dies from burning, suffocating, etc.
 * [ ] Display resources (mana, arrows, etc.) on the belt
 * [ ] Add resources (mana, soil, arrows)
-* [ ] Use resources while casting a spell
+* [x] Use resources while casting a spell
 * [ ] Regenerate resources
-* [ ] Implement cooldown
-* [ ] Earth Wand generates resource
+* [ ] Implement cool-down
+* [x] Earth Wand generates resource
 * [ ] Rename items in game
+
+## Rules
+
+* Each class has a constructor with logger message
+* Logger
+    * Fine - Debug information
+    * Finer - Method entry points
+    * Finest - Cycle-iteration
 
 ## Structure
 

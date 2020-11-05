@@ -11,8 +11,8 @@ import java.util.logging.Logger;
 public class MagicWand extends Item implements Listener {
     private static final Logger LOGGER = Logger.getLogger(MagicWand.class.getName());
 
-    // REFACTORING: Move to Item class
-    public MagicWand(JavaPlugin plugin) {
+    MagicWand(JavaPlugin plugin) {
+        LOGGER.finer("MagicWand");
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 

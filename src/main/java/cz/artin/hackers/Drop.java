@@ -29,6 +29,10 @@ public class Drop extends JavaPlugin implements Listener {
     private static final int DEFAULT_DUMMY_RADIUS = 10;  // REFACTORING: Move to a sub-class
     private static Location PORTAL_EXIT = null;  // REFACTORING: Move to a sub-class
 
+    Drop() {
+        LOGGER.finer("Drop");
+    }
+
     @Override
     public void onEnable() {
         LOGGER.info("Loading DROP plugin...");

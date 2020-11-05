@@ -14,6 +14,10 @@ import java.util.logging.Logger;
 public abstract class Effect {
     private static final Logger LOGGER = Logger.getLogger(Effect.class.getName());
 
+    Effect() {
+        LOGGER.finer("Effect");
+    }
+
     public static void addMana(Player player, Mana.Colour colour, Integer amount) {
         (new Mana()).add(player, colour, amount);
     }
