@@ -6,8 +6,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.logging.Logger;
+
 public class MagicWand extends Item implements Listener {
-    // TODO: Move to Item class
+    private static final Logger LOGGER = Logger.getLogger(MagicWand.class.getName());
+
+    // REFACTORING: Move to Item class
     public MagicWand(JavaPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }

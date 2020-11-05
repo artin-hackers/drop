@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.logging.Logger;
 
 public class DebugStick extends Item implements Listener {
-    private final Logger LOGGER = Logger.getLogger(DebugStick.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DebugStick.class.getName());
     private int activeEffect = 0;
 
     public DebugStick(JavaPlugin plugin) {
