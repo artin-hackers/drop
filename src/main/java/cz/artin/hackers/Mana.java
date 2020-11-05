@@ -14,6 +14,7 @@ public class Mana extends Item {
     }
 
     public void add(Player player) {
+        LOGGER.warning("Attempt to add mana as an item via Drop.ItemAdd interface");
     }
 
     public void add(Player player, Mana.Colour colour, int amount) {
@@ -57,6 +58,7 @@ public class Mana extends Item {
     }
 
     public void interact(Player player, Action action) {
+        LOGGER.warning("Attempt to interact with mana");
     }
 
     enum Colour {

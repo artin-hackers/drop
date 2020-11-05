@@ -20,7 +20,7 @@ Features:
     * [ ] Drop
     * [x] DropPlayer
     * [ ] Effect
-    * [ ] Item
+    * [x] Item
     * [ ] MagicWand
     * [x] Mana
     * [ ] ZireaelSword
@@ -74,3 +74,18 @@ Drop
 * One of the following:
     * ~~Register listener in Item, not in ZireaelSword, ...? onInteract will be available for all items~~
     * Remove onInteract from Item, it will have only isItemInMain hand, event handler will be in specific class if needed
+* Implement Mana add/remove methods better
+* There cannot be constructor for Drop class. Plugin would stop working.
+* Mana could kill player if interacted with
+
+No idea how `Item.removeItems` can work with following code. It should be negated. - It is always false.
+```text
+if (itemStack.getType().equals(material)) {
+    continue;
+}
+```
+Minecraft messes up materials (Material.BLUE_DYE, Material.GREEN_DYE)
+```text
+[10:28:24] [Server thread/INFO]: Item.removeItems: material = AIR, displayName = Blue Mana
+[10:28:24] [Server thread/INFO]: Item.removeItems: material = INK_SACK, displayName = Green Mana
+```

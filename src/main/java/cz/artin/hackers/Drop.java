@@ -29,10 +29,6 @@ public class Drop extends JavaPlugin implements Listener {
     private static final int DEFAULT_DUMMY_RADIUS = 10;  // REFACTORING: Move to a sub-class
     private static Location PORTAL_EXIT = null;  // REFACTORING: Move to a sub-class
 
-    Drop() {
-        LOGGER.finer("Drop");
-    }
-
     @Override
     public void onEnable() {
         LOGGER.info("Loading DROP plugin...");
@@ -108,9 +104,9 @@ public class Drop extends JavaPlugin implements Listener {
         Filipovasekera(event.getPlayer());  // REFACTORING: Move to items
         Zdenkovahulka(event.getPlayer());  // REFACTORING: Move to items
         createbow(event.getPlayer());  // REFACTORING: Move to items
-//        Mana mana = new Mana();  // REFACTORING: Move to player setup
-//        mana.add(event.getPlayer(), Mana.Colour.BLUE, 3);
-//        mana.add(event.getPlayer(), Mana.Colour.GREEN, 3);
+
+        (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
+        (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
     }
 
     @EventHandler
@@ -121,6 +117,20 @@ public class Drop extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerKick(PlayerKickEvent event) {
         dropPlayers.removeIf(dropPlayer -> dropPlayer.getPlayer().equals(event.getPlayer()));
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        for (ItemAdd item : items) {
+            item.add(event.getPlayer());
+        }
+
+        Filipovasekera(event.getPlayer());  // REFACTORING: Move to items
+        Zdenkovahulka(event.getPlayer());  // REFACTORING: Move to items
+        createbow(event.getPlayer());  // REFACTORING: Move to items
+
+        (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
+        (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
     }
 
     // REFACTORING: Review from here
@@ -240,21 +250,6 @@ public class Drop extends JavaPlugin implements Listener {
     public void onPlayerRegainHealth(EntityRegainHealthEvent event) {
         if (event.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED || event.getRegainReason() == EntityRegainHealthEvent.RegainReason.REGEN)
             event.setCancelled(true);
-    }
-
-
-    @EventHandler
-    public void onPlayerRespawn(PlayerRespawnEvent event) {
-        for (ItemAdd item : items) {
-            item.add(event.getPlayer());
-        }
-
-        Filipovasekera(event.getPlayer());
-        Zdenkovahulka(event.getPlayer());
-        createbow(event.getPlayer());
-//        Mana mana = new Mana();
-//        mana.add(event.getPlayer(), Mana.Colour.BLUE, 3);
-//        mana.add(event.getPlayer(), Mana.Colour.GREEN, 3);
     }
 
     @EventHandler
