@@ -9,22 +9,19 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.logging.Logger;
 
 public class ZireaelSword extends Item implements Listener {
-    private final Logger LOGGER = Logger.getLogger(ZireaelSword.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ZireaelSword.class.getName());
 
-    public ZireaelSword(JavaPlugin plugin) {
+    ZireaelSword(JavaPlugin plugin) {
         LOGGER.finer("ZireaelSword");
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    @Override
-    public void equip(Player player) {
-        LOGGER.finer("equip");
+    public void add(Player player) {
         add(player, Material.DIAMOND_SWORD, ZireaelSword.class.getName());
     }
 
     @Override
     public void interact(Player player, Action action) {
-        LOGGER.finer("effect");
         if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
             Effect.blinkForward(player, 10);
         }
