@@ -38,6 +38,7 @@ public class Drop extends JavaPlugin implements Listener {
             items.add(new DebugStick(this));
         }
         items.add(new ZireaelSword(this));
+        items.add(new FilipAxe(this));
 
         Objects.requireNonNull(getServer().getWorld("world")).setTime(1000);  // Development setup, remove in release version
         Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // Development setup, remove in release version
