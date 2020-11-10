@@ -52,19 +52,8 @@ public class Drop extends JavaPlugin implements Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {  // REFACTORING: Review
-        if (label.equalsIgnoreCase("trigger")) {
-            LOGGER.info("Trigger command called with arguments: " + Arrays.toString(args));
-            return true;
-        } else if (label.equalsIgnoreCase("equip")) {
-            return equip(sender, args);
-        } else if (label.equalsIgnoreCase("setModeDeveloper")) {
-            return setModeDeveloper(sender);
-        } else if (label.equalsIgnoreCase("setModeNormal")) {
-            return setModeNormal(sender);
-        } else if (label.equalsIgnoreCase("setPortalExit")) {
+        if (label.equalsIgnoreCase("setPortalExit")) {
             return setPortalExit(sender);
-        } else if (label.equalsIgnoreCase("spawnChicken")) {
-            return spawnChicken(sender);
         } else if (label.equalsIgnoreCase("spawnDummies")) {
             return spawnDummies(sender, args);
         } else if (label.equalsIgnoreCase("teleport")) {
@@ -72,18 +61,9 @@ public class Drop extends JavaPlugin implements Listener {
         } else if (label.equalsIgnoreCase("sethometown")) {
             getLogger().info("sethometown");
             return setHometown(sender);
-        } else if (label.equalsIgnoreCase("Filipovasekera")) {
-            getLogger().info("Filipovasekera");
-            return Filipovasekera(sender);
         } else if (label.equalsIgnoreCase("buildObelisk")) {
             getLogger().info("buildObelisk()");
             return buildObelisk(sender);
-        } else if (label.equalsIgnoreCase("Zdenkovahulka")) {
-            return Zdenkovahulka(sender);
-        } else if (label.equalsIgnoreCase("Hulkazivota")) {
-            return Hulkazivota(sender);
-        } else if (label.equalsIgnoreCase("creategauge")) {
-            return creategauge(sender);
         } else if (label.equalsIgnoreCase("createArena")) {
             return createArena(sender);
         } else if (label.equalsIgnoreCase("showscore")) {
@@ -102,7 +82,6 @@ public class Drop extends JavaPlugin implements Listener {
             item.add(event.getPlayer());
         }
 
-        Filipovasekera(event.getPlayer());  // REFACTORING: Move to items
         Zdenkovahulka(event.getPlayer());  // REFACTORING: Move to items
         createbow(event.getPlayer());  // REFACTORING: Move to items
 
@@ -126,7 +105,6 @@ public class Drop extends JavaPlugin implements Listener {
             item.add(event.getPlayer());
         }
 
-        Filipovasekera(event.getPlayer());  // REFACTORING: Move to items
         Zdenkovahulka(event.getPlayer());  // REFACTORING: Move to items
         createbow(event.getPlayer());  // REFACTORING: Move to items
 
@@ -145,32 +123,6 @@ public class Drop extends JavaPlugin implements Listener {
             }
         }
         return true;
-    }
-
-    private boolean equip(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player)) {
-            LOGGER.warning("Invalid caller of equip command");
-            return false;
-        } else if (args.length != 1) {
-            LOGGER.warning("Invalid argument in equip command");
-            return false;
-        } else {
-            // REFACTORING: Call functions from items list
-            Player player = (Player) sender;
-            String itemName = args[0];
-            if (itemName.equalsIgnoreCase("MagicWand")) {
-                MagicWand magicWand = new MagicWand(this);
-                magicWand.add(player);
-                return true;
-            } else if (itemName.equalsIgnoreCase("ZireaelSword")) {
-                ZireaelSword zireaelSword = new ZireaelSword(this);
-                zireaelSword.add(player);
-                return true;
-            } else {
-                LOGGER.warning("Unknown item requested");
-                return false;
-            }
-        }
     }
 
     private boolean createArena(CommandSender sender) {
@@ -233,20 +185,6 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean Hulkazivota(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            Player me = (Player) sender;
-            ItemStack wand = new ItemStack(Material.BLAZE_ROD, 1);
-            ItemMeta meta = wand.getItemMeta();
-            meta.setDisplayName("Hulkazivota");
-            wand.setItemMeta(meta);
-            me.getInventory().addItem(wand);
-        }
-
-        return true;
-    }
-
     @EventHandler
     public void onPlayerRegainHealth(EntityRegainHealthEvent event) {
         if (event.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED || event.getRegainReason() == EntityRegainHealthEvent.RegainReason.REGEN)
@@ -304,9 +242,6 @@ public class Drop extends JavaPlugin implements Listener {
             }
             if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                 if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
-                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Filipovasekera")) {
-                        event.getPlayer().launchProjectile(Fireball.class);
-                    }
                     if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
                         Mana mana = new Mana();
                         if (mana.remove(event.getPlayer(), Mana.Colour.GREEN, 1)) {
@@ -314,9 +249,6 @@ public class Drop extends JavaPlugin implements Listener {
                         } else {
                             event.getPlayer().sendMessage("no mana");
                         }
-                    }
-                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Hulkazivota")) {
-                        Hulkazivota2(event.getPlayer());
                     }
                 }
             }
@@ -339,15 +271,6 @@ public class Drop extends JavaPlugin implements Listener {
         } else {
             return Integer.valueOf(args[index]);
         }
-    }
-
-    private boolean setModeDeveloper(CommandSender sender) {
-        if (sender instanceof Player) {
-            ((Player) sender).setGameMode(GameMode.CREATIVE);
-            ((Player) sender).getWorld().setTime(0);
-            ((Player) sender).getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-        }
-        return true;
     }
 
     private boolean setHometown(CommandSender sender) {
@@ -381,40 +304,10 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean setModeNormal(CommandSender sender) {
-        if (sender instanceof Player) {
-            ((Player) sender).setGameMode(GameMode.SURVIVAL);
-            ((Player) sender).getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
-        }
-        return true;
-    }
-
     private boolean setPortalExit(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             PORTAL_EXIT = player.getLocation().clone();
-        }
-        return true;
-    }
-
-    private boolean spawnChicken(CommandSender sender) {
-        return true;
-    }
-
-    private boolean Filipovasekera(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-            if (itemInMainHand != null && itemInMainHand.getItemMeta() != null && itemInMainHand.getItemMeta().getDisplayName().equals("Filipovasekera")) {
-                return true;
-            } else {
-                Player me = (Player) sender;
-                ItemStack axe = new ItemStack(Material.DIAMOND_AXE, 1);
-                ItemMeta meta = axe.getItemMeta();
-                meta.setDisplayName("Filipovasekera");
-                axe.setItemMeta(meta);
-                me.getInventory().addItem(axe);
-            }
         }
         return true;
     }
@@ -547,11 +440,8 @@ public class Drop extends JavaPlugin implements Listener {
                         location.getY(),
                         location.getZ() + z);
                 currentLocation.getBlock().setType(Material.FIRE);
-
-
             }
         }
-
         return true;
     }
 
@@ -570,26 +460,6 @@ public class Drop extends JavaPlugin implements Listener {
             }
         }
         return null;
-    }
-
-    private boolean buildwall(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            Location pozice = putInView(sender, 6);
-            for (int x = -1; x < 2; x++) {
-                for (int y = 0; y < 3; y++) {
-                    for (int z = -1; z < 2; z++) {
-                        final Location pozice_tmp = new Location(
-                                player.getWorld(),
-                                pozice.getX() + x,
-                                pozice.getY() + y,
-                                pozice.getZ() + z);
-                        pozice_tmp.getBlock().setType(Material.DIRT);
-                    }
-                }
-            }
-        }
-        return true;
     }
 
     private boolean buildObelisk(CommandSender sender) {
