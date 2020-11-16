@@ -15,6 +15,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -46,6 +47,15 @@ public class Drop extends JavaPlugin implements Listener {
         for (Player player : Bukkit.getOnlinePlayers()) {
             dropPlayers.add(new DropPlayer(player));
         }
+
+        new BukkitRunnable() {
+            public void run() {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    Effect.addMana(player, Mana.Colour.BLUE, 1);
+                    Effect.addMana(player, Mana.Colour.RED, 1);
+                }
+            }
+        }.runTaskTimer(this, 20 * 5L, 20 * 20L);
 
         LOGGER.info("...plugin successfully loaded.");
     }
