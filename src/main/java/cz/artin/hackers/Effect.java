@@ -18,8 +18,8 @@ public abstract class Effect {
         LOGGER.finer("Effect");
     }
 
-    public static void addMana(Player player, Mana.Colour colour, Integer amount) {
-        (new Mana()).add(player, colour, amount);
+    public static boolean addMana(Player player, Mana.Colour colour, Integer amount) {
+        return (new Mana()).add(player, colour, amount);
     }
 
     public static boolean removeMana(Player player, Mana.Colour colour, Integer amount) {

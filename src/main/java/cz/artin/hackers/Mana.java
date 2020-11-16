@@ -17,25 +17,21 @@ public class Mana extends Item {
         LOGGER.warning("Attempt to add mana as an item via Drop.ItemAdd interface");
     }
 
-    public void add(Player player, Mana.Colour colour, int amount) {
+    public boolean add(Player player, Mana.Colour colour, int amount) {
         switch (colour) {
             case BLACK:
-                add(player, Material.BLACK_DYE, "Black Mana", amount);
-                break;
+                return add(player, Material.BLACK_DYE, "Black Mana", amount);
             case BLUE:
-                add(player, Material.BLUE_DYE, "Blue Mana", amount);
-                break;
+                return add(player, Material.BLUE_DYE, "Blue Mana", amount, 5);
             case GREEN:
-                add(player, Material.GREEN_DYE, "Green Mana", amount);
-                break;
+                return add(player, Material.GREEN_DYE, "Green Mana", amount);
             case RED:
-                add(player, Material.RED_DYE, "Red Mana", amount);
-                break;
+                return add(player, Material.RED_DYE, "Red Mana", amount);
             case WHITE:
-                add(player, Material.WHITE_DYE, "White Mana", amount);
-                break;
+                return add(player, Material.WHITE_DYE, "White Mana", amount);
             default:
                 LOGGER.warning("Unknown mana colour");
+                return false;
         }
     }
 
