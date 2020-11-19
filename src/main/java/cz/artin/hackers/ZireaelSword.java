@@ -21,9 +21,7 @@ public class ZireaelSword extends Item implements Listener {
     }
 
     public void interact(Player player, Action action) {
-        if (action.equals(Action.LEFT_CLICK_BLOCK)) {
-            Effect.addMana(player, Mana.Colour.BLUE, 1);
-        } else if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
+        if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
             if (Effect.removeMana(player, Mana.Colour.BLUE, 1)) {
                 Effect.blinkForward(player, 10);
             } else {
