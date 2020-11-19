@@ -40,6 +40,7 @@ public class Drop extends JavaPlugin implements Listener {
         }
         items.add(new ZireaelSword(this));
         items.add(new FilipAxe(this));
+        items.add(new ZdenekWand(this));
 
         Objects.requireNonNull(getServer().getWorld("world")).setTime(1000);  // Development setup, remove in release version
         Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // Development setup, remove in release version
@@ -92,7 +93,7 @@ public class Drop extends JavaPlugin implements Listener {
             item.add(event.getPlayer());
         }
 
-        Zdenkovahulka(event.getPlayer());  // REFACTORING: Move to items
+
         createbow(event.getPlayer());  // REFACTORING: Move to items
 
         (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
@@ -115,7 +116,7 @@ public class Drop extends JavaPlugin implements Listener {
             item.add(event.getPlayer());
         }
 
-        Zdenkovahulka(event.getPlayer());  // REFACTORING: Move to items
+
         createbow(event.getPlayer());  // REFACTORING: Move to items
 
         (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
@@ -169,19 +170,7 @@ public class Drop extends JavaPlugin implements Listener {
 
     }
 
-    private boolean Zdenkovahulka(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            Player me = (Player) sender;
-            ItemStack wand = new ItemStack(Material.BLAZE_ROD, 1);
-            ItemMeta meta = wand.getItemMeta();
-            meta.setDisplayName("Zdenkovahulka");
-            wand.setItemMeta(meta);
-            me.getInventory().addItem(wand);
-        }
 
-        return true;
-    }
 
     private boolean equipRifleWand(CommandSender sender) {
         if (sender instanceof Player) {
@@ -250,28 +239,7 @@ public class Drop extends JavaPlugin implements Listener {
                     }
                 }
             }
-            if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-                if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
-                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
-                        Mana mana = new Mana();
-                        if (mana.remove(event.getPlayer(), Mana.Colour.GREEN, 1)) {
-                            creategauge(event.getPlayer());
-                        } else {
-                            event.getPlayer().sendMessage("no mana");
-                        }
-                    }
-                }
-            }
-            if (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-                if (itemInMainHand != null && itemInMainHand.getItemMeta() != null) {
-                    if (itemInMainHand.getItemMeta().getDisplayName().equals("Zdenkovahulka")) {
-                        Mana mana = new Mana();
-                        createhole(event.getPlayer());
-                        mana.add(event.getPlayer(), Mana.Colour.GREEN, 1);
-                        Hulkazivota2(event.getPlayer());
-                    }
-                }
-            }
+
         }
     }
 
