@@ -55,7 +55,7 @@ public class Drop extends JavaPlugin implements Listener {
                     Effect.addMana(player, Mana.Colour.RED, 1);
                 }
             }
-        }.runTaskTimer(this, 20 * 5L, 20 * 20L);
+        }.runTaskTimer(this, 20 * 5L, 20 * 10L);
 
         LOGGER.info("...plugin successfully loaded.");
     }
