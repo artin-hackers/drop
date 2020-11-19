@@ -20,15 +20,15 @@ public class Mana extends Item {
     public boolean add(Player player, Mana.Colour colour, int amount) {
         switch (colour) {
             case BLACK:
-                return add(player, Material.BLACK_DYE, "Black Mana", amount);
+                return add(player, Material.BLACK_DYE, "Black Mana", amount, 5);
             case BLUE:
                 return add(player, Material.BLUE_DYE, "Blue Mana", amount, 5);
             case GREEN:
-                return add(player, Material.GREEN_DYE, "Green Mana", amount);
+                return add(player, Material.GREEN_DYE, "Green Mana", amount, 5);
             case RED:
-                return add(player, Material.RED_DYE, "Red Mana", amount);
+                return add(player, Material.RED_DYE, "Red Mana", amount, 5);
             case WHITE:
-                return add(player, Material.WHITE_DYE, "White Mana", amount);
+                return add(player, Material.WHITE_DYE, "White Mana", amount, 5);
             default:
                 LOGGER.warning("Unknown mana colour");
                 return false;
