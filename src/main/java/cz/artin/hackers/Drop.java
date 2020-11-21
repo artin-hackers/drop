@@ -26,6 +26,7 @@ public class Drop extends JavaPlugin implements Listener {
     private static final boolean DEBUG_STICK_ALLOWED = true;
     private static final List<DropPlayer> dropPlayers = new ArrayList<>();
     private static final List<ItemAdd> items = new ArrayList<>();
+    private static Arena arena;
     private static final int DEFAULT_DUMMY_COUNT = 10;  // REFACTORING: Move to a sub-class
     private static final int DEFAULT_DUMMY_RADIUS = 10;  // REFACTORING: Move to a sub-class
     private static Location PORTAL_EXIT = null;  // REFACTORING: Move to a sub-class
@@ -33,13 +34,8 @@ public class Drop extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         LOGGER.info("Loading DROP plugin...");
-        getServer().getPluginManager().registerEvents(this, this);
 
-        if (DEBUG_STICK_ALLOWED) {
-            items.add(new DebugStick(this));
-        }
-        items.add(new ZireaelSword(this));
-        items.add(new FilipAxe(this));
+        getServer().getPluginManager().registerEvents(this, this);
 
         Objects.requireNonNull(getServer().getWorld("world")).setTime(1000);  // Development setup, remove in release version
         Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // Development setup, remove in release version
@@ -47,6 +43,14 @@ public class Drop extends JavaPlugin implements Listener {
         for (Player player : Bukkit.getOnlinePlayers()) {
             dropPlayers.add(new DropPlayer(player));
         }
+
+        arena = new Arena();
+
+        if (DEBUG_STICK_ALLOWED) {
+            items.add(new DebugStick(this));
+        }
+        items.add(new ZireaelSword(this));
+        items.add(new FilipAxe(this));
 
         new BukkitRunnable() {
             public void run() {
@@ -61,21 +65,19 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {  // REFACTORING: Review
-        if (label.equalsIgnoreCase("setPortalExit")) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {  // REFACTORING: Review after buildArena
+        if (label.equalsIgnoreCase("buildArena")) {
+            return buildArena(sender);
+        } else if (label.equalsIgnoreCase("setPortalExit")) {
             return setPortalExit(sender);
         } else if (label.equalsIgnoreCase("spawnDummies")) {
             return spawnDummies(sender, args);
-        } else if (label.equalsIgnoreCase("teleport")) {
-            return teleport(sender);
         } else if (label.equalsIgnoreCase("sethometown")) {
             getLogger().info("sethometown");
             return setHometown(sender);
         } else if (label.equalsIgnoreCase("buildObelisk")) {
             getLogger().info("buildObelisk()");
             return buildObelisk(sender);
-        } else if (label.equalsIgnoreCase("createArena")) {
-            return createArena(sender);
         } else if (label.equalsIgnoreCase("showscore")) {
             return showScore(sender);
         } else {
@@ -122,6 +124,10 @@ public class Drop extends JavaPlugin implements Listener {
         (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
     }
 
+    private boolean buildArena(CommandSender sender) {
+        return arena.buildArena(sender);
+    }
+
     // REFACTORING: Review from here
 
     private boolean showScore(CommandSender sender) {
@@ -133,40 +139,6 @@ public class Drop extends JavaPlugin implements Listener {
             }
         }
         return true;
-    }
-
-    private boolean createArena(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            Location location = player.getLocation();
-            for (int x = -50; x <= 50; x++) {
-                for (int y = 0; y <= 50; y++) {
-                    for (int z = -50; z <= 50; z++) {
-                        Location blockLocation = new Location(
-                                player.getWorld(),
-                                location.getX() + x,
-                                location.getY() + y,
-                                location.getZ() + z);
-                        blockLocation.getBlock().setType(Material.AIR);
-                    }
-                }
-            }
-            for (int x = -50; x <= 50; x++) {
-                for (int z = -50; z <= 50; z++) {
-                    Location blockLocation = new Location(
-                            player.getWorld(),
-                            location.getX() + x,
-                            location.getY() - 1,
-                            location.getZ() + z);
-                    blockLocation.getBlock().setType(Material.GRASS_BLOCK);
-
-                }
-            }
-            return true;
-        } else {
-            return false;
-        }
-
     }
 
     private boolean Zdenkovahulka(CommandSender sender) {
@@ -504,18 +476,6 @@ public class Drop extends JavaPlugin implements Listener {
                         playerLocation.getY(),
                         playerLocation.getZ() + randomZ);
                 Zombie dummy = player.getWorld().spawn(dummyLocation, Zombie.class);
-            }
-        }
-        return true;
-    }
-
-    private boolean teleport(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            if (PORTAL_EXIT != null) {
-                player.teleport(PORTAL_EXIT);
-            } else {
-                player.teleport(player.getWorld().getSpawnLocation());
             }
         }
         return true;
