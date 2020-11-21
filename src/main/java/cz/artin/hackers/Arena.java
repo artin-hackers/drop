@@ -36,7 +36,7 @@ public class Arena {
         for (int x = -50; x <= 50; x++) {
             for (int y = -2; y <= 30; y++) {
                 for (int z = -50; z <= 50; z++) {
-                    Location blockLocation = new Location(player.getWorld(), arenaCenter.getX() + x, arenaCenter.getY() + y, arenaCenter.getZ() + z);
+                    Location blockLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() + x, arenaCenter.getY() + y, arenaCenter.getZ() + z);
                     blockLocation.getBlock().setType(Material.AIR);
                 }
             }
@@ -45,7 +45,7 @@ public class Arena {
         // Build teleport platform
         for (int x = -5; x <= 5; x++) {
             for (int z = -5; z <= 5; z++) {
-                Location blockLocation = new Location(player.getWorld(), arenaCenter.getX() + x, arenaCenter.getY() + - 1, arenaCenter.getZ() + z);
+                Location blockLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() + x, arenaCenter.getY() + -1, arenaCenter.getZ() + z);
                 blockLocation.getBlock().setType(Material.EMERALD_BLOCK);
             }
         }
@@ -53,19 +53,37 @@ public class Arena {
         // Build foundation
         for (int x = -50; x <= 50; x++) {
             for (int z = -50; z <= 50; z++) {
-                Location blockLocation = new Location(player.getWorld(), arenaCenter.getX() + x, arenaCenter.getY() + - 3, arenaCenter.getZ() + z);
+                Location blockLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() + x, arenaCenter.getY() + -3, arenaCenter.getZ() + z);
                 blockLocation.getBlock().setType(Material.LAVA);
             }
         }
 
         // Build terrain
-        for (int x = -10; x <= 10; x++) {
-            for (int z = -10; z <= 10; z++) {
-                Location blockLocation = new Location(player.getWorld(), arenaCenter.getX() + x, arenaCenter.getY() + - 2, arenaCenter.getZ() + z);
+        for (int x = -50; x <= 50; x++) {
+            for (int z = -50; z <= 50; z++) {
+                Location blockLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() + x, arenaCenter.getY() + -2, arenaCenter.getZ() + z);
                 blockLocation.getBlock().setType(Material.GRASS_BLOCK);
             }
         }
 
+        Location patchLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() + getRandomInt(-50, -10), arenaCenter.getY() - 1, arenaCenter.getZ() + getRandomInt(-50, -10));
+        buildPatch(patchLocation, Material.GRASS_BLOCK, getRandomInt(3, 10), getRandomInt(3, 5), getRandomInt(3, 10));
+
         return true;
+    }
+
+    private void buildPatch(Location location, Material material, int sizeX, int sizeY, int sizeZ) {
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
+                for (int z = 0; z < sizeZ; z++) {
+                    Location blockLocation = new Location(location.getWorld(), location.getX() + x, location.getY() + y, location.getZ() + z);
+                    blockLocation.getBlock().setType(material);
+                }
+            }
+        }
+    }
+
+    private int getRandomInt(int minimum, int maximum) {
+        return ThreadLocalRandom.current().nextInt(minimum, maximum);
     }
 }
