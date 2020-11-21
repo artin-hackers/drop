@@ -25,49 +25,36 @@ public class Arena {
         Player player = (Player) commandSender;
         Location arenaCenter = new Location(player.getWorld(), -100, 70, 100);
 
+        // Clear
+        Location patchLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() - 50, arenaCenter.getY() - 3, arenaCenter.getZ() - 50);
+        buildPatch(patchLocation, Material.AIR, 101, 34, 101);
+
+        // Build foundation (lava)
+        patchLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() - 50, arenaCenter.getY() - 3, arenaCenter.getZ() - 50);
+        buildPatch(patchLocation, Material.LAVA, 101, 1, 101);
+
+        // Build terrain (grass)
+        patchLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() - 50, arenaCenter.getY() - 2, arenaCenter.getZ() - 50);
+        buildPatch(patchLocation, Material.GRASS_BLOCK, 101, 1, 101);
+
+        // Build patches
+        Material[] materials = {Material.DIRT, Material.GRASS_BLOCK, Material.STONE, Material.OAK_WOOD, Material.SAND, Material.GRAVEL};
+        for (int i = getRandomInt(25, 50); i >= 0; i--) {
+            patchLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() + getRandomInt(-50, 50), arenaCenter.getY() - 1, arenaCenter.getZ() + getRandomInt(-50, 50));
+            buildPatch(patchLocation, materials[getRandomInt(materials.length)], getRandomInt(7), getRandomInt(5), getRandomInt(7));
+        }
+
+        // Build teleport platform
+        patchLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() - 5, arenaCenter.getY() - 1, arenaCenter.getZ() - 5);
+        buildPatch(patchLocation, Material.AIR, 11, 10, 11);
+        buildPatch(patchLocation, Material.EMERALD_BLOCK, 11, 1, 11);
+
         // Teleport players
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             int randomX = ThreadLocalRandom.current().nextInt(-5, 5);
             int randomZ = ThreadLocalRandom.current().nextInt(-5, 5);
             onlinePlayer.teleport(new Location(arenaCenter.getWorld(), arenaCenter.getX() + randomX, arenaCenter.getY(), arenaCenter.getZ() + randomZ));
         }
-
-        // Clear the area
-        for (int x = -50; x <= 50; x++) {
-            for (int y = -2; y <= 30; y++) {
-                for (int z = -50; z <= 50; z++) {
-                    Location blockLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() + x, arenaCenter.getY() + y, arenaCenter.getZ() + z);
-                    blockLocation.getBlock().setType(Material.AIR);
-                }
-            }
-        }
-
-        // Build teleport platform
-        for (int x = -5; x <= 5; x++) {
-            for (int z = -5; z <= 5; z++) {
-                Location blockLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() + x, arenaCenter.getY() + -1, arenaCenter.getZ() + z);
-                blockLocation.getBlock().setType(Material.EMERALD_BLOCK);
-            }
-        }
-
-        // Build foundation
-        for (int x = -50; x <= 50; x++) {
-            for (int z = -50; z <= 50; z++) {
-                Location blockLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() + x, arenaCenter.getY() + -3, arenaCenter.getZ() + z);
-                blockLocation.getBlock().setType(Material.LAVA);
-            }
-        }
-
-        // Build terrain
-        for (int x = -50; x <= 50; x++) {
-            for (int z = -50; z <= 50; z++) {
-                Location blockLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() + x, arenaCenter.getY() + -2, arenaCenter.getZ() + z);
-                blockLocation.getBlock().setType(Material.GRASS_BLOCK);
-            }
-        }
-
-        Location patchLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() + getRandomInt(-50, -10), arenaCenter.getY() - 1, arenaCenter.getZ() + getRandomInt(-50, -10));
-        buildPatch(patchLocation, Material.GRASS_BLOCK, getRandomInt(3, 10), getRandomInt(3, 5), getRandomInt(3, 10));
 
         return true;
     }
@@ -81,6 +68,10 @@ public class Arena {
                 }
             }
         }
+    }
+
+    private int getRandomInt(int maximum) {
+        return getRandomInt(1, maximum);
     }
 
     private int getRandomInt(int minimum, int maximum) {
