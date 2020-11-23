@@ -3,18 +3,15 @@ version: "1.0-SNAPSHOT"
 author: Artin Hackers Team
 main: cz.artin.hackers.Drop
 commands:
+  buildArena:
+    description: Build arena
   setPortalExit:
     description: Sets current coordinates as main portal exit
   spawnDummies:
     description: Spawns dummies around the player
-  teleport:
-    description: Teleports player to main portal exit
   buildObelisk:
-    description: Builds an obelisk which allows player to teleport to his
-      current portal exit
+    description: Builds an obelisk which allows player to teleport to his current portal exit
   sethometown:
     description: create hometown
-  createArena:
-    description: createArena
   showscore:
     description: Shows current scrore
