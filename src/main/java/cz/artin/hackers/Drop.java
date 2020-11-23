@@ -23,12 +23,12 @@ import java.util.logging.Logger;
 
 public class Drop extends JavaPlugin implements Listener {
     private static final Logger LOGGER = Logger.getLogger(Drop.class.getName());
-    private static final boolean DEBUG_STICK_ALLOWED = true;
+    private static final boolean DEBUG_STICK_ALLOWED = false;
     private static final List<DropPlayer> dropPlayers = new ArrayList<>();
     private static final List<ItemAdd> items = new ArrayList<>();
-    private static Arena arena;
     private static final int DEFAULT_DUMMY_COUNT = 10;  // REFACTORING: Move to a sub-class
     private static final int DEFAULT_DUMMY_RADIUS = 10;  // REFACTORING: Move to a sub-class
+    private static Arena arena;
     private static Location PORTAL_EXIT = null;  // REFACTORING: Move to a sub-class
 
     @Override
@@ -36,13 +36,6 @@ public class Drop extends JavaPlugin implements Listener {
         LOGGER.info("Loading DROP plugin...");
 
         getServer().getPluginManager().registerEvents(this, this);
-
-        if (DEBUG_STICK_ALLOWED) {
-            items.add(new DebugStick(this));
-        }
-        items.add(new ZireaelSword(this));
-        items.add(new FilipAxe(this));
-        items.add(new ZdenekWand(this));
 
         Objects.requireNonNull(getServer().getWorld("world")).setTime(1000);  // Development setup, remove in release version
         Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // Development setup, remove in release version
@@ -58,6 +51,7 @@ public class Drop extends JavaPlugin implements Listener {
         }
         items.add(new ZireaelSword(this));
         items.add(new FilipAxe(this));
+        items.add(new ZdenekWand(this));
 
         new BukkitRunnable() {
             public void run() {
@@ -101,7 +95,6 @@ public class Drop extends JavaPlugin implements Listener {
             item.add(event.getPlayer());
         }
 
-
         createbow(event.getPlayer());  // REFACTORING: Move to items
 
         (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
@@ -125,7 +118,6 @@ public class Drop extends JavaPlugin implements Listener {
         for (ItemAdd item : items) {
             item.add(event.getPlayer());
         }
-
 
         createbow(event.getPlayer());  // REFACTORING: Move to items
 
