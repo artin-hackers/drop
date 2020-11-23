@@ -8,21 +8,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
 
-public class MagicWand extends Item implements Listener {
-    private static final Logger LOGGER = Logger.getLogger(MagicWand.class.getName());
+public class FilipAxe extends Item implements Listener {
+    private static final Logger LOGGER = Logger.getLogger(ZireaelSword.class.getName());
 
-    MagicWand(JavaPlugin plugin) {
-        LOGGER.finer("MagicWand");
+    FilipAxe(JavaPlugin plugin) {
+        LOGGER.finer("FilipAxe");
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public void add(Player player) {
-        add(player, Material.STICK, MagicWand.class.getName());
+        add(player, Material.GOLDEN_AXE, FilipAxe.class.getName());
     }
 
-    @Override
     public void interact(Player player, Action action) {
-        if (action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK)) {
+        if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
             Effect.launchFireball(player);
         }
     }

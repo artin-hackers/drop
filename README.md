@@ -20,6 +20,7 @@ Features:
     * [ ] Drop
     * [x] DropPlayer
     * [x] Effect
+    * [x] FilipAxe
     * [x] Item
     * [ ] MagicWand
     * [x] Mana

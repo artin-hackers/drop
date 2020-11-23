@@ -28,15 +28,20 @@ public abstract class Item implements Drop.ItemAdd {
     }
 
     public void add(Player player, Material material, String displayName) {
-        add(player, material, displayName, 1);
+        add(player, material, displayName, 1, 64);
     }
 
-    public void add(Player player, Material material, String displayName, Integer amount) {
+    public boolean add(Player player, Material material, String displayName, int amount, int limit) {
         ItemStack itemStack = createItem(material, displayName, amount);
         if (itemStack == null) {
-            return;
+            return false;
         }
-        player.getInventory().addItem(itemStack);
+        if (player.getInventory().containsAtLeast(itemStack, limit)) {
+            return false;
+        } else {
+            player.getInventory().addItem(itemStack);
+            return true;
+        }
     }
 
     public boolean remove(Player player, Material material, String displayName, Integer amount) {

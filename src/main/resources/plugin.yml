@@ -3,36 +3,15 @@ version: "1.0-SNAPSHOT"
 author: Artin Hackers Team
 main: cz.artin.hackers.Drop
 commands:
-  trigger:
-    description: Triggers DROP event manually. For debug purposes only.
-  equip:
-    description: Equip an item.
-  setModeDeveloper:
-    description: Sets creative mode, day and disables day-night cycle
-  setModeNormal:
-    description: Sets survival mode, and enables day-night cycle
+  buildArena:
+    description: Build arena
   setPortalExit:
     description: Sets current coordinates as main portal exit
-  spawnChicken:
-    description: Spawns a chicken near the player
   spawnDummies:
     description: Spawns dummies around the player
-  teleport:
-    description: Teleports player to main portal exit
   buildObelisk:
-    description: Builds an obelisk which allows player to teleport to his
-      current portal exit
+    description: Builds an obelisk which allows player to teleport to his current portal exit
   sethometown:
     description: create hometown
-  Filipovasekera:
-    description: create Filipovasekera
-  Zdenkovahulka:
-    description: create Zdenkovahulka
-  creategauge:
-    description: create gauge
-  createArena:
-    description: createArena
-  Hulkazivota:
-    description: safe player
   showscore:
     description: Shows current scrore
