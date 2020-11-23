@@ -99,6 +99,8 @@ public class Drop extends JavaPlugin implements Listener {
 
         (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
         (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
+
+        event.getPlayer().teleport(new Location(event.getPlayer().getWorld(), -100, 70, 100));
     }
 
     @EventHandler
@@ -122,6 +124,8 @@ public class Drop extends JavaPlugin implements Listener {
 
         (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
         (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
+
+        event.setRespawnLocation(new Location(event.getPlayer().getWorld(), -100, 70, 100));
     }
 
     private boolean buildArena(CommandSender sender) {
