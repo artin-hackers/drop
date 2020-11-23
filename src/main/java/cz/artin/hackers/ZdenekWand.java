@@ -29,6 +29,7 @@ public class ZdenekWand extends Item implements Listener {
             }
         }
         if (action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK)) {
+            Effect.createHole(player);
             Effect.addMana(player, Mana.Colour.GREEN, 1);
         }
     }
