@@ -90,3 +90,16 @@ Minecraft messes up materials (Material.BLUE_DYE, Material.GREEN_DYE)
 [10:28:24] [Server thread/INFO]: Item.removeItems: material = AIR, displayName = Blue Mana
 [10:28:24] [Server thread/INFO]: Item.removeItems: material = INK_SACK, displayName = Green Mana
 ```
+
+## Match
+
+Requirements:
+
+* Command `startMatch`: arena is build, kill/death counters reset, 5s countdown and players are teleported to the arena
+* Match lasts X minutes, 1 minute remain is announced, 30s, 10-9..1s is announced
+* Afterwards players are teleported back to the standard world and score is shown
+* New match cannot be started during existing one
+* When new player connects, 5s second announcer playes out and then the player is teleported to the arena
+* Players are teleported to a random position in center of the arena (teleporting plattform)
+* Players respawn in the center of the arena for a duration of the match
+* Command `endMatch` finishes the match immediately

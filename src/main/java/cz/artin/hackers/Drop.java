@@ -157,11 +157,32 @@ public class Drop extends JavaPlugin implements Listener {
                 }
 
                 arena.buildArena(commandSender);
+
+                finishMatch();
             }
             countDown--;
         }, 20L, 20L);
 
         return true;
+    }
+
+    private void finishMatch() {
+        countDown = 5;
+        taskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
+            if (countDown == 5) {
+                Bukkit.broadcastMessage("Match will end in...");
+            } else if (countDown > 0) {
+                Bukkit.broadcastMessage("..." + countDown);
+            } else {
+                Bukkit.getScheduler().cancelTask(taskId.getTaskId());
+                Bukkit.broadcastMessage("Match has ended.");
+
+                for (DropPlayer player : dropPlayers) {
+                    Bukkit.broadcastMessage(player.getName() + ": " + player.getKills() + "/" + player.getDeaths());
+                }
+            }
+            countDown--;
+        }, 20L * 10, 20L);
     }
 
     // REFACTORING: Review from here
