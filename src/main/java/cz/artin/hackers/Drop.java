@@ -73,7 +73,7 @@ public class Drop extends JavaPlugin implements Listener {
         if (label.equalsIgnoreCase("buildArena")) {
             return buildArena(sender);
         } else if (label.equalsIgnoreCase("startMatch")) {
-            return startMatch();
+            return startMatch(sender);
         } else if (label.equalsIgnoreCase("setPortalExit")) {
             return setPortalExit(sender);
         } else if (label.equalsIgnoreCase("spawnDummies")) {
@@ -136,17 +136,27 @@ public class Drop extends JavaPlugin implements Listener {
         return arena.buildArena(sender);
     }
 
-    private boolean startMatch() {
-        for (DropPlayer player : dropPlayers) {
-            player.setKills(0);
-            player.setDeaths(0);
+    private boolean startMatch(CommandSender commandSender) {
+        if (!(commandSender instanceof Player)) {
+            LOGGER.warning("Unexpected use of Drop.startMatch");
+            return false;
         }
 
-        countDown = 10;
+        Bukkit.broadcastMessage("Match will start in...");
+        countDown = 5;
         taskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
-            Bukkit.broadcastMessage("Countdown: " + countDown);
-            if (countDown == 0) {
+            if (countDown > 0) {
+                Bukkit.broadcastMessage("..." + countDown);
+            } else {
                 Bukkit.getScheduler().cancelTask(taskId.getTaskId());
+                Bukkit.broadcastMessage("FIGHT!");
+
+                for (DropPlayer player : dropPlayers) {
+                    player.setKills(0);
+                    player.setDeaths(0);
+                }
+
+                arena.buildArena(commandSender);
             }
             countDown--;
         }, 20L, 20L);
