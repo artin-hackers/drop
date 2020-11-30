@@ -53,6 +53,7 @@ public class Drop extends JavaPlugin implements Listener {
             items.add(new DebugStick(this));
         }
         items.add(new ZireaelSword(this));
+        items.add(new Bow(this));
         items.add(new FilipAxe(this));
         items.add(new ZdenekWand(this));
 
@@ -100,8 +101,6 @@ public class Drop extends JavaPlugin implements Listener {
             item.add(event.getPlayer());
         }
 
-        createbow(event.getPlayer());  // REFACTORING: Move to items
-
         (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
         (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
 
@@ -123,8 +122,6 @@ public class Drop extends JavaPlugin implements Listener {
         for (ItemAdd item : items) {
             item.add(event.getPlayer());
         }
-
-        createbow(event.getPlayer());  // REFACTORING: Move to items
 
         (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
         (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);

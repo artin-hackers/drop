@@ -7,16 +7,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.event.block.Action;
 import java.util.logging.Logger;
 
-public class bow extends Item implements Listener {
-    private static final Logger LOGGER = Logger.getLogger(bow.class.getName());
+public class Bow extends Item implements Listener {
+    private static final Logger LOGGER = Logger.getLogger(Bow.class.getName());
 
-    bow(JavaPlugin plugin) {
-        LOGGER.finer("bow");
+    Bow(JavaPlugin plugin) {
+        LOGGER.finer("Bow");
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public void add(Player player) {
-        add(player, Material.BOW, bow.class.getName());
+        add(player, Material.BOW, Bow.class.getName());
     }
 
     public void interact(Player player, Action action) {
