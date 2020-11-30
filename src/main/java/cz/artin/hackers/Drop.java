@@ -375,19 +375,7 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean setGroundFire(Location location, int radius) {
-        for (int x = -radius; x <= radius; x++) {
-            for (int z = -radius; z <= radius; z++) {
-                final Location currentLocation = new Location(
-                        location.getWorld(),
-                        location.getX() + x,
-                        location.getY(),
-                        location.getZ() + z);
-                currentLocation.getBlock().setType(Material.FIRE);
-            }
-        }
-        return true;
-    }
+
 
     public directions getDirection(CommandSender sender) {
         if (sender instanceof Player) {
