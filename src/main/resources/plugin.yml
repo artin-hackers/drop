@@ -5,6 +5,8 @@ main: cz.artin.hackers.Drop
 commands:
   buildArena:
     description: Build arena
+  startMatch:
+    description: Starts match
   setPortalExit:
     description: Sets current coordinates as main portal exit
   spawnDummies:

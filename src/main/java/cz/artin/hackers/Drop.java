@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -30,6 +31,8 @@ public class Drop extends JavaPlugin implements Listener {
     private static final int DEFAULT_DUMMY_RADIUS = 10;  // REFACTORING: Move to a sub-class
     private static Arena arena;
     private static Location PORTAL_EXIT = null;  // REFACTORING: Move to a sub-class
+    private static BukkitTask taskId;
+    private static int countDown;
 
     @Override
     public void onEnable() {
@@ -69,6 +72,8 @@ public class Drop extends JavaPlugin implements Listener {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {  // REFACTORING: Review after buildArena
         if (label.equalsIgnoreCase("buildArena")) {
             return buildArena(sender);
+        } else if (label.equalsIgnoreCase("startMatch")) {
+            return startMatch(sender);
         } else if (label.equalsIgnoreCase("setPortalExit")) {
             return setPortalExit(sender);
         } else if (label.equalsIgnoreCase("spawnDummies")) {
@@ -129,6 +134,55 @@ public class Drop extends JavaPlugin implements Listener {
 
     private boolean buildArena(CommandSender sender) {
         return arena.buildArena(sender);
+    }
+
+    private boolean startMatch(CommandSender commandSender) {
+        if (!(commandSender instanceof Player)) {
+            LOGGER.warning("Unexpected use of Drop.startMatch");
+            return false;
+        }
+
+        Bukkit.broadcastMessage("Match will start in...");
+        countDown = 5;
+        taskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
+            if (countDown > 0) {
+                Bukkit.broadcastMessage("..." + countDown);
+            } else {
+                Bukkit.getScheduler().cancelTask(taskId.getTaskId());
+                Bukkit.broadcastMessage("FIGHT!");
+
+                for (DropPlayer player : dropPlayers) {
+                    player.setKills(0);
+                    player.setDeaths(0);
+                }
+
+                arena.buildArena(commandSender);
+
+                finishMatch();
+            }
+            countDown--;
+        }, 20L, 20L);
+
+        return true;
+    }
+
+    private void finishMatch() {
+        countDown = 5;
+        taskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
+            if (countDown == 5) {
+                Bukkit.broadcastMessage("Match will end in...");
+            } else if (countDown > 0) {
+                Bukkit.broadcastMessage("..." + countDown);
+            } else {
+                Bukkit.getScheduler().cancelTask(taskId.getTaskId());
+                Bukkit.broadcastMessage("Match has ended.");
+
+                for (DropPlayer player : dropPlayers) {
+                    Bukkit.broadcastMessage(player.getName() + ": " + player.getKills() + "/" + player.getDeaths());
+                }
+            }
+            countDown--;
+        }, 20L * 10, 20L);
     }
 
     // REFACTORING: Review from here

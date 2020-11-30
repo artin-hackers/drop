@@ -25,21 +25,19 @@ public class Arena {
         Player player = (Player) commandSender;
         Location arenaCenter = new Location(player.getWorld(), -100, 70, 100);
 
-        // Clear
-        Location patchLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() - 50, arenaCenter.getY() - 3, arenaCenter.getZ() - 50);
-        buildPatch(patchLocation, Material.AIR, 101, 34, 101);
+        Location patchLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() - 50, arenaCenter.getY() - 5, arenaCenter.getZ() - 50);
+        buildPatch(patchLocation, Material.AIR, 101, 40, 101);
 
         // Build foundation (lava)
-        patchLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() - 50, arenaCenter.getY() - 3, arenaCenter.getZ() - 50);
         buildPatch(patchLocation, Material.LAVA, 101, 1, 101);
 
         // Build terrain (grass)
-        patchLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() - 50, arenaCenter.getY() - 2, arenaCenter.getZ() - 50);
+        patchLocation.add(0, 3, 0);
         buildPatch(patchLocation, Material.GRASS_BLOCK, 101, 1, 101);
 
         // Build patches
-        Material[] materials = {Material.DIRT, Material.GRASS_BLOCK, Material.STONE, Material.OAK_WOOD, Material.SAND, Material.GRAVEL};
-        for (int i = getRandomInt(25, 50); i >= 0; i--) {
+        Material[] materials = {Material.DIRT, Material.GRASS_BLOCK, Material.STONE, Material.OAK_WOOD, Material.SAND, Material.GRAVEL, Material.WATER, Material.SNOW_BLOCK, Material.ICE, Material.ACACIA_WOOD, Material.BIRCH_WOOD, Material.DARK_OAK_WOOD, Material.JUNGLE_WOOD, Material.SPRUCE_WOOD};
+        for (int i = getRandomInt(30, 50); i >= 0; i--) {
             patchLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() + getRandomInt(-50, 50), arenaCenter.getY() - 1, arenaCenter.getZ() + getRandomInt(-50, 50));
             buildPatch(patchLocation, materials[getRandomInt(materials.length)], getRandomInt(7), getRandomInt(5), getRandomInt(7));
         }
