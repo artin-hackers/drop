@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -30,6 +31,8 @@ public class Drop extends JavaPlugin implements Listener {
     private static final int DEFAULT_DUMMY_RADIUS = 10;  // REFACTORING: Move to a sub-class
     private static Arena arena;
     private static Location PORTAL_EXIT = null;  // REFACTORING: Move to a sub-class
+    private static BukkitTask taskId;
+    private static int countDown;
 
     @Override
     public void onEnable() {
@@ -69,6 +72,8 @@ public class Drop extends JavaPlugin implements Listener {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {  // REFACTORING: Review after buildArena
         if (label.equalsIgnoreCase("buildArena")) {
             return buildArena(sender);
+        } else if (label.equalsIgnoreCase("startMatch")) {
+            return startMatch(sender);
         } else if (label.equalsIgnoreCase("setPortalExit")) {
             return setPortalExit(sender);
         } else if (label.equalsIgnoreCase("spawnDummies")) {
@@ -131,6 +136,55 @@ public class Drop extends JavaPlugin implements Listener {
         return arena.buildArena(sender);
     }
 
+    private boolean startMatch(CommandSender commandSender) {
+        if (!(commandSender instanceof Player)) {
+            LOGGER.warning("Unexpected use of Drop.startMatch");
+            return false;
+        }
+
+        Bukkit.broadcastMessage("Match will start in...");
+        countDown = 5;
+        taskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
+            if (countDown > 0) {
+                Bukkit.broadcastMessage("..." + countDown);
+            } else {
+                Bukkit.getScheduler().cancelTask(taskId.getTaskId());
+                Bukkit.broadcastMessage("FIGHT!");
+
+                for (DropPlayer player : dropPlayers) {
+                    player.setKills(0);
+                    player.setDeaths(0);
+                }
+
+                arena.buildArena(commandSender);
+
+                finishMatch();
+            }
+            countDown--;
+        }, 20L, 20L);
+
+        return true;
+    }
+
+    private void finishMatch() {
+        countDown = 5;
+        taskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
+            if (countDown == 5) {
+                Bukkit.broadcastMessage("Match will end in...");
+            } else if (countDown > 0) {
+                Bukkit.broadcastMessage("..." + countDown);
+            } else {
+                Bukkit.getScheduler().cancelTask(taskId.getTaskId());
+                Bukkit.broadcastMessage("Match has ended.");
+
+                for (DropPlayer player : dropPlayers) {
+                    Bukkit.broadcastMessage(player.getName() + ": " + player.getKills() + "/" + player.getDeaths());
+                }
+            }
+            countDown--;
+        }, 20L * 10, 20L);
+    }
+
     // REFACTORING: Review from here
 
     private boolean showScore(CommandSender sender) {
@@ -162,13 +216,8 @@ public class Drop extends JavaPlugin implements Listener {
             event.setCancelled(true);
     }
 
-    @EventHandler
-    public void onHit(ProjectileHitEvent event) {
-        if (event.getEntity() instanceof Arrow) {
-            LOGGER.info("Arrow hit something");
-            setGroundFire(event.getEntity().getLocation(), 2);
-        }
-    }
+
+
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
@@ -271,40 +320,7 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean creategauge(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            Location playerLocation = player.getLocation();
-            Location playergroundLocation = playerLocation.add(0, -1, 0);
-            Material material = playergroundLocation.getBlock().getType();
-            Set<Material> all_materials = new HashSet<>();
-            all_materials.add(Material.GOLD_ORE);
-            for (Material mat : Material.values()) {
-                all_materials.add(mat);
-            }
-            List<Block> sight = player.getLineOfSight(all_materials, 10);
-//            for (int i = 0; i < sight.size(); i++) {
-//                if (i > sight.size() / 4) {
-//                    sight.get(i).setType(material);
-//                }
-//            }
-            Location wallCentre = sight.get(sight.size() - 1).getLocation();
-            wallCentre.getBlock().setType(Material.GOLD_BLOCK);
-            for (int x = -2; x <= 2; x++) {
-                for (int y = -2; y <= 2; y++) {
-                    for (int z = -2; z <= 2; z++) {
-                        final Location wallBlock = new Location(
-                                player.getWorld(),
-                                wallCentre.getX() + x,
-                                wallCentre.getY() + y,
-                                wallCentre.getZ() + z);
-                        wallBlock.getBlock().setType(material);
-                    }
-                }
-            }
-        }
-        return true;
-    }
+
 
     private boolean shootRifleWand(Player player) {
         getLogger().info("Drop.shootRifleWand()");

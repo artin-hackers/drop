@@ -33,6 +33,14 @@ public class DropPlayer {
         return this.deaths;
     }
 
+    public void setKills(int kills) {
+        this.kills = kills;
+    }
+
+    public void setDeaths(int deaths) {
+        this.deaths = deaths;
+    }
+
     public void addKill() {
         this.kills++;
     }
