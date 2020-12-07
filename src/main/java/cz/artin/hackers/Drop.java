@@ -66,6 +66,8 @@ public class Drop extends JavaPlugin implements Listener {
             }
         }.runTaskTimer(this, 20 * 5L, 20 * 10L);
 
+        taskId = null;
+
         LOGGER.info("...plugin successfully loaded.");
     }
 
@@ -143,6 +145,12 @@ public class Drop extends JavaPlugin implements Listener {
             return false;
         }
 
+        if (taskId != null) {
+            Bukkit.broadcastMessage("Match already in progress");
+            LOGGER.warning("Unexpected use of Drop.startMatch");
+            return false;
+        }
+
         Bukkit.broadcastMessage("Match will start in...");
         countDown = 5;
         taskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
@@ -170,10 +178,10 @@ public class Drop extends JavaPlugin implements Listener {
     private void finishMatch() {
         countDown = 300;
         taskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
-            if (countDown == 5) {
+            if (countDown == 6) {
                 Bukkit.broadcastMessage("Match will end in...");
-            } else if (countDown > 0) {
-//                Bukkit.broadcastMessage("..." + countDown);
+            } else if (countDown < 6 && countDown > 0) {
+                Bukkit.broadcastMessage("..." + countDown);
             } else {
                 Bukkit.getScheduler().cancelTask(taskId.getTaskId());
                 Bukkit.broadcastMessage("Match has ended.");
@@ -181,6 +189,7 @@ public class Drop extends JavaPlugin implements Listener {
                 for (DropPlayer player : dropPlayers) {
                     Bukkit.broadcastMessage(player.getName() + ": " + player.getKills() + "/" + player.getDeaths());
                 }
+                taskId = null;
             }
             countDown--;
         }, 20L * 10, 20L);
