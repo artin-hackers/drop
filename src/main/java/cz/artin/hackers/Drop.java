@@ -89,11 +89,24 @@ public class Drop extends JavaPlugin implements Listener {
             return buildObelisk(sender);
         } else if (label.equalsIgnoreCase("showscore")) {
             return showScore(sender);
+        } else if (label.equalsIgnoreCase("speedHack")) {
+            return speedHack(sender);
         } else {
             return false;
         }
     }
 
+    public boolean speedHack(CommandSender sender) {
+        if (!(sender instanceof Player)) {
+            LOGGER.warning("Unexpected use of Drop.speedHack");
+            return false;
+        }
+
+        Player player = (Player) sender;
+        float speed = player.getWalkSpeed();
+        player.setWalkSpeed(speed*2);
+        return true;
+    }
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         LOGGER.info("A new player, " + event.getPlayer().getName() + ", just joined the fray.");

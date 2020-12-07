@@ -17,3 +17,5 @@ commands:
     description: create hometown
   showscore:
     description: Shows current scrore
+  speedHack:
+    description: uiogsd
