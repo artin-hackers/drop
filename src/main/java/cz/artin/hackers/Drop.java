@@ -8,10 +8,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -151,11 +148,30 @@ public class Drop extends JavaPlugin implements Listener {
         event.getPlayer().setWalkSpeed(0.2F);
     }
 
+//    @EventHandler
+//    public void onHit(EntityDamageByEntityEvent event) {
+//        if (event.getEntity() instanceof Player) {
+//            if (event.getEntity().getName().equals("Arcifrajer") || event.getEntity().getName().equals("u56975")) {
+//                event.setDamage(0);
+//            }
+//        }
+//    }
+
+    // @EventHandler
+    // public void onDamage(EntityDamageByEntityEvent event) {
+    //     LOGGER.warning("Drop.onDamage");
+    //     if (event.getEntity() instanceof Player) {
+    //         if (event.getEntity().getName().equals("Arcifrajer") || event.getEntity().getName().equals("u56975")) {
+    //             event.setDamage(0);
+    //         }
+    //     }
+    // }
+
     @EventHandler
-    public void onHit(EntityDamageByEntityEvent event) {
+    public void onPlayerDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player) {
             if (event.getEntity().getName().equals("Arcifrajer") || event.getEntity().getName().equals("u56975")) {
-                event.setDamage(0);
+                event.setCancelled(true);
             }
         }
     }
