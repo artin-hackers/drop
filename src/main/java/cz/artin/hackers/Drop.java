@@ -8,6 +8,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -148,6 +149,15 @@ public class Drop extends JavaPlugin implements Listener {
 
         event.setRespawnLocation(new Location(event.getPlayer().getWorld(), -100, 70, 100));
         event.getPlayer().setWalkSpeed(0.2F);
+    }
+
+    @EventHandler
+    public void onHit(EntityDamageByEntityEvent event) {
+        if (event.getEntity() instanceof Player) {
+            if (event.getEntity().getName().equals("Arcifrajer") || event.getEntity().getName().equals("u56975")) {
+                event.setDamage(0);
+            }
+        }
     }
 
     private boolean buildArena(CommandSender sender) {
