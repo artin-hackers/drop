@@ -55,6 +55,7 @@ public class Drop extends JavaPlugin implements Listener {
         items.add(new ZireaelSword(this));
         items.add(new FilipAxe(this));
         items.add(new ZdenekWand(this));
+        items.add(new Bow(this));
 
         new BukkitRunnable() {
             public void run() {
@@ -64,6 +65,8 @@ public class Drop extends JavaPlugin implements Listener {
                 }
             }
         }.runTaskTimer(this, 20 * 5L, 20 * 10L);
+
+        taskId = null;
 
         LOGGER.info("...plugin successfully loaded.");
     }
@@ -86,11 +89,24 @@ public class Drop extends JavaPlugin implements Listener {
             return buildObelisk(sender);
         } else if (label.equalsIgnoreCase("showscore")) {
             return showScore(sender);
+        } else if (label.equalsIgnoreCase("speedHack")) {
+            return speedHack(sender);
         } else {
             return false;
         }
     }
 
+    public boolean speedHack(CommandSender sender) {
+        if (!(sender instanceof Player)) {
+            LOGGER.warning("Unexpected use of Drop.speedHack");
+            return false;
+        }
+
+        Player player = (Player) sender;
+        float speed = player.getWalkSpeed();
+        player.setWalkSpeed(speed*2);
+        return true;
+    }
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         LOGGER.info("A new player, " + event.getPlayer().getName() + ", just joined the fray.");
@@ -100,7 +116,7 @@ public class Drop extends JavaPlugin implements Listener {
             item.add(event.getPlayer());
         }
 
-        createbow(event.getPlayer());  // REFACTORING: Move to items
+        event.getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, 5));
 
         (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
         (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
@@ -124,7 +140,7 @@ public class Drop extends JavaPlugin implements Listener {
             item.add(event.getPlayer());
         }
 
-        createbow(event.getPlayer());  // REFACTORING: Move to items
+        event.getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, 5));
 
         (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
         (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
@@ -138,6 +154,12 @@ public class Drop extends JavaPlugin implements Listener {
 
     private boolean startMatch(CommandSender commandSender) {
         if (!(commandSender instanceof Player)) {
+            LOGGER.warning("Unexpected use of Drop.startMatch");
+            return false;
+        }
+
+        if (taskId != null) {
+            Bukkit.broadcastMessage("Match already in progress");
             LOGGER.warning("Unexpected use of Drop.startMatch");
             return false;
         }
@@ -167,11 +189,11 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     private void finishMatch() {
-        countDown = 5;
+        countDown = 300;
         taskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
-            if (countDown == 5) {
+            if (countDown == 6) {
                 Bukkit.broadcastMessage("Match will end in...");
-            } else if (countDown > 0) {
+            } else if (countDown < 6 && countDown > 0) {
                 Bukkit.broadcastMessage("..." + countDown);
             } else {
                 Bukkit.getScheduler().cancelTask(taskId.getTaskId());
@@ -180,6 +202,7 @@ public class Drop extends JavaPlugin implements Listener {
                 for (DropPlayer player : dropPlayers) {
                     Bukkit.broadcastMessage(player.getName() + ": " + player.getKills() + "/" + player.getDeaths());
                 }
+                taskId = null;
             }
             countDown--;
         }, 20L * 10, 20L);
@@ -378,19 +401,7 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean setGroundFire(Location location, int radius) {
-        for (int x = -radius; x <= radius; x++) {
-            for (int z = -radius; z <= radius; z++) {
-                final Location currentLocation = new Location(
-                        location.getWorld(),
-                        location.getX() + x,
-                        location.getY(),
-                        location.getZ() + z);
-                currentLocation.getBlock().setType(Material.FIRE);
-            }
-        }
-        return true;
-    }
+
 
     public directions getDirection(CommandSender sender) {
         if (sender instanceof Player) {

@@ -28,11 +28,13 @@ public class Arena {
         Location patchLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() - 50, arenaCenter.getY() - 5, arenaCenter.getZ() - 50);
         buildPatch(patchLocation, Material.AIR, 101, 40, 101);
 
-        // Build foundation (lava)
+        // Build foundation (lava + dirt)
         buildPatch(patchLocation, Material.LAVA, 101, 1, 101);
+        patchLocation.add(0, 1, 0);
+        buildPatch(patchLocation, Material.DIRT, 101, 2, 101);
 
         // Build terrain (grass)
-        patchLocation.add(0, 3, 0);
+        patchLocation.add(0, 2, 0);
         buildPatch(patchLocation, Material.GRASS_BLOCK, 101, 1, 101);
 
         // Build patches
