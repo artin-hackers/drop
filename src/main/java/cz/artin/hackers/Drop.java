@@ -53,6 +53,7 @@ public class Drop extends JavaPlugin implements Listener {
         items.add(new ZireaelSword(this));
         items.add(new FilipAxe(this));
         items.add(new ZdenekWand(this));
+        items.add(new InvulnerabilityTrident());
         items.add(new Bow(this));
 
         new BukkitRunnable() {
@@ -167,14 +168,14 @@ public class Drop extends JavaPlugin implements Listener {
     //     }
     // }
 
-    @EventHandler
-    public void onPlayerDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player) {
-            if (event.getEntity().getName().equals("Arcifrajer") || event.getEntity().getName().equals("u56975")) {
-                event.setCancelled(true);
-            }
-        }
-    }
+//    @EventHandler
+//    public void onPlayerDamage(EntityDamageEvent event) {
+//        if (event.getEntity() instanceof Player) {
+//            if (event.getEntity().getName().equals("Arcifrajer") || event.getEntity().getName().equals("u56975")) {
+//                event.setCancelled(true);
+//            }
+//        }
+//    }
 
     private boolean buildArena(CommandSender sender) {
         return arena.buildArena(sender);
@@ -233,7 +234,7 @@ public class Drop extends JavaPlugin implements Listener {
                 taskId = null;
             }
             countDown--;
-        }, 20L * 10, 20L);
+        }, 20L * 240, 20L);
     }
 
     // REFACTORING: Review from here
