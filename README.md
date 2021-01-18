@@ -108,3 +108,16 @@ Requirements:
 
 * Some weapon grants speed boost 1.5x permanent, 4x for a limited time
 * More actions, catch [Q], [E], [Shift], ...
+
+## Redesign 2021
+
+### Match
+
+* Match can be started with `startMatch MINUTES` command. Default match length is 5 minutes.
+* Match cannot be started twice, started again if it is in progress
+* Player looses all inventory upon match start
+* Player's health is reset upon match start
+* Player's level is reset upon match start (levels are not implemented yet) 
+* Five seconds countdown before match start
+* Five seconds countdown before match end
+* Command `showScore` shows current score of the players to the requestor

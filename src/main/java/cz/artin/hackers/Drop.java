@@ -25,15 +25,15 @@ public class Drop extends JavaPlugin implements Listener {
     private static final boolean DEBUG_STICK_ALLOWED = false;
     private static final List<DropPlayer> dropPlayers = new ArrayList<>();
     private static final List<ItemAdd> items = new ArrayList<>();
-    private static final int DEFAULT_DUMMY_COUNT = 10;  // REFACTORING: Move to a sub-class
-    private static final int DEFAULT_DUMMY_RADIUS = 10;  // REFACTORING: Move to a sub-class
+    private static final int DEFAULT_DUMMY_COUNT = 10;
+    private static final int DEFAULT_DUMMY_RADIUS = 10;
     private static Arena arena;
-    private static Location PORTAL_EXIT = null;  // REFACTORING: Move to a sub-class
+    private static Location PORTAL_EXIT = null;
     private static BukkitTask taskId;
     private static int countDown;
 
     @Override
-    public void onEnable() {
+    public void onEnable() {  // TODO: Refactor
         LOGGER.info("Loading DROP plugin...");
 
         getServer().getPluginManager().registerEvents(this, this);
@@ -71,11 +71,13 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {  // REFACTORING: Review after buildArena
-        if (label.equalsIgnoreCase("buildArena")) {
-            return buildArena(sender);
-        } else if (label.equalsIgnoreCase("startMatch")) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {  // TODO: Refactor
+        if (label.equalsIgnoreCase("startMatch")) {
             return startMatch(sender);
+        } else if (label.equalsIgnoreCase("showScore")) {
+            return showScore(sender);
+        } else if (label.equalsIgnoreCase("buildArena")) {
+            return buildArena(sender);
         } else if (label.equalsIgnoreCase("setPortalExit")) {
             return setPortalExit(sender);
         } else if (label.equalsIgnoreCase("spawnDummies")) {
@@ -86,14 +88,60 @@ public class Drop extends JavaPlugin implements Listener {
         } else if (label.equalsIgnoreCase("buildObelisk")) {
             getLogger().info("buildObelisk()");
             return buildObelisk(sender);
-        } else if (label.equalsIgnoreCase("showscore")) {
-            return showScore(sender);
         } else if (label.equalsIgnoreCase("speedHack")) {
             return speedHack(sender);
         } else {
             return false;
         }
     }
+
+    private boolean startMatch(CommandSender commandSender) {  // TODO: Refactor
+        if (!(commandSender instanceof Player)) {
+            LOGGER.warning("Unexpected use of Drop.startMatch");
+            return false;
+        }
+
+        if (taskId != null) {
+            Bukkit.broadcastMessage("Match already in progress");
+            LOGGER.warning("Unexpected use of Drop.startMatch");
+            return false;
+        }
+
+        Bukkit.broadcastMessage("Match will start in...");
+        countDown = 5;
+        taskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
+            if (countDown > 0) {
+                Bukkit.broadcastMessage("..." + countDown);
+            } else {
+                Bukkit.getScheduler().cancelTask(taskId.getTaskId());
+                Bukkit.broadcastMessage("FIGHT!");
+
+                for (DropPlayer player : dropPlayers) {
+                    player.setKills(0);
+                    player.setDeaths(0);
+                }
+
+                arena.buildArena(commandSender);
+
+                finishMatch();
+            }
+            countDown--;
+        }, 20L, 20L);
+
+        return true;
+    }
+
+    private boolean showScore(CommandSender sender) {
+        LOGGER.info("showScore");
+        if (((Player) sender).getPlayer() != null) {
+            for (DropPlayer dropPlayer : dropPlayers) {
+                sender.sendMessage(dropPlayer.getName() + ": " + dropPlayer.getKills() + "/" + dropPlayer.getDeaths());
+            }
+        }
+        return true;
+    }
+
+    // TODO: Refactor from here down
 
     public boolean speedHack(CommandSender sender) {
         if (!(sender instanceof Player)) {
@@ -181,42 +229,6 @@ public class Drop extends JavaPlugin implements Listener {
         return arena.buildArena(sender);
     }
 
-    private boolean startMatch(CommandSender commandSender) {
-        if (!(commandSender instanceof Player)) {
-            LOGGER.warning("Unexpected use of Drop.startMatch");
-            return false;
-        }
-
-        if (taskId != null) {
-            Bukkit.broadcastMessage("Match already in progress");
-            LOGGER.warning("Unexpected use of Drop.startMatch");
-            return false;
-        }
-
-        Bukkit.broadcastMessage("Match will start in...");
-        countDown = 5;
-        taskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
-            if (countDown > 0) {
-                Bukkit.broadcastMessage("..." + countDown);
-            } else {
-                Bukkit.getScheduler().cancelTask(taskId.getTaskId());
-                Bukkit.broadcastMessage("FIGHT!");
-
-                for (DropPlayer player : dropPlayers) {
-                    player.setKills(0);
-                    player.setDeaths(0);
-                }
-
-                arena.buildArena(commandSender);
-
-                finishMatch();
-            }
-            countDown--;
-        }, 20L, 20L);
-
-        return true;
-    }
-
     private void finishMatch() {
         countDown = 300;
         taskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
@@ -238,17 +250,6 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     // REFACTORING: Review from here
-
-    private boolean showScore(CommandSender sender) {
-        LOGGER.info("showScore");
-        Player player = (Player) sender;
-        if (player != null) {
-            for (DropPlayer dropPlayer : dropPlayers) {
-                sender.sendMessage(dropPlayer.getName() + ": " + dropPlayer.getKills() + "/" + dropPlayer.getDeaths());
-            }
-        }
-        return true;
-    }
 
     private boolean equipRifleWand(CommandSender sender) {
         if (sender instanceof Player) {

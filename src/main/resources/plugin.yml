@@ -3,10 +3,12 @@ version: "1.0-SNAPSHOT"
 author: Artin Hackers Team
 main: cz.artin.hackers.Drop
 commands:
+  startMatch:
+    description: Starts the match
+  showScore:
+    description: Shows current score
   buildArena:
     description: Build arena
-  startMatch:
-    description: Starts match
   setPortalExit:
     description: Sets current coordinates as main portal exit
   spawnDummies:
@@ -15,7 +17,5 @@ commands:
     description: Builds an obelisk which allows player to teleport to his current portal exit
   sethometown:
     description: create hometown
-  showscore:
-    description: Shows current scrore
   speedHack:
     description: uiogsd
