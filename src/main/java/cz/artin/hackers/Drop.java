@@ -27,6 +27,7 @@ public class Drop extends JavaPlugin implements Listener {
     private static final List<ItemAdd> items = new ArrayList<>();
     private static final int DEFAULT_DUMMY_COUNT = 10;
     private static final int DEFAULT_DUMMY_RADIUS = 10;
+    private static final int DEFAULT_MATCH_LENGHT = 300;
     private static Arena arena;
     private static Location PORTAL_EXIT = null;
     private static BukkitTask matchTaskId;
@@ -95,7 +96,7 @@ public class Drop extends JavaPlugin implements Listener {
         }
     }
 
-    private boolean startMatch(CommandSender commandSender) {  // TODO: Refactor
+    private boolean startMatch(CommandSender commandSender) {
         LOGGER.info("startMatch");
 
         if (!(commandSender instanceof Player)) {
@@ -112,25 +113,47 @@ public class Drop extends JavaPlugin implements Listener {
         Bukkit.broadcastMessage("Match will start in...");
         countDown = 5;
         matchTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
-            if (countDown > 0) {
-                Bukkit.broadcastMessage("..." + countDown);
-            } else {
+            if (countDown == 0) {
                 Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
                 Bukkit.broadcastMessage("FIGHT!");
-
                 for (DropPlayer player : dropPlayers) {
                     player.setKills(0);
                     player.setDeaths(0);
                 }
-
                 arena.buildArena(commandSender);
-
-                finishMatch();
+                runMatch();
+            } else {
+                Bukkit.broadcastMessage("..." + countDown);
+                countDown--;
             }
-            countDown--;
         }, 20L, 20L);
 
         return true;
+    }
+
+    private void runMatch() {
+        matchTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
+            Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
+            endMatch();
+        }, 20L * DEFAULT_MATCH_LENGHT, 20L);
+    }
+
+    private void endMatch() {
+        Bukkit.broadcastMessage("Match will end in...");
+        countDown = 5;
+        matchTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
+            if (countDown == 0) {
+                Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
+                Bukkit.broadcastMessage("Match has ended!");
+                for (DropPlayer player : dropPlayers) {
+                    Bukkit.broadcastMessage(player.getName() + ": " + player.getKills() + "/" + player.getDeaths());
+                }
+                matchTaskId = null;
+            } else {
+                Bukkit.broadcastMessage("..." + countDown);
+                countDown--;
+            }
+        }, 20L, 20L);
     }
 
     private boolean showScore(CommandSender commandSender) {
@@ -234,26 +257,6 @@ public class Drop extends JavaPlugin implements Listener {
 
     private boolean buildArena(CommandSender sender) {
         return arena.buildArena(sender);
-    }
-
-    private void finishMatch() {
-        countDown = 300;
-        matchTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
-            if (countDown == 6) {
-                Bukkit.broadcastMessage("Match will end in...");
-            } else if (countDown < 6 && countDown > 0) {
-                Bukkit.broadcastMessage("..." + countDown);
-            } else {
-                Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
-                Bukkit.broadcastMessage("Match has ended.");
-
-                for (DropPlayer player : dropPlayers) {
-                    Bukkit.broadcastMessage(player.getName() + ": " + player.getKills() + "/" + player.getDeaths());
-                }
-                matchTaskId = null;
-            }
-            countDown--;
-        }, 20L * 240, 20L);
     }
 
     // REFACTORING: Review from here
