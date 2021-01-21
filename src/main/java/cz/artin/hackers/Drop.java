@@ -131,13 +131,18 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean showScore(CommandSender sender) {
+    private boolean showScore(CommandSender commandSender) {
         LOGGER.info("showScore");
-        if (((Player) sender).getPlayer() != null) {
-            for (DropPlayer dropPlayer : dropPlayers) {
-                sender.sendMessage(dropPlayer.getName() + ": " + dropPlayer.getKills() + "/" + dropPlayer.getDeaths());
-            }
+
+        if (!(commandSender instanceof Player)) {
+            LOGGER.warning("Unexpected use of Drop.showScore");
+            return false;
         }
+
+        for (DropPlayer dropPlayer : dropPlayers) {
+            commandSender.sendMessage(dropPlayer.getName() + ": " + dropPlayer.getKills() + "/" + dropPlayer.getDeaths());
+        }
+
         return true;
     }
 
