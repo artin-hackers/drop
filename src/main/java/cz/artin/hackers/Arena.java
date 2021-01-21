@@ -35,7 +35,7 @@ public class Arena {
 
         // Build terrain (grass)
         patchLocation.add(0, 2, 0);
-        buildPatch(patchLocation, Material.GRASS_BLOCK, 101, 1, 101);
+        buildPatch(patchLocation, Material.OAK_WOOD, 101, 1, 101);
 
         // Build patches
         Material[] materials = {Material.DIRT, Material.GRASS_BLOCK, Material.STONE, Material.OAK_WOOD, Material.SAND, Material.GRAVEL, Material.WATER, Material.SNOW_BLOCK, Material.ICE, Material.ACACIA_WOOD, Material.BIRCH_WOOD, Material.DARK_OAK_WOOD, Material.JUNGLE_WOOD, Material.SPRUCE_WOOD};

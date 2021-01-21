@@ -29,7 +29,7 @@ public class Drop extends JavaPlugin implements Listener {
     private static final int DEFAULT_DUMMY_RADIUS = 10;
     private static Arena arena;
     private static Location PORTAL_EXIT = null;
-    private static BukkitTask taskId;
+    private static BukkitTask matchTaskId;
     private static int countDown;
 
     @Override
@@ -65,55 +65,57 @@ public class Drop extends JavaPlugin implements Listener {
             }
         }.runTaskTimer(this, 20 * 5L, 20 * 10L);
 
-        taskId = null;
+        matchTaskId = null;
 
         LOGGER.info("...plugin successfully loaded.");
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {  // TODO: Refactor
+    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {  // TODO: Refactor
         if (label.equalsIgnoreCase("startMatch")) {
-            return startMatch(sender);
+            return startMatch(commandSender);
         } else if (label.equalsIgnoreCase("showScore")) {
-            return showScore(sender);
+            return showScore(commandSender);
         } else if (label.equalsIgnoreCase("buildArena")) {
-            return buildArena(sender);
+            return buildArena(commandSender);
         } else if (label.equalsIgnoreCase("setPortalExit")) {
-            return setPortalExit(sender);
+            return setPortalExit(commandSender);
         } else if (label.equalsIgnoreCase("spawnDummies")) {
-            return spawnDummies(sender, args);
+            return spawnDummies(commandSender, args);
         } else if (label.equalsIgnoreCase("sethometown")) {
             getLogger().info("sethometown");
-            return setHometown(sender);
+            return setHometown(commandSender);
         } else if (label.equalsIgnoreCase("buildObelisk")) {
             getLogger().info("buildObelisk()");
-            return buildObelisk(sender);
+            return buildObelisk(commandSender);
         } else if (label.equalsIgnoreCase("speedHack")) {
-            return speedHack(sender);
+            return speedHack(commandSender);
         } else {
             return false;
         }
     }
 
     private boolean startMatch(CommandSender commandSender) {  // TODO: Refactor
+        LOGGER.info("startMatch");
+
         if (!(commandSender instanceof Player)) {
-            LOGGER.warning("Unexpected use of Drop.startMatch");
+            LOGGER.warning("Unexpected use of Drop.startMatch, commandSender is not instance of Player class");
             return false;
         }
 
-        if (taskId != null) {
-            Bukkit.broadcastMessage("Match already in progress");
-            LOGGER.warning("Unexpected use of Drop.startMatch");
+        if (matchTaskId != null) {
+            LOGGER.warning("Unexpected use of Drop.startMatch, match is already in progress");
+            commandSender.sendMessage("Match is already in progress");
             return false;
         }
 
         Bukkit.broadcastMessage("Match will start in...");
         countDown = 5;
-        taskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
+        matchTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
             if (countDown > 0) {
                 Bukkit.broadcastMessage("..." + countDown);
             } else {
-                Bukkit.getScheduler().cancelTask(taskId.getTaskId());
+                Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
                 Bukkit.broadcastMessage("FIGHT!");
 
                 for (DropPlayer player : dropPlayers) {
@@ -135,7 +137,7 @@ public class Drop extends JavaPlugin implements Listener {
         LOGGER.info("showScore");
 
         if (!(commandSender instanceof Player)) {
-            LOGGER.warning("Unexpected use of Drop.showScore");
+            LOGGER.warning("Unexpected use of Drop.showScore, commandSender is not instance of Player class");
             return false;
         }
 
@@ -236,19 +238,19 @@ public class Drop extends JavaPlugin implements Listener {
 
     private void finishMatch() {
         countDown = 300;
-        taskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
+        matchTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
             if (countDown == 6) {
                 Bukkit.broadcastMessage("Match will end in...");
             } else if (countDown < 6 && countDown > 0) {
                 Bukkit.broadcastMessage("..." + countDown);
             } else {
-                Bukkit.getScheduler().cancelTask(taskId.getTaskId());
+                Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
                 Bukkit.broadcastMessage("Match has ended.");
 
                 for (DropPlayer player : dropPlayers) {
                     Bukkit.broadcastMessage(player.getName() + ": " + player.getKills() + "/" + player.getDeaths());
                 }
-                taskId = null;
+                matchTaskId = null;
             }
             countDown--;
         }, 20L * 240, 20L);
