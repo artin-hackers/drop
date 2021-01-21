@@ -8,9 +8,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -27,15 +25,15 @@ public class Drop extends JavaPlugin implements Listener {
     private static final boolean DEBUG_STICK_ALLOWED = false;
     private static final List<DropPlayer> dropPlayers = new ArrayList<>();
     private static final List<ItemAdd> items = new ArrayList<>();
-    private static final int DEFAULT_DUMMY_COUNT = 10;  // REFACTORING: Move to a sub-class
-    private static final int DEFAULT_DUMMY_RADIUS = 10;  // REFACTORING: Move to a sub-class
+    private static final int DEFAULT_DUMMY_COUNT = 10;
+    private static final int DEFAULT_DUMMY_RADIUS = 10;
     private static Arena arena;
-    private static Location PORTAL_EXIT = null;  // REFACTORING: Move to a sub-class
+    private static Location PORTAL_EXIT = null;
     private static BukkitTask taskId;
     private static int countDown;
 
     @Override
-    public void onEnable() {
+    public void onEnable() {  // TODO: Refactor
         LOGGER.info("Loading DROP plugin...");
 
         getServer().getPluginManager().registerEvents(this, this);
@@ -55,6 +53,7 @@ public class Drop extends JavaPlugin implements Listener {
         items.add(new ZireaelSword(this));
         items.add(new FilipAxe(this));
         items.add(new ZdenekWand(this));
+        items.add(new InvulnerabilityTrident());
         items.add(new Bow(this));
 
         new BukkitRunnable() {
@@ -72,11 +71,13 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {  // REFACTORING: Review after buildArena
-        if (label.equalsIgnoreCase("buildArena")) {
-            return buildArena(sender);
-        } else if (label.equalsIgnoreCase("startMatch")) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {  // TODO: Refactor
+        if (label.equalsIgnoreCase("startMatch")) {
             return startMatch(sender);
+        } else if (label.equalsIgnoreCase("showScore")) {
+            return showScore(sender);
+        } else if (label.equalsIgnoreCase("buildArena")) {
+            return buildArena(sender);
         } else if (label.equalsIgnoreCase("setPortalExit")) {
             return setPortalExit(sender);
         } else if (label.equalsIgnoreCase("spawnDummies")) {
@@ -87,8 +88,6 @@ public class Drop extends JavaPlugin implements Listener {
         } else if (label.equalsIgnoreCase("buildObelisk")) {
             getLogger().info("buildObelisk()");
             return buildObelisk(sender);
-        } else if (label.equalsIgnoreCase("showscore")) {
-            return showScore(sender);
         } else if (label.equalsIgnoreCase("speedHack")) {
             return speedHack(sender);
         } else {
@@ -96,63 +95,7 @@ public class Drop extends JavaPlugin implements Listener {
         }
     }
 
-    public boolean speedHack(CommandSender sender) {
-        if (!(sender instanceof Player)) {
-            LOGGER.warning("Unexpected use of Drop.speedHack");
-            return false;
-        }
-
-        Player player = (Player) sender;
-        float speed = player.getWalkSpeed();
-        player.setWalkSpeed(speed*2);
-        return true;
-    }
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        LOGGER.info("A new player, " + event.getPlayer().getName() + ", just joined the fray.");
-        dropPlayers.add(new DropPlayer(event.getPlayer()));
-        event.getPlayer().setGameMode(GameMode.SURVIVAL);
-        for (ItemAdd item : items) {
-            item.add(event.getPlayer());
-        }
-
-        event.getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, 5));
-
-        (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
-        (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
-
-        event.getPlayer().teleport(new Location(event.getPlayer().getWorld(), -100, 70, 100));
-    }
-
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        dropPlayers.removeIf(dropPlayer -> dropPlayer.getPlayer().equals(event.getPlayer()));
-    }
-
-    @EventHandler
-    public void onPlayerKick(PlayerKickEvent event) {
-        dropPlayers.removeIf(dropPlayer -> dropPlayer.getPlayer().equals(event.getPlayer()));
-    }
-
-    @EventHandler
-    public void onPlayerRespawn(PlayerRespawnEvent event) {
-        for (ItemAdd item : items) {
-            item.add(event.getPlayer());
-        }
-
-        event.getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, 5));
-
-        (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
-        (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
-
-        event.setRespawnLocation(new Location(event.getPlayer().getWorld(), -100, 70, 100));
-    }
-
-    private boolean buildArena(CommandSender sender) {
-        return arena.buildArena(sender);
-    }
-
-    private boolean startMatch(CommandSender commandSender) {
+    private boolean startMatch(CommandSender commandSender) {  // TODO: Refactor
         if (!(commandSender instanceof Player)) {
             LOGGER.warning("Unexpected use of Drop.startMatch");
             return false;
@@ -188,6 +131,104 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
+    private boolean showScore(CommandSender sender) {
+        LOGGER.info("showScore");
+        if (((Player) sender).getPlayer() != null) {
+            for (DropPlayer dropPlayer : dropPlayers) {
+                sender.sendMessage(dropPlayer.getName() + ": " + dropPlayer.getKills() + "/" + dropPlayer.getDeaths());
+            }
+        }
+        return true;
+    }
+
+    // TODO: Refactor from here down
+
+    public boolean speedHack(CommandSender sender) {
+        if (!(sender instanceof Player)) {
+            LOGGER.warning("Unexpected use of Drop.speedHack");
+            return false;
+        }
+
+        Player player = (Player) sender;
+        float speed = player.getWalkSpeed();
+        player.setWalkSpeed(speed*2);
+        return true;
+    }
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        LOGGER.info("A new player, " + event.getPlayer().getName() + ", just joined the fray.");
+        dropPlayers.add(new DropPlayer(event.getPlayer()));
+        event.getPlayer().setGameMode(GameMode.SURVIVAL);
+        for (ItemAdd item : items) {
+            item.add(event.getPlayer());
+        }
+
+        event.getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, 5));
+
+        (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
+        (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
+
+        event.getPlayer().teleport(new Location(event.getPlayer().getWorld(), -100, 70, 100));
+        event.getPlayer().setWalkSpeed(0.2F);
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        dropPlayers.removeIf(dropPlayer -> dropPlayer.getPlayer().equals(event.getPlayer()));
+    }
+
+    @EventHandler
+    public void onPlayerKick(PlayerKickEvent event) {
+        dropPlayers.removeIf(dropPlayer -> dropPlayer.getPlayer().equals(event.getPlayer()));
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        for (ItemAdd item : items) {
+            item.add(event.getPlayer());
+        }
+
+        event.getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, 5));
+
+        (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
+        (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
+
+        event.setRespawnLocation(new Location(event.getPlayer().getWorld(), -100, 70, 100));
+        event.getPlayer().setWalkSpeed(0.2F);
+    }
+
+//    @EventHandler
+//    public void onHit(EntityDamageByEntityEvent event) {
+//        if (event.getEntity() instanceof Player) {
+//            if (event.getEntity().getName().equals("Arcifrajer") || event.getEntity().getName().equals("u56975")) {
+//                event.setDamage(0);
+//            }
+//        }
+//    }
+
+    // @EventHandler
+    // public void onDamage(EntityDamageByEntityEvent event) {
+    //     LOGGER.warning("Drop.onDamage");
+    //     if (event.getEntity() instanceof Player) {
+    //         if (event.getEntity().getName().equals("Arcifrajer") || event.getEntity().getName().equals("u56975")) {
+    //             event.setDamage(0);
+    //         }
+    //     }
+    // }
+
+//    @EventHandler
+//    public void onPlayerDamage(EntityDamageEvent event) {
+//        if (event.getEntity() instanceof Player) {
+//            if (event.getEntity().getName().equals("Arcifrajer") || event.getEntity().getName().equals("u56975")) {
+//                event.setCancelled(true);
+//            }
+//        }
+//    }
+
+    private boolean buildArena(CommandSender sender) {
+        return arena.buildArena(sender);
+    }
+
     private void finishMatch() {
         countDown = 300;
         taskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
@@ -205,21 +246,10 @@ public class Drop extends JavaPlugin implements Listener {
                 taskId = null;
             }
             countDown--;
-        }, 20L * 10, 20L);
+        }, 20L * 240, 20L);
     }
 
     // REFACTORING: Review from here
-
-    private boolean showScore(CommandSender sender) {
-        LOGGER.info("showScore");
-        Player player = (Player) sender;
-        if (player != null) {
-            for (DropPlayer dropPlayer : dropPlayers) {
-                sender.sendMessage(dropPlayer.getName() + ": " + dropPlayer.getKills() + "/" + dropPlayer.getDeaths());
-            }
-        }
-        return true;
-    }
 
     private boolean equipRifleWand(CommandSender sender) {
         if (sender instanceof Player) {
