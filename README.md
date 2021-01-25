@@ -5,51 +5,44 @@ Diablo Rip-Off Project
 Purpose of this project is to implement 1st/3rd-person RPG within Minecraft game
 engine. The original inspiration are the loot and ability game mechanics in the
 iconic Diablo series. During the development, the focus switched in favour of
-PvP genre.
+the PvP genre.
 
-Features:
+## Documentation
 
-* Different weapons which grant special abilities
+### Features
+
 * Versus mode
 * Co-op mode
+* Hero classes (colours)
+* Different weapons which grant special abilities
+* Levelling
 
-## To Do
+### Commands
 
-* [ ] Code Cleanup
-    * [ ] DebugStick
-    * [ ] Drop
-    * [x] DropPlayer
-    * [x] Effect
-    * [x] FilipAxe
-    * [x] Item
-    * [ ] MagicWand
-    * [x] Mana
-    * [x] ZireaelSword
-* [ ] Reimplement DebugStick - Current version is ugly and not optimal
-* [ ] Review logging
+* `startMatch`
+* `endMatch`
+* `showScore`
 
-### Code Cleanup
+### Weapons
 
-* [ ] Drop
-    * Export items and effects to other classes
-* [ ] Add points to the player if opponent dies from burning, suffocating, etc.
-* [ ] Display resources (mana, arrows, etc.) on the belt
-* [ ] Add resources (mana, soil, arrows)
-* [x] Use resources while casting a spell
-* [ ] Regenerate resources
-* [ ] Implement cool-down
-* [x] Earth Wand generates resource
-* [ ] Rename items in game
+* [ ] "Axe of Frost" (blue) - Freezes the enemy and the ground around them
+* [x] "Filip's Axe" `FilipAxe` (red) - Melee weapon that can shoot fireballs
+* [x] "Fire Bow" `Bow` (red) - Shoots arrows that set the ground ablaze
+* [ ] Crossbow
+* [x] "The Trident" `InvulnerabilityTrident` (white) - Heals the wielder and produces shock-waves
+* [ ] "Sword of the Damned" (black) - Summons the dead to aid you
+* [x] "Zdenek's Wand" "`ZdenekWand` (green) - Shapes the ground around you
+* [x] "Zireael's Sword" `ZireaelSword` (blue) - Grants you the blink ability
 
-## Rules
+### Mana
 
-* Each class has a constructor with logger message
-* Logger
-    * Fine - Debug information
-    * Finer - Method entry points
-    * Finest - Cycle-iteration
+* Black
+* Blue
+* Green
+* Red
+* White
 
-## Structure
+### Structure
 
 ```text
 Drop
@@ -61,12 +54,66 @@ Drop
    └─ ZireaelSword
 ```
 
+## Redesign 2021 - To Do
+
+### Features
+
+* [ ] Implement the "Axe of Frost"
+
+### Bugs
+
+* [ ] ...
+
+### Refactoring
+
+* [ ] Update weapon names
+
+### Notes
+
+* Implement sword of the dead that summons zombies and skeletons, consumes black mana
+* Random respawn position, safe area
+* Callback trident, (consumes white mana?)
+* Trident heals over time
+* Trident pushes enemy back (consumes mana) and explosion when thrown
+* Cooldown for red axe fireballs
+* Consume red mana with bow
+* Implement levelling (based on colour)
+* Implement all weapon mode - it is a mess
+* Implement single random weapon mode
+* Implement hero classes based on the colour
+* Implement proper coop mode
+* Implement proper versus mode with result screen at the end
+* Consider class Match which will take care of starting, running and ending of the match
+* When starting a match, length in minutes can be specified via argument, e.g. `startMatch MINUTES`
+* Player looses the whole inventory upon start/death, his items cannot be picked up
+* Player's health is reset upon match start
+* Hunger is disabled
+* Player's level is reset upon match start (levels are not implemented yet) 
+* Command `showScore` shows current score of the players to the requestor
+* When new player connects, he is teleported to the arena
+* Player equips with a random weapon upon respawn, maybe two
+* Levels, based on colours
+* Code Cleanup
+* Reimplement DebugStick - Current version is ugly and not optimal
+* Review logging
+* Drop
+    * Export items and effects to other classes
+* Add points to the player if opponent dies from burning, suffocating, etc.
+* Display resources (mana, arrows, etc.) on the belt
+* Add resources (mana, soil, arrows)
+* Use resources while casting a spell
+* Regenerate resources
+* Implement cool-down
+* Earth Wand generates resource
+* Rename items in game
+* Each class has a constructor with logger message
+* Logger
+    * Fine - Debug information
+    * Finer - Method entry points
+    * Finest - Cycle-iteration
 * Item
     * Superclass/Template for game items (weapons, armour, resources)
     * Abstract class for game plugin which allows equipping various items
-
-## Notes
-
 * The methods for checking the item like Item.isItemInMainHand should be checking material, name and lore
 * Why Mana cannot be static? Why Item cannot be static? Item is abstract, so requires override from subclases.
 * Mana.equip and Mana.interact might not be necessary if Drop interface and Item.interact are defined differently.
@@ -78,8 +125,7 @@ Drop
 * Implement Mana add/remove methods better
 * There cannot be constructor for Drop class. Plugin would stop working.
 * Mana could kill player if interacted with
-
-No idea how `Item.removeItems` can work with following code. It should be negated. - It is always false.
+* No idea how `Item.removeItems` can work with following code. It should be negated. - It is always false.
 ```text
 if (itemStack.getType().equals(material)) {
     continue;
@@ -90,34 +136,5 @@ Minecraft messes up materials (Material.BLUE_DYE, Material.GREEN_DYE)
 [10:28:24] [Server thread/INFO]: Item.removeItems: material = AIR, displayName = Blue Mana
 [10:28:24] [Server thread/INFO]: Item.removeItems: material = INK_SACK, displayName = Green Mana
 ```
-
-## Match
-
-Requirements:
-
-* Command `startMatch`: arena is build, kill/death counters reset, 5s countdown and players are teleported to the arena
-* Match lasts X minutes, 1 minute remain is announced, 30s, 10-9..1s is announced
-* Afterwards players are teleported back to the standard world and score is shown
-* New match cannot be started during existing one
-* When new player connects, 5s second announcer playes out and then the player is teleported to the arena
-* Players are teleported to a random position in center of the arena (teleporting plattform)
-* Players respawn in the center of the arena for a duration of the match
-* Command `endMatch` finishes the match immediately
-
-## Ideas
-
-* Some weapon grants speed boost 1.5x permanent, 4x for a limited time
-* More actions, catch [Q], [E], [Shift], ...
-
-## Redesign 2021
-
-### Match
-
-* Match can be started with `startMatch MINUTES` command. Default match length is 5 minutes.
-* Match cannot be started twice, started again if it is in progress
-* Player looses all inventory upon match start
-* Player's health is reset upon match start
-* Player's level is reset upon match start (levels are not implemented yet) 
-* Five seconds countdown before match start
-* Five seconds countdown before match end
-* Command `showScore` shows current score of the players to the requestor
+* Some weapons grant speed boost, might be permanent or onRequest
+* More actions, catch keyboard presses of [Q], [E], [Shift], ... Might not be possible

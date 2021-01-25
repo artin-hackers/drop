@@ -5,8 +5,10 @@ main: cz.artin.hackers.Drop
 commands:
   startMatch:
     description: Starts the match
+  endMatch:
+    description: Ends the match
   showScore:
-    description: Shows current score
+    description: Shows the current score
   buildArena:
     description: Build arena
   setPortalExit:
