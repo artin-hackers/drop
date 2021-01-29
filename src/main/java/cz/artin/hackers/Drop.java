@@ -22,31 +22,36 @@ import java.util.logging.Logger;
 
 public class Drop extends JavaPlugin implements Listener {
     private static final Logger LOGGER = Logger.getLogger(Drop.class.getName());
-    private static final boolean DEBUG_STICK_ALLOWED = false;
     private static final List<DropPlayer> dropPlayers = new ArrayList<>();
     private static final List<ItemAdd> items = new ArrayList<>();
+    private static final boolean DEBUG_STICK_ALLOWED = false;
+    private static final int DEFAULT_COUNTDOWN = 3;
+    private static final int DEFAULT_MATCH_LENGTH = 300;
+    private static BukkitTask matchTaskId;
+
+    // TODO: Refactor from here
     private static final int DEFAULT_DUMMY_COUNT = 10;
     private static final int DEFAULT_DUMMY_RADIUS = 10;
-    private static final int DEFAULT_MATCH_LENGHT = 300;
     private static Arena arena;
     private static Location PORTAL_EXIT = null;
-    private static BukkitTask matchTaskId;
     private static int countDown;
+    // TODO: To here
 
     @Override
-    public void onEnable() {  // TODO: Refactor
+    public void onEnable() {
         LOGGER.info("Loading DROP plugin...");
 
         getServer().getPluginManager().registerEvents(this, this);
 
-        Objects.requireNonNull(getServer().getWorld("world")).setTime(1000);  // Development setup, remove in release version
-        Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);  // Development setup, remove in release version
+        Objects.requireNonNull(getServer().getWorld("world")).setTime(1000);
+        Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
+        Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             dropPlayers.add(new DropPlayer(player));
         }
 
-        arena = new Arena();
+        arena = new Arena(); // TODO: Review and refactor
 
         if (DEBUG_STICK_ALLOWED) {
             items.add(new DebugStick(this));
@@ -57,7 +62,7 @@ public class Drop extends JavaPlugin implements Listener {
         items.add(new InvulnerabilityTrident());
         items.add(new Bow(this));
 
-        new BukkitRunnable() {
+        new BukkitRunnable() { // TODO: Refactor mana generator
             public void run() {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     Effect.addMana(player, Mana.Colour.BLUE, 1);
@@ -72,12 +77,17 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {  // TODO: Refactor
+    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         if (label.equalsIgnoreCase("startMatch")) {
             return startMatch(commandSender);
+        } else if (label.equalsIgnoreCase("endMatch")) {
+            return endMatch(commandSender);
         } else if (label.equalsIgnoreCase("showScore")) {
             return showScore(commandSender);
-        } else if (label.equalsIgnoreCase("buildArena")) {
+        }
+
+        // TODO: Review from here
+        if (label.equalsIgnoreCase("buildArena")) {
             return buildArena(commandSender);
         } else if (label.equalsIgnoreCase("setPortalExit")) {
             return setPortalExit(commandSender);
@@ -94,33 +104,33 @@ public class Drop extends JavaPlugin implements Listener {
         } else {
             return false;
         }
+        // TODO: To here
     }
 
     private boolean startMatch(CommandSender commandSender) {
-        LOGGER.info("startMatch");
-
         if (!(commandSender instanceof Player)) {
-            LOGGER.warning("Unexpected use of Drop.startMatch, commandSender is not instance of Player class");
             return false;
         }
 
         if (matchTaskId != null) {
-            LOGGER.warning("Unexpected use of Drop.startMatch, match is already in progress");
             commandSender.sendMessage("Match is already in progress");
             return false;
         }
 
         Bukkit.broadcastMessage("Match will start in...");
-        countDown = 5;
+        countDown = DEFAULT_COUNTDOWN;
         matchTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
             if (countDown == 0) {
                 Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
                 Bukkit.broadcastMessage("FIGHT!");
-                for (DropPlayer player : dropPlayers) {
+                for (DropPlayer player : dropPlayers) { // TODO: Refactor
                     player.setKills(0);
                     player.setDeaths(0);
                 }
-                arena.buildArena(commandSender);
+                arena.buildArena(commandSender); // TODO: Refactor
+                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) { // TODO: Refactor
+                    onlinePlayer.setHealth(20);
+                }
                 runMatch();
             } else {
                 Bukkit.broadcastMessage("..." + countDown);
@@ -135,17 +145,17 @@ public class Drop extends JavaPlugin implements Listener {
         matchTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
             Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
             endMatch();
-        }, 20L * DEFAULT_MATCH_LENGHT, 20L);
+        }, 20L * DEFAULT_MATCH_LENGTH, 20L);
     }
 
     private void endMatch() {
         Bukkit.broadcastMessage("Match will end in...");
-        countDown = 5;
+        countDown = DEFAULT_COUNTDOWN;
         matchTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
             if (countDown == 0) {
                 Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
                 Bukkit.broadcastMessage("Match has ended!");
-                for (DropPlayer player : dropPlayers) {
+                for (DropPlayer player : dropPlayers) { // TODO: Review and refactor
                     Bukkit.broadcastMessage(player.getName() + ": " + player.getKills() + "/" + player.getDeaths());
                 }
                 matchTaskId = null;
@@ -156,11 +166,24 @@ public class Drop extends JavaPlugin implements Listener {
         }, 20L, 20L);
     }
 
-    private boolean showScore(CommandSender commandSender) {
-        LOGGER.info("showScore");
-
+    private boolean endMatch(CommandSender commandSender) {
         if (!(commandSender instanceof Player)) {
-            LOGGER.warning("Unexpected use of Drop.showScore, commandSender is not instance of Player class");
+            return false;
+        }
+
+        if (matchTaskId == null) {
+            commandSender.sendMessage("Cannot end match, no match in progress");
+            return false;
+        }
+
+        Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
+        endMatch();
+
+        return true;
+    }
+
+    private boolean showScore(CommandSender commandSender) {
+        if (!(commandSender instanceof Player)) {
             return false;
         }
 
@@ -279,8 +302,12 @@ public class Drop extends JavaPlugin implements Listener {
             event.setCancelled(true);
     }
 
-
-
+    @EventHandler
+    public void onFoodLevelChange(FoodLevelChangeEvent event) {
+        if (event.getEntityType() == EntityType.PLAYER) {
+            event.setCancelled(true);
+        }
+    }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
