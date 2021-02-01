@@ -3,16 +3,11 @@ package cz.artin.hackers;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
-import org.bukkit.event.entity.ProjectileHitEvent;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
 public abstract class Effect {
@@ -59,15 +54,8 @@ public abstract class Effect {
         Material material = playergroundLocation.getBlock().getType();
         Set<Material> all_materials = new HashSet<>();
         all_materials.add(Material.GOLD_ORE);
-        for (Material mat : Material.values()) {
-            all_materials.add(mat);
-        }
+        Collections.addAll(all_materials, Material.values());
         List<Block> sight = player.getLineOfSight(all_materials, 10);
-//            for (int i = 0; i < sight.size(); i++) {
-//                if (i > sight.size() / 4) {
-//                    sight.get(i).setType(material);
-//                }
-//            }
         Location wallCentre = sight.get(sight.size() - 1).getLocation();
         wallCentre.getBlock().setType(Material.GOLD_BLOCK);
         for (int x = -2; x <= 2; x++) {
@@ -84,12 +72,11 @@ public abstract class Effect {
         }
     }
 
-    public static boolean spawnZombies(Player player) {
+    public static void spawnZombies(Player player) {
         int distance = 11;
         List<Block> sight = player.getLineOfSight(null, distance);
         Location zombieLocation = sight.get(sight.size() - 1).getLocation();
-        Zombie zombie = player.getWorld().spawn(zombieLocation, Zombie.class);
-        return true;
+        player.getWorld().spawn(zombieLocation, Zombie.class);
     }
 
     public static void createHole(Player player) {

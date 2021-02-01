@@ -29,12 +29,12 @@ public class DropPlayer {
         return this.kills;
     }
 
-    public int getDeaths() {
-        return this.deaths;
-    }
-
     public void setKills(int kills) {
         this.kills = kills;
+    }
+
+    public int getDeaths() {
+        return this.deaths;
     }
 
     public void setDeaths(int deaths) {
