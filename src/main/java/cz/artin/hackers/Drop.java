@@ -61,10 +61,12 @@ public class Drop extends JavaPlugin implements Listener {
         items.add(new ZdenekWand(this));
         items.add(new InvulnerabilityTrident());
         items.add(new Bow(this));
+        items.add(new SwordOfTheDamned(this));
 
         new BukkitRunnable() { // TODO: Refactor mana generator
             public void run() {
                 for (Player player : Bukkit.getOnlinePlayers()) {
+                    Effect.addMana(player, Mana.Colour.BLACK, 1);
                     Effect.addMana(player, Mana.Colour.BLUE, 1);
                     Effect.addMana(player, Mana.Colour.RED, 1);
                 }
@@ -218,6 +220,7 @@ public class Drop extends JavaPlugin implements Listener {
 
         event.getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, 5));
 
+        (new Mana()).add(event.getPlayer(), Mana.Colour.BLACK, 5);
         (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
         (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
 
@@ -243,6 +246,7 @@ public class Drop extends JavaPlugin implements Listener {
 
         event.getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, 5));
 
+        (new Mana()).add(event.getPlayer(), Mana.Colour.BLACK, 5);
         (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
         (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
 
