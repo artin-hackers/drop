@@ -22,7 +22,7 @@ public class SwordOfTheDamned extends Item implements Listener {
 
     public void interact(Player player, Action action) {
         if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
-            Effect.launchFireball(player);
+            Effect.spawnZombies(player);
         }
     }
 }

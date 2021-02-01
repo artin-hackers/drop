@@ -6,6 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Zombie;
 import org.bukkit.event.entity.ProjectileHitEvent;
 
 import java.util.Arrays;
@@ -83,6 +84,13 @@ public abstract class Effect {
         }
     }
 
+    public static boolean spawnZombies(Player player) {
+        int distance = 11;
+        List<Block> sight = player.getLineOfSight(null, distance);
+        Location zombieLocation = sight.get(sight.size() - 1).getLocation();
+        Zombie zombie = player.getWorld().spawn(zombieLocation, Zombie.class);
+        return true;
+    }
 
     public static void createHole(Player player) {
         List<Block> sight = player.getLineOfSight(null, 20);
