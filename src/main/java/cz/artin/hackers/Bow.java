@@ -45,6 +45,7 @@ public class Bow extends Item implements Listener {
             setGroundFire(event.getEntity().getLocation(), 2);
         }
     }
+
     public void interact(Player player, Action action) {
     }
 }

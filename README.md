@@ -67,6 +67,7 @@ Drop
 ### Refactoring
 
 * [ ] Update weapon names
+* [ ] Every class has its own logger
 
 ### Notes
 
@@ -138,3 +139,102 @@ Minecraft messes up materials (Material.BLUE_DYE, Material.GREEN_DYE)
 ```
 * Some weapons grant speed boost, might be permanent or onRequest
 * More actions, catch keyboard presses of [Q], [E], [Shift], ... Might not be possible
+
+Dead Code
+
+```java
+//    @EventHandler
+//    public void onHit(EntityDamageByEntityEvent event) {
+//        if (event.getEntity() instanceof Player) {
+//            if (event.getEntity().getName().equals("Arcifrajer") || event.getEntity().getName().equals("u56975")) {
+//                event.setDamage(0);
+//            }
+//        }
+//    }
+
+    // @EventHandler
+    // public void onDamage(EntityDamageByEntityEvent event) {
+    //     LOGGER.warning("Drop.onDamage");
+    //     if (event.getEntity() instanceof Player) {
+    //         if (event.getEntity().getName().equals("Arcifrajer") || event.getEntity().getName().equals("u56975")) {
+    //             event.setDamage(0);
+    //         }
+    //     }
+    // }
+
+//    @EventHandler
+//    public void onPlayerDamage(EntityDamageEvent event) {
+//        if (event.getEntity() instanceof Player) {
+//            if (event.getEntity().getName().equals("Arcifrajer") || event.getEntity().getName().equals("u56975")) {
+//                event.setCancelled(true);
+//            }
+//        }
+//    }
+/*
+public Location putInView(CommandSender sender, int distance) {
+        if (sender instanceof Player) {
+        Player player = (Player) sender;
+        Location location = player.getLocation().clone();
+        directions direction = getDirection(sender);
+        if (direction == directions.NORTH) {
+        location.add(0, 0, -distance);
+        } else if (direction == directions.EAST) {
+        location.add(distance, 0, 0);
+        } else if (direction == directions.SOUTH) {
+        location.add(0, 0, distance);
+        } else if (direction == directions.WEST) {
+        location.add(-distance, 0, 0);
+        } else {
+        getLogger().info("Error: putInView()");
+        return null;
+        }
+        return location;
+        }
+        return null;
+        }
+
+private boolean Hulkazivota2(CommandSender sender) {
+        if (sender instanceof Player) {
+        Player player = (Player) sender;
+        Location playerLocation = player.getLocation();
+        for (int x = -2; x <= 2; x++) {
+        for (int y = 0; y <= 2; y++) {
+        for (int z = -2; z <= 2; z++) {
+final Location wallBlock = new Location(
+        player.getWorld(),
+        playerLocation.getX() + x,
+        playerLocation.getY() + y,
+        playerLocation.getZ() + z);
+        wallBlock.getBlock().setType(Material.AIR);
+        }
+        }
+        }
+        }
+        return true;
+        }
+
+public directions getDirection(CommandSender sender) {
+        if (sender instanceof Player) {
+        Player player = (Player) sender;
+        int rotation = Math.round(player.getLocation().getYaw() + 270) % 360;
+        if (rotation >= 45 && rotation < 135) {
+        return directions.NORTH;
+        } else if (rotation >= 135 && rotation < 225) {
+        return directions.EAST;
+        } else if (rotation >= 225 && rotation < 315) {
+        return directions.SOUTH;
+        } else {
+        return directions.WEST;
+        }
+        }
+        return null;
+        }
+
+private enum directions {
+  NORTH,
+  EAST,
+  SOUTH,
+  WEST
+}
+*/
+```
