@@ -22,43 +22,60 @@ the PvP genre.
 * `startMatch`
 * `endMatch`
 * `showScore`
+* `debugClearArea`
+* `debugBuildLobby`
 
-### Weapons
-
-* [ ] "Axe of Frost" (blue) - Freezes the enemy and the ground around them
-* [x] "Filip's Axe" `FilipAxe` (red) - Melee weapon that can shoot fireballs
-* [x] "Fire Bow" `Bow` (red) - Shoots arrows that set the ground ablaze
-* [ ] Crossbow
-* [x] "The Trident" `InvulnerabilityTrident` (white) - Heals the wielder and produces shock-waves
-* [ ] "Sword of the Damned" (black) - Summons the dead to aid you
-* [x] "Zdenek's Wand" "`ZdenekWand` (green) - Shapes the ground around you
-* [x] "Zireael's Sword" `ZireaelSword` (blue) - Grants you the blink ability
-
-### Mana
+### Weapons and Mana
 
 * Black
+  * "Sword of the Damned" - Summon the dead to aid you
+  * ???
 * Blue
+  * "Axe of Frost" - Freeze the enemy and the ground around them
+  * "Zireael's Sword" - Blink forward
 * Green
+  * "Zdenek's Wand" - Shape the ground around you
+  * ???
 * Red
+  * "Filip's Axe" - Launch fireballs
+  * "Bow of Fire" - Set the ground ablaze
 * White
+  * "Trident" - Heal and make shock-waves
+  * ???
 
 ### Structure
 
 ```text
 Drop
+├─ Arena
 ├─ DropPlayer
 ├─ Effect
 └─ Item
-   ├─ DebugStick
-   ├─ MagicWand
-   └─ ZireaelSword
+   ├─ Resource
+   │  └─ Mana
+   └─ Weapon
+      ├─ Bow
+      ├─ DebugStick
+      ├─ FilipAxe
+      ├─ InvulnerabilityTrident
+      ├─ MagicWand
+      ├─ SwordOfTheDamned
+      ├─ ZdenekWand
+      └─ ZireaelSword
 ```
 
 ## Redesign 2021 - To Do
 
 ### Features
 
-* [ ] Implement the "Axe of Frost"
+* [ ] New weapon "Sword of the Damned"
+  * [ ] New item
+  * [ ] Spawn zombies
+  * [ ] Use black mana
+* [ ] New weapon "Axe of Frost"
+* [ ] New weapon "Trident"
+* [ ] Levelling
+* [ ] Random class upon respawn
 
 ### Bugs
 
@@ -67,9 +84,45 @@ Drop
 ### Refactoring
 
 * [ ] Update weapon names
+* [ ] Every class has its own logger
+
+#### Classes and Methods
+
+* [ ] Arena
+  * [x] Properties
+  * [x] Arena
+  * [x] getArenaLocation
+  * [x] getLobbyLocation
+  * [x] setArenaLocation
+  * [x] buildLobby
+  * [ ] buildArena
+  * [x] buildPatch
+  * [x] getRandomInt
+* [ ] Bow
+* [ ] DebugStick
+* [ ] Drop
+  * [ ] Properties
+  * [ ] OnEnable
+  * [ ] OnCommand
+  * [ ] ...
+  * [x] clearArea
+  * [x] buildLobby
+* [ ] DropPlayer
+* [ ] Effect
+* [ ] FilipAxe
+* [ ] InvulrneabilityTrident
+* [ ] Item
+* [ ] Mana
+* [ ] SwordOfTheDamned
+* [ ] ZdenekWand
+* [ ] ZireaelSword
 
 ### Notes
 
+* Armour?
+* Capture the Flag mode?
+* King of the Hill mode?
+* Crossbow weapon?
 * Implement sword of the dead that summons zombies and skeletons, consumes black mana
 * Random respawn position, safe area
 * Callback trident, (consumes white mana?)
@@ -138,3 +191,102 @@ Minecraft messes up materials (Material.BLUE_DYE, Material.GREEN_DYE)
 ```
 * Some weapons grant speed boost, might be permanent or onRequest
 * More actions, catch keyboard presses of [Q], [E], [Shift], ... Might not be possible
+
+Dead Code
+
+```java
+//    @EventHandler
+//    public void onHit(EntityDamageByEntityEvent event) {
+//        if (event.getEntity() instanceof Player) {
+//            if (event.getEntity().getName().equals("Arcifrajer") || event.getEntity().getName().equals("u56975")) {
+//                event.setDamage(0);
+//            }
+//        }
+//    }
+
+    // @EventHandler
+    // public void onDamage(EntityDamageByEntityEvent event) {
+    //     LOGGER.warning("Drop.onDamage");
+    //     if (event.getEntity() instanceof Player) {
+    //         if (event.getEntity().getName().equals("Arcifrajer") || event.getEntity().getName().equals("u56975")) {
+    //             event.setDamage(0);
+    //         }
+    //     }
+    // }
+
+//    @EventHandler
+//    public void onPlayerDamage(EntityDamageEvent event) {
+//        if (event.getEntity() instanceof Player) {
+//            if (event.getEntity().getName().equals("Arcifrajer") || event.getEntity().getName().equals("u56975")) {
+//                event.setCancelled(true);
+//            }
+//        }
+//    }
+/*
+public Location putInView(CommandSender sender, int distance) {
+        if (sender instanceof Player) {
+        Player player = (Player) sender;
+        Location location = player.getLocation().clone();
+        directions direction = getDirection(sender);
+        if (direction == directions.NORTH) {
+        location.add(0, 0, -distance);
+        } else if (direction == directions.EAST) {
+        location.add(distance, 0, 0);
+        } else if (direction == directions.SOUTH) {
+        location.add(0, 0, distance);
+        } else if (direction == directions.WEST) {
+        location.add(-distance, 0, 0);
+        } else {
+        getLogger().info("Error: putInView()");
+        return null;
+        }
+        return location;
+        }
+        return null;
+        }
+
+private boolean Hulkazivota2(CommandSender sender) {
+        if (sender instanceof Player) {
+        Player player = (Player) sender;
+        Location playerLocation = player.getLocation();
+        for (int x = -2; x <= 2; x++) {
+        for (int y = 0; y <= 2; y++) {
+        for (int z = -2; z <= 2; z++) {
+final Location wallBlock = new Location(
+        player.getWorld(),
+        playerLocation.getX() + x,
+        playerLocation.getY() + y,
+        playerLocation.getZ() + z);
+        wallBlock.getBlock().setType(Material.AIR);
+        }
+        }
+        }
+        }
+        return true;
+        }
+
+public directions getDirection(CommandSender sender) {
+        if (sender instanceof Player) {
+        Player player = (Player) sender;
+        int rotation = Math.round(player.getLocation().getYaw() + 270) % 360;
+        if (rotation >= 45 && rotation < 135) {
+        return directions.NORTH;
+        } else if (rotation >= 135 && rotation < 225) {
+        return directions.EAST;
+        } else if (rotation >= 225 && rotation < 315) {
+        return directions.SOUTH;
+        } else {
+        return directions.WEST;
+        }
+        }
+        return null;
+        }
+
+private enum directions {
+  NORTH,
+  EAST,
+  SOUTH,
+  WEST
+}
+*/
+```

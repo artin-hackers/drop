@@ -11,9 +11,47 @@ import java.util.logging.Logger;
 
 public class Arena {
     private static final Logger LOGGER = Logger.getLogger(Arena.class.getName());
+    private static final int DEFAULT_LOBBY_SIZE = 20;
+    private static final int DEFAULT_LOBBY_HEIGHT = 5;
+    private static Location arenaLocation = null;
 
     Arena() {
         LOGGER.finer("Arena");
+    }
+
+    public Location getArenaLocation() {
+        return arenaLocation;
+    }
+
+    public void setArenaLocation(Location location) {
+        arenaLocation = location;
+    }
+
+    public Location getLobbyLocation() {
+        return arenaLocation;
+    }
+
+    public void buildLobby() {
+        if (getLobbyLocation() == null) {
+            return;
+        }
+
+        Location lobbyCorner = new Location(getLobbyLocation().getWorld(), getLobbyLocation().getX() - (DEFAULT_LOBBY_SIZE >> 1), getLobbyLocation().getY(), getLobbyLocation().getZ() - (DEFAULT_LOBBY_SIZE >> 1));
+        Material lobbyMaterial = Material.BIRCH_WOOD;
+        buildPatch(lobbyCorner, Material.AIR, DEFAULT_LOBBY_SIZE, DEFAULT_LOBBY_HEIGHT, DEFAULT_LOBBY_SIZE);
+        buildPatch(lobbyCorner, lobbyMaterial, DEFAULT_LOBBY_SIZE, 1, DEFAULT_LOBBY_SIZE);
+        for (int i = 1; i <= DEFAULT_LOBBY_HEIGHT; i++) {
+            (new Location(lobbyCorner.getWorld(), lobbyCorner.getX(), lobbyCorner.getY() + i, lobbyCorner.getZ())).getBlock().setType(lobbyMaterial);
+            (new Location(lobbyCorner.getWorld(), lobbyCorner.getX() + DEFAULT_LOBBY_SIZE - 1, lobbyCorner.getY() + i, lobbyCorner.getZ())).getBlock().setType(lobbyMaterial);
+            (new Location(lobbyCorner.getWorld(), lobbyCorner.getX(), lobbyCorner.getY() + i, lobbyCorner.getZ() + DEFAULT_LOBBY_SIZE - 1)).getBlock().setType(lobbyMaterial);
+            (new Location(lobbyCorner.getWorld(), lobbyCorner.getX() + DEFAULT_LOBBY_SIZE - 1, lobbyCorner.getY() + i, lobbyCorner.getZ() + DEFAULT_LOBBY_SIZE - 1)).getBlock().setType(lobbyMaterial);
+        }
+        for (int i = 0; i < DEFAULT_LOBBY_SIZE; i++) {
+            (new Location(lobbyCorner.getWorld(), lobbyCorner.getX() + i, lobbyCorner.getY() + DEFAULT_LOBBY_HEIGHT, lobbyCorner.getZ())).getBlock().setType(lobbyMaterial);
+            (new Location(lobbyCorner.getWorld(), lobbyCorner.getX() + i, lobbyCorner.getY() + DEFAULT_LOBBY_HEIGHT, lobbyCorner.getZ() + DEFAULT_LOBBY_SIZE - 1)).getBlock().setType(lobbyMaterial);
+            (new Location(lobbyCorner.getWorld(), lobbyCorner.getX(), lobbyCorner.getY() + DEFAULT_LOBBY_HEIGHT, lobbyCorner.getZ() + i)).getBlock().setType(lobbyMaterial);
+            (new Location(lobbyCorner.getWorld(), lobbyCorner.getX() + +DEFAULT_LOBBY_SIZE - 1, lobbyCorner.getY() + DEFAULT_LOBBY_HEIGHT, lobbyCorner.getZ() + i)).getBlock().setType(lobbyMaterial);
+        }
     }
 
     public boolean buildArena(CommandSender commandSender) {
