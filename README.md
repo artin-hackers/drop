@@ -22,43 +22,60 @@ the PvP genre.
 * `startMatch`
 * `endMatch`
 * `showScore`
+* `debugClearArea`
+* `debugBuildLobby`
 
-### Weapons
-
-* [ ] "Axe of Frost" (blue) - Freezes the enemy and the ground around them
-* [x] "Filip's Axe" `FilipAxe` (red) - Melee weapon that can shoot fireballs
-* [x] "Fire Bow" `Bow` (red) - Shoots arrows that set the ground ablaze
-* [ ] Crossbow
-* [x] "The Trident" `InvulnerabilityTrident` (white) - Heals the wielder and produces shock-waves
-* [ ] "Sword of the Damned" (black) - Summons the dead to aid you
-* [x] "Zdenek's Wand" "`ZdenekWand` (green) - Shapes the ground around you
-* [x] "Zireael's Sword" `ZireaelSword` (blue) - Grants you the blink ability
-
-### Mana
+### Weapons and Mana
 
 * Black
+  * "Sword of the Damned" - Summon the dead to aid you
+  * ???
 * Blue
+  * "Axe of Frost" - Freeze the enemy and the ground around them
+  * "Zireael's Sword" - Blink forward
 * Green
+  * "Zdenek's Wand" - Shape the ground around you
+  * ???
 * Red
+  * "Filip's Axe" - Launch fireballs
+  * "Bow of Fire" - Set the ground ablaze
 * White
+  * "Trident" - Heal and make shock-waves
+  * ???
 
 ### Structure
 
 ```text
 Drop
+├─ Arena
 ├─ DropPlayer
 ├─ Effect
 └─ Item
-   ├─ DebugStick
-   ├─ MagicWand
-   └─ ZireaelSword
+   ├─ Resource
+   │  └─ Mana
+   └─ Weapon
+      ├─ Bow
+      ├─ DebugStick
+      ├─ FilipAxe
+      ├─ InvulnerabilityTrident
+      ├─ MagicWand
+      ├─ SwordOfTheDamned
+      ├─ ZdenekWand
+      └─ ZireaelSword
 ```
 
 ## Redesign 2021 - To Do
 
 ### Features
 
-* [ ] Implement the "Axe of Frost"
+* [ ] New weapon "Sword of the Damned"
+  * [ ] New item
+  * [ ] Spawn zombies
+  * [ ] Use black mana
+* [ ] New weapon "Axe of Frost"
+* [ ] New weapon "Trident"
+* [ ] Levelling
+* [ ] Random class upon respawn
 
 ### Bugs
 
@@ -69,8 +86,43 @@ Drop
 * [ ] Update weapon names
 * [ ] Every class has its own logger
 
+#### Classes and Methods
+
+* [ ] Arena
+  * [x] Properties
+  * [x] Arena
+  * [x] getArenaLocation
+  * [x] getLobbyLocation
+  * [x] setArenaLocation
+  * [x] buildLobby
+  * [ ] buildArena
+  * [x] buildPatch
+  * [x] getRandomInt
+* [ ] Bow
+* [ ] DebugStick
+* [ ] Drop
+  * [ ] Properties
+  * [ ] OnEnable
+  * [ ] OnCommand
+  * [ ] ...
+  * [x] clearArea
+  * [x] buildLobby
+* [ ] DropPlayer
+* [ ] Effect
+* [ ] FilipAxe
+* [ ] InvulrneabilityTrident
+* [ ] Item
+* [ ] Mana
+* [ ] SwordOfTheDamned
+* [ ] ZdenekWand
+* [ ] ZireaelSword
+
 ### Notes
 
+* Armour?
+* Capture the Flag mode?
+* King of the Hill mode?
+* Crossbow weapon?
 * Implement sword of the dead that summons zombies and skeletons, consumes black mana
 * Random respawn position, safe area
 * Callback trident, (consumes white mana?)

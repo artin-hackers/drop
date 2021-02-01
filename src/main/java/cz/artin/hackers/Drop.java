@@ -36,6 +36,7 @@ public class Drop extends JavaPlugin implements Listener {
     private static Arena arena;
     private static Location PORTAL_EXIT = null;
     private static int countDown;
+    private static final int DEFAULT_CLEAR_AREA = 100;
 
     @Override
     public void onEnable() {
@@ -47,11 +48,14 @@ public class Drop extends JavaPlugin implements Listener {
         Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
         Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
 
+        arena = new Arena();
+
         for (Player player : Bukkit.getOnlinePlayers()) {
+            if (arena.getArenaLocation() == null) {
+                arena.setArenaLocation(player.getWorld().getSpawnLocation());
+            }
             dropPlayers.add(new DropPlayer(player));
         }
-
-        arena = new Arena();
 
         if (DEBUG_STICK_ALLOWED) {
             weapons.add(new DebugStick(this));
@@ -86,9 +90,11 @@ public class Drop extends JavaPlugin implements Listener {
             return endMatch(commandSender);
         } else if (label.equalsIgnoreCase("showScore")) {
             return showScore(commandSender);
-        }
-
-        if (label.equalsIgnoreCase("buildArena")) {
+        } else if (label.equalsIgnoreCase("debugClearArea")) {
+            return clearArea(commandSender);
+        } else if (label.equalsIgnoreCase("debugBuildLobby")) {
+            return buildLobby();
+        } else if (label.equalsIgnoreCase("buildArena")) {
             return buildArena(commandSender);
         } else if (label.equalsIgnoreCase("setPortalExit")) {
             return setPortalExit(commandSender);
@@ -105,6 +111,30 @@ public class Drop extends JavaPlugin implements Listener {
         } else {
             return false;
         }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        LOGGER.info("A new player, " + event.getPlayer().getName() + ", just joined the fray");
+
+        if (arena.getArenaLocation() == null) {
+            arena.setArenaLocation(event.getPlayer().getWorld().getSpawnLocation());
+        }
+
+        dropPlayers.add(new DropPlayer(event.getPlayer()));
+        event.getPlayer().setGameMode(GameMode.SURVIVAL);
+        for (ItemAdd item : weapons) {
+            item.add(event.getPlayer());
+        }
+
+        event.getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, 5));
+
+        (new Mana()).add(event.getPlayer(), Mana.Colour.BLACK, 5);
+        (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
+        (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
+
+        event.getPlayer().teleport(new Location(event.getPlayer().getWorld(), -100, 70, 100));
+        event.getPlayer().setWalkSpeed(0.2F);
     }
 
     private boolean startMatch(CommandSender commandSender) {
@@ -204,25 +234,6 @@ public class Drop extends JavaPlugin implements Listener {
         float speed = player.getWalkSpeed();
         player.setWalkSpeed(speed * 2);
         return true;
-    }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        LOGGER.info("A new player, " + event.getPlayer().getName() + ", just joined the fray.");
-        dropPlayers.add(new DropPlayer(event.getPlayer()));
-        event.getPlayer().setGameMode(GameMode.SURVIVAL);
-        for (ItemAdd item : weapons) {
-            item.add(event.getPlayer());
-        }
-
-        event.getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, 5));
-
-        (new Mana()).add(event.getPlayer(), Mana.Colour.BLACK, 5);
-        (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
-        (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
-
-        event.getPlayer().teleport(new Location(event.getPlayer().getWorld(), -100, 70, 100));
-        event.getPlayer().setWalkSpeed(0.2F);
     }
 
     @EventHandler
@@ -424,6 +435,31 @@ public class Drop extends JavaPlugin implements Listener {
             }
         }
         return null;
+    }
+
+    private boolean clearArea(CommandSender commandSender) {
+        if (!(commandSender instanceof Player)) {
+            return false;
+        }
+
+        Location playerLocation = Objects.requireNonNull(((Player) commandSender).getPlayer()).getLocation();
+        for (int x = -(DEFAULT_CLEAR_AREA >> 1); x < (DEFAULT_CLEAR_AREA >> 1); x++) {
+            for (int y = 0; y < DEFAULT_CLEAR_AREA; y++) {
+                for (int z = -(DEFAULT_CLEAR_AREA >> 1); z < (DEFAULT_CLEAR_AREA >> 1); z++) {
+                    (new Location(playerLocation.getWorld(), playerLocation.getX() + x, playerLocation.getY() + y, playerLocation.getZ() + z)).getBlock().setType(Material.AIR);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private boolean buildLobby() {
+        arena.buildLobby();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.teleport(arena.getLobbyLocation().add(0, 1, 0));
+        }
+        return true;
     }
 
     public interface ItemAdd {
