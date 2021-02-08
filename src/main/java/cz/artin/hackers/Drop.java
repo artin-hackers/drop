@@ -46,7 +46,7 @@ public class Drop extends JavaPlugin implements Listener {
 
         Objects.requireNonNull(getServer().getWorld("world")).setTime(1000);
         Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
-        Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+        Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, false);
 
         arena = new Arena();
 
