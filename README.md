@@ -68,12 +68,15 @@ Drop
 
 ### Features
 
-* [ ] New weapon "Sword of the Damned"
-  * [ ] New item
-  * [ ] Spawn zombies
-  * [ ] Use black mana
-* [ ] New weapon "Axe of Frost"
 * [ ] New weapon "Trident"
+  * [x] New item
+  * [ ] Rename to "Trident", "TridentOfHealh"
+  * [ ] One of following
+    * [ ] OnInteract(LMB), if mob/player is hit, use mana, add health
+    * [ ] OnInteract(RMB), if mob/player is hit, use mana, health to max
+    * [ ] If equipped, regenerate health, rate 1/10s, use mana
+    * [ ] If ??? make player invulnerable
+* [ ] New weapon "Axe of Frost"
 * [ ] Levelling
 * [ ] Random class upon respawn
 
