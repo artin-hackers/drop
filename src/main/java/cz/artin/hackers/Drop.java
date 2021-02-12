@@ -63,7 +63,7 @@ public class Drop extends JavaPlugin implements Listener {
         weapons.add(new ZireaelSword(this));
         weapons.add(new FilipAxe(this));
         weapons.add(new ZdenekWand(this));
-        weapons.add(new InvulnerabilityTrident());
+        weapons.add(new Trident());
         weapons.add(new Bow(this));
         weapons.add(new SwordOfTheDamned(this));
 
@@ -132,7 +132,7 @@ public class Drop extends JavaPlugin implements Listener {
         (new Mana()).add(event.getPlayer(), Mana.Colour.BLACK, 5);
         (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
         (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
-
+        (new Mana()).add(event.getPlayer(), Mana.Colour.WHITE, 3);
         event.getPlayer().teleport(new Location(event.getPlayer().getWorld(), -100, 70, 100));
         event.getPlayer().setWalkSpeed(0.2F);
     }
