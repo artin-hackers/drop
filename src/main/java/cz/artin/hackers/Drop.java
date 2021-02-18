@@ -89,7 +89,7 @@ public class Drop extends JavaPlugin implements Listener {
             ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
             if (itemInMainHand.getItemMeta() != null) {
                 String itemDisplayName = itemInMainHand.getItemMeta().getDisplayName();
-                if (itemDisplayName.equals("Trident")) {
+                if (itemDisplayName.equals("cz.artin.hackers.Trident")) {
                     Effect.addHealth(player, 2);
                 }
             }
