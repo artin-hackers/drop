@@ -73,13 +73,22 @@ public class Drop extends JavaPlugin implements Listener {
                     Effect.addMana(player, Mana.Colour.BLACK, 1);
                     Effect.addMana(player, Mana.Colour.BLUE, 1);
                     Effect.addMana(player, Mana.Colour.RED, 1);
+                    Effect.addMana(player, Mana.Colour.WHITE, 1);
                 }
+                healPlayer();
             }
         }.runTaskTimer(this, 20 * 5L, 20 * 10L);
 
         matchTaskId = null;
 
         LOGGER.info("...plugin successfully loaded.");
+    }
+
+    private void healPlayer(){
+        Bukkit.broadcastMessage("you are healed");
+        for player in getOnlinePlayers:
+        if player.getItemInMainHand == Trident:
+       Effect.addHealth(healPlayer());
     }
 
     @Override

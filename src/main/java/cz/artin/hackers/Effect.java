@@ -48,6 +48,11 @@ public abstract class Effect {
         player.launchProjectile(Fireball.class);
     }
 
+    public static void addHealth(Player player, Integer amount) {
+        player.getHealth();
+    }
+
+
     public static void creategauge(Player player) {
         Location playerLocation = player.getLocation();
         Location playergroundLocation = playerLocation.add(0, -1, 0);
