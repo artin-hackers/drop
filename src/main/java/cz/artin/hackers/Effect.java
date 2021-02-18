@@ -50,6 +50,7 @@ public abstract class Effect {
 
     public static void addHealth(Player player, Integer amount) {
         player.getHealth();
+        player.sendMessage("You are healed");
     }
 
 

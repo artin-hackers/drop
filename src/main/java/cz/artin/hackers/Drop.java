@@ -84,11 +84,16 @@ public class Drop extends JavaPlugin implements Listener {
         LOGGER.info("...plugin successfully loaded.");
     }
 
-    private void healPlayer(){
-        Bukkit.broadcastMessage("you are healed");
-        for player in getOnlinePlayers:
-        if player.getItemInMainHand == Trident:
-       Effect.addHealth(healPlayer());
+    private void healPlayer() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+            if (itemInMainHand.getItemMeta() != null) {
+                String itemDisplayName = itemInMainHand.getItemMeta().getDisplayName();
+                if (itemDisplayName.equals("Trident")) {
+                    Effect.addHealth(player, 2);
+                }
+            }
+        }
     }
 
     @Override
