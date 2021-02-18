@@ -63,7 +63,7 @@ public class Drop extends JavaPlugin implements Listener {
         weapons.add(new ZireaelSword(this));
         weapons.add(new FilipAxe(this));
         weapons.add(new ZdenekWand(this));
-        weapons.add(new InvulnerabilityTrident());
+        weapons.add(new Trident(this));
         weapons.add(new Bow(this));
         weapons.add(new SwordOfTheDamned(this));
 
@@ -73,13 +73,27 @@ public class Drop extends JavaPlugin implements Listener {
                     Effect.addMana(player, Mana.Colour.BLACK, 1);
                     Effect.addMana(player, Mana.Colour.BLUE, 1);
                     Effect.addMana(player, Mana.Colour.RED, 1);
+                    Effect.addMana(player, Mana.Colour.WHITE, 1);
                 }
+                healPlayer();
             }
         }.runTaskTimer(this, 20 * 5L, 20 * 10L);
 
         matchTaskId = null;
 
         LOGGER.info("...plugin successfully loaded.");
+    }
+
+    private void healPlayer() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+            if (itemInMainHand.getItemMeta() != null) {
+                String itemDisplayName = itemInMainHand.getItemMeta().getDisplayName();
+                if (itemDisplayName.equals("cz.artin.hackers.Trident")) {
+                    Effect.addHealth(player, 2);
+                }
+            }
+        }
     }
 
     @Override
@@ -132,7 +146,7 @@ public class Drop extends JavaPlugin implements Listener {
         (new Mana()).add(event.getPlayer(), Mana.Colour.BLACK, 5);
         (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
         (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
-
+        (new Mana()).add(event.getPlayer(), Mana.Colour.WHITE, 3);
         event.getPlayer().teleport(new Location(event.getPlayer().getWorld(), -100, 70, 100));
         event.getPlayer().setWalkSpeed(0.2F);
     }
