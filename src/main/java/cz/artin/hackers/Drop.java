@@ -110,7 +110,7 @@ public class Drop extends JavaPlugin implements Listener {
         } else if (label.equalsIgnoreCase("debugBuildLobby")) {
             return buildLobby();
         } else if (label.equalsIgnoreCase("debugDropInventory")) {
-            return dropInventory(commandSender);
+            return dropInventory((Player) commandSender);
         } else if (label.equalsIgnoreCase("buildArena")) {
             return buildArena(commandSender);
         } else if (label.equalsIgnoreCase("setPortalExit")) {
@@ -140,6 +140,7 @@ public class Drop extends JavaPlugin implements Listener {
 
         dropPlayers.add(new DropPlayer(event.getPlayer()));
         event.getPlayer().setGameMode(GameMode.SURVIVAL);
+        dropInventory(event.getPlayer());
         for (ItemAdd item : weapons) {
             item.add(event.getPlayer());
         }
@@ -265,6 +266,7 @@ public class Drop extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
+        dropInventory(event.getPlayer());
         for (ItemAdd item : weapons) {
             item.add(event.getPlayer());
         }
@@ -299,6 +301,7 @@ public class Drop extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity().getPlayer();
+        dropInventory(player);
         if (player != null) {
             for (DropPlayer dropPlayer : dropPlayers) {
                 if (dropPlayer.getName().equals(player.getName())) {
@@ -483,16 +486,14 @@ public class Drop extends JavaPlugin implements Listener {
         void add(Player player);
     }
 
-    private boolean dropInventory(CommandSender commandSender) {
-        if (commandSender instanceof Player) {
-            Inventory inventory = ((Player) commandSender).getInventory();
-            for (int slot = 0; slot < inventory.getSize(); slot++) {
-                ItemStack itemStack = inventory.getItem(slot);
-                if (itemStack == null) {
-                    continue;
-                }
-                itemStack.setAmount(0);
+    private boolean dropInventory(Player player) {
+        Inventory inventory = player.getInventory();
+        for (int slot = 0; slot < inventory.getSize(); slot++) {
+            ItemStack itemStack = inventory.getItem(slot);
+            if (itemStack == null) {
+                continue;
             }
+            itemStack.setAmount(0);
         }
         return true;
     }
