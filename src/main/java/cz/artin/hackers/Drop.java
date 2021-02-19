@@ -12,6 +12,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -108,6 +109,8 @@ public class Drop extends JavaPlugin implements Listener {
             return clearArea(commandSender);
         } else if (label.equalsIgnoreCase("debugBuildLobby")) {
             return buildLobby();
+        } else if (label.equalsIgnoreCase("debugDropInventory")) {
+            return dropInventory(commandSender);
         } else if (label.equalsIgnoreCase("buildArena")) {
             return buildArena(commandSender);
         } else if (label.equalsIgnoreCase("setPortalExit")) {
@@ -478,5 +481,19 @@ public class Drop extends JavaPlugin implements Listener {
 
     public interface ItemAdd {
         void add(Player player);
+    }
+
+    private boolean dropInventory(CommandSender commandSender) {
+        if (commandSender instanceof Player) {
+            Inventory inventory = ((Player) commandSender).getInventory();
+            for (int slot = 0; slot < inventory.getSize(); slot++) {
+                ItemStack itemStack = inventory.getItem(slot);
+                if (itemStack == null) {
+                    continue;
+                }
+                itemStack.setAmount(0);
+            }
+        }
+        return true;
     }
 }
