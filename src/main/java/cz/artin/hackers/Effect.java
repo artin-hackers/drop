@@ -49,10 +49,18 @@ public abstract class Effect {
     }
 
     public static void addHealth(Player player, Integer amount) {
-        player.getHealth();
-        player.sendMessage("You are healed");
+        double health = player.getHealth();
+        if (health < 20.0) {
+            if (Effect.removeMana(player, Mana.Colour.WHITE, 1)) {
+                player.setHealth(health + ((double) amount));
+                player.sendMessage("You are healed");
+            } else {
+                player.sendMessage("Not enough mana");
+            }
+        } else {
+            player.sendMessage("You are on max health already");
+        }
     }
-
 
     public static void creategauge(Player player) {
         Location playerLocation = player.getLocation();
