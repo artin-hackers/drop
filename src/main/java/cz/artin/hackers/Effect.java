@@ -49,8 +49,14 @@ public abstract class Effect {
     }
 
     public static void addHealth(Player player, Integer amount) {
-        player.getHealth();
-        player.sendMessage("You are healed");
+        Health = player.getHealth();
+        if (Health < 20);
+        player.setHealth(Health + amount);
+        Health = player.getHealth();
+        if (Health < 20);
+        if (Effect.removeMana(player, Mana.Colour.WHITE, 1)) {
+            player.sendMessage("You are healed");
+        }
     }
 
 
