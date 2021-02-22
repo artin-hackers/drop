@@ -13,3 +13,5 @@ commands:
     description: Debug - Clear area around the player
   debugBuildLobby:
     description: Debug - Build lobby and bring the players
+  debugDropInventory:
+    description: Debug - Remove all items from player inventory
