@@ -30,7 +30,7 @@ public class Drop extends JavaPlugin implements Listener {
     private static final List<ItemAdd> weapons = new ArrayList<>();
     private static final boolean DEBUG_STICK_ALLOWED = false;
     private static final int DEFAULT_COUNTDOWN = 3;
-    private static final int DEFAULT_MATCH_LENGTH = 300;
+    private static final int DEFAULT_MATCH_LENGTH = 20;
     private static final int DEFAULT_DUMMY_COUNT = 10;
     private static final int DEFAULT_DUMMY_RADIUS = 10;
     private static BukkitTask matchTaskId;
@@ -203,6 +203,9 @@ public class Drop extends JavaPlugin implements Listener {
             if (countDown == 0) {
                 Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
                 Bukkit.broadcastMessage("Match has ended!");
+
+                // Send players to lobby
+                buildLobby();
                 for (DropPlayer player : dropPlayers) {
                     Bukkit.broadcastMessage(player.getName() + ": " + player.getKills() + "/" + player.getDeaths());
                 }
