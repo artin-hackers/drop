@@ -78,7 +78,7 @@ public class Drop extends JavaPlugin implements Listener {
                 }
                 healPlayer();
             }
-        }.runTaskTimer(this, 20 * 5L, 20 * 10L);
+        }.runTaskTimer(this, 20 * 5L, 20 * 5L);
 
         matchTaskId = null;
 
