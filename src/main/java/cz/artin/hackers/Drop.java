@@ -85,7 +85,7 @@ public class Drop extends JavaPlugin implements Listener {
         LOGGER.info("...plugin successfully loaded.");
     }
 
-    private void healPlayer() {
+    private void healPlayer() { // Consider heal effect directly from Minecraft
         for (Player player : Bukkit.getOnlinePlayers()) {
             ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
             if (itemInMainHand.getItemMeta() != null) {
@@ -152,7 +152,7 @@ public class Drop extends JavaPlugin implements Listener {
         (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
         (new Mana()).add(event.getPlayer(), Mana.Colour.WHITE, 3);
         event.getPlayer().teleport(new Location(event.getPlayer().getWorld(), -100, 70, 100));
-        event.getPlayer().setWalkSpeed(0.2F);
+        event.getPlayer().setWalkSpeed(0.2F); // Consider effect potionOfSpeed, available in Minecraft
     }
 
     private boolean startMatch(CommandSender commandSender, String[] args) {
@@ -290,20 +290,20 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void onPlayerRegainHealth(EntityRegainHealthEvent event) {
+    public void onPlayerRegainHealth(EntityRegainHealthEvent event) { // Comment: What it does?
         if (event.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED || event.getRegainReason() == EntityRegainHealthEvent.RegainReason.REGEN)
             event.setCancelled(true);
     }
 
     @EventHandler
-    public void onFoodLevelChange(FoodLevelChangeEvent event) {
+    public void onFoodLevelChange(FoodLevelChangeEvent event) { // Comment: Prevent not running due to food
         if (event.getEntityType() == EntityType.PLAYER) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent event) {
+    public void onPlayerDeath(PlayerDeathEvent event) { // Experience might drop from player
         Player player = event.getEntity().getPlayer();
         dropInventory(player);
         if (player != null) {
