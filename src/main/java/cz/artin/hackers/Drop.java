@@ -52,8 +52,8 @@ public class Drop extends JavaPlugin implements Listener {
         arena = new Arena();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (arena.getArenaLocation() == null) {
-                arena.setArenaLocation(player.getWorld().getSpawnLocation());
+            if (arena.getArenaCenter() == null) {
+                arena.setArenaCenter(player.getWorld().getSpawnLocation());
             }
             dropPlayers.add(new DropPlayer(player));
         }
@@ -134,8 +134,8 @@ public class Drop extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         LOGGER.info("A new player, " + event.getPlayer().getName() + ", just joined the fray");
 
-        if (arena.getArenaLocation() == null) {
-            arena.setArenaLocation(event.getPlayer().getWorld().getSpawnLocation());
+        if (arena.getArenaCenter() == null) {
+            arena.setArenaCenter(event.getPlayer().getWorld().getSpawnLocation());
         }
 
         dropPlayers.add(new DropPlayer(event.getPlayer()));
