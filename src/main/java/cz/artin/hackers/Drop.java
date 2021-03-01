@@ -33,11 +33,11 @@ public class Drop extends JavaPlugin implements Listener {
     private static final int DEFAULT_MATCH_LENGTH = 300;
     private static final int DEFAULT_DUMMY_COUNT = 10;
     private static final int DEFAULT_DUMMY_RADIUS = 10;
+    private static final int DEFAULT_CLEAR_AREA = 100;
     private static BukkitTask matchTaskId;
     private static Arena arena;
     private static Location PORTAL_EXIT = null;
     private static int countDown;
-    private static final int DEFAULT_CLEAR_AREA = 100;
 
     @Override
     public void onEnable() {
@@ -481,13 +481,9 @@ public class Drop extends JavaPlugin implements Listener {
     private boolean buildLobby() {
         arena.buildLobby();
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.teleport(arena.getLobbyLocation().add(0, 1, 0));
+            player.teleport(arena.getLobbyRandomLocation());
         }
         return true;
-    }
-
-    public interface ItemAdd {
-        void add(Player player);
     }
 
     private boolean dropInventory(Player player) {
@@ -500,5 +496,9 @@ public class Drop extends JavaPlugin implements Listener {
             itemStack.setAmount(0);
         }
         return true;
+    }
+
+    public interface ItemAdd {
+        void add(Player player);
     }
 }

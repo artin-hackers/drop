@@ -13,7 +13,9 @@ public class Arena {
     private static final Logger LOGGER = Logger.getLogger(Arena.class.getName());
     private static final int DEFAULT_LOBBY_SIZE = 20;
     private static final int DEFAULT_LOBBY_HEIGHT = 5;
+    private static final int DEFAULT_ARENA_LOBBY_DISTANCE = 30;
     private static Location arenaLocation = null;
+    private static Location lobbyLocation = null;
 
     Arena() {
         LOGGER.finer("Arena");
@@ -25,10 +27,15 @@ public class Arena {
 
     public void setArenaLocation(Location location) {
         arenaLocation = location;
+        lobbyLocation = location.add(0, DEFAULT_ARENA_LOBBY_DISTANCE, 0);
     }
 
     public Location getLobbyLocation() {
-        return arenaLocation;
+        return lobbyLocation;
+    }
+
+    public Location getLobbyRandomLocation() {
+        return new Location(lobbyLocation.getWorld(), lobbyLocation.getX() + (getRandomInt(-(DEFAULT_LOBBY_SIZE / 2 - 1), DEFAULT_LOBBY_SIZE / 2 - 1)), lobbyLocation.getY() + 1, lobbyLocation.getZ() + (getRandomInt(-(DEFAULT_LOBBY_SIZE / 2 - 1), DEFAULT_LOBBY_SIZE / 2 - 1)));
     }
 
     public void buildLobby() {
