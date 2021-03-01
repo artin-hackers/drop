@@ -78,7 +78,7 @@ public class Drop extends JavaPlugin implements Listener {
                 }
                 healPlayer();
             }
-        }.runTaskTimer(this, 20 * 5L, 20 * 10L);
+        }.runTaskTimer(this, 20 * 5L, 20 * 5L);
 
         matchTaskId = null;
 
@@ -100,7 +100,7 @@ public class Drop extends JavaPlugin implements Listener {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         if (label.equalsIgnoreCase("startMatch")) {
-            return startMatch(commandSender);
+            return startMatch(commandSender, args);
         } else if (label.equalsIgnoreCase("endMatch")) {
             return endMatch(commandSender);
         } else if (label.equalsIgnoreCase("showScore")) {
@@ -155,7 +155,7 @@ public class Drop extends JavaPlugin implements Listener {
         event.getPlayer().setWalkSpeed(0.2F);
     }
 
-    private boolean startMatch(CommandSender commandSender) {
+    private boolean startMatch(CommandSender commandSender, String[] args) {
         if (!(commandSender instanceof Player)) {
             return false;
         }
@@ -166,6 +166,7 @@ public class Drop extends JavaPlugin implements Listener {
         }
 
         Bukkit.broadcastMessage("Match will start in...");
+
         countDown = DEFAULT_COUNTDOWN;
         matchTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
             if (countDown == 0) {
@@ -179,7 +180,7 @@ public class Drop extends JavaPlugin implements Listener {
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                     onlinePlayer.setHealth(20);
                 }
-                runMatch();
+                runMatch(getValueInt(args, 0, DEFAULT_MATCH_LENGTH));
             } else {
                 Bukkit.broadcastMessage("..." + countDown);
                 countDown--;
@@ -189,11 +190,11 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
-    private void runMatch() {
+    private void runMatch(int matchLength) {
         matchTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
             Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
             endMatch();
-        }, 20L * DEFAULT_MATCH_LENGTH, 20L);
+        }, 20L * matchLength, 20L);
     }
 
     private void endMatch() {
@@ -203,6 +204,9 @@ public class Drop extends JavaPlugin implements Listener {
             if (countDown == 0) {
                 Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
                 Bukkit.broadcastMessage("Match has ended!");
+
+                // Send players to lobby
+                buildLobby();
                 for (DropPlayer player : dropPlayers) {
                     Bukkit.broadcastMessage(player.getName() + ": " + player.getKills() + "/" + player.getDeaths());
                 }
