@@ -67,6 +67,7 @@ public class Drop extends JavaPlugin implements Listener {
         weapons.add(new Trident(this));
         weapons.add(new Bow(this));
         weapons.add(new SwordOfTheDamned(this));
+        weapons.add(new FrostAxe(this));
 
         new BukkitRunnable() {
             public void run() {
@@ -75,6 +76,7 @@ public class Drop extends JavaPlugin implements Listener {
                     Effect.addMana(player, Mana.Colour.BLUE, 1);
                     Effect.addMana(player, Mana.Colour.RED, 1);
                     Effect.addMana(player, Mana.Colour.WHITE, 1);
+                    Effect.addMana(player, Mana.Colour.GREEN, 1);
                 }
                 healPlayer();
             }

@@ -22,7 +22,7 @@ public class SwordOfTheDamned extends Item implements Listener {
 
     public void interact(Player player, Action action) {
         if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
-        if (Effect.removeMana(player, Mana.Colour.BLACK, 1)) {
+            if (Effect.removeMana(player, Mana.Colour.BLACK, 1)) {
                 Effect.spawnZombies(player);
             } else {
                 player.sendMessage("Not enough mana");

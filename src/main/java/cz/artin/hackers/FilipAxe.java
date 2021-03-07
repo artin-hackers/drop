@@ -22,7 +22,9 @@ public class FilipAxe extends Item implements Listener {
 
     public void interact(Player player, Action action) {
         if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
-            Effect.launchFireball(player);
+            if (Effect.removeMana(player, Mana.Colour.BLUE, 1)) {
+                Effect.launchFireball(player);
+            }
         }
     }
 }

@@ -6,7 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
-
+import org.bukkit.entity.Snowball;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -46,6 +46,10 @@ public abstract class Effect {
 
     public static void launchFireball(Player player) {
         player.launchProjectile(Fireball.class);
+    }
+
+    public static void launchSnowball(Player player) {
+        player.launchProjectile(Snowball.class);
     }
 
     public static void addHealth(Player player, Integer amount) {
