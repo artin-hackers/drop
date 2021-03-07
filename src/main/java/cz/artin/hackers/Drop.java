@@ -67,6 +67,7 @@ public class Drop extends JavaPlugin implements Listener {
         weapons.add(new Trident(this));
         weapons.add(new Bow(this));
         weapons.add(new SwordOfTheDamned(this));
+        weapons.add(new FrostAxe(this));
 
         new BukkitRunnable() {
             public void run() {
