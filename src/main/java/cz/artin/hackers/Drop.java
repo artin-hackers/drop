@@ -33,11 +33,11 @@ public class Drop extends JavaPlugin implements Listener {
     private static final int DEFAULT_MATCH_LENGTH = 300;
     private static final int DEFAULT_DUMMY_COUNT = 10;
     private static final int DEFAULT_DUMMY_RADIUS = 10;
+    private static final int DEFAULT_CLEAR_AREA = 100;
     private static BukkitTask matchTaskId;
     private static Arena arena;
     private static Location PORTAL_EXIT = null;
     private static int countDown;
-    private static final int DEFAULT_CLEAR_AREA = 100;
 
     @Override
     public void onEnable() {
@@ -52,8 +52,8 @@ public class Drop extends JavaPlugin implements Listener {
         arena = new Arena();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (arena.getArenaLocation() == null) {
-                arena.setArenaLocation(player.getWorld().getSpawnLocation());
+            if (arena.getArenaCenter() == null) {
+                arena.setArenaCenter(player.getWorld().getSpawnLocation());
             }
             dropPlayers.add(new DropPlayer(player));
         }
@@ -134,8 +134,8 @@ public class Drop extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         LOGGER.info("A new player, " + event.getPlayer().getName() + ", just joined the fray");
 
-        if (arena.getArenaLocation() == null) {
-            arena.setArenaLocation(event.getPlayer().getWorld().getSpawnLocation());
+        if (arena.getArenaCenter() == null) {
+            arena.setArenaCenter(event.getPlayer().getWorld().getSpawnLocation());
         }
 
         dropPlayers.add(new DropPlayer(event.getPlayer()));
@@ -481,13 +481,9 @@ public class Drop extends JavaPlugin implements Listener {
     private boolean buildLobby() {
         arena.buildLobby();
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.teleport(arena.getLobbyLocation().add(0, 1, 0));
+            player.teleport(arena.getLobbyRandomLocation());
         }
         return true;
-    }
-
-    public interface ItemAdd {
-        void add(Player player);
     }
 
     private boolean dropInventory(Player player) {
@@ -500,5 +496,9 @@ public class Drop extends JavaPlugin implements Listener {
             itemStack.setAmount(0);
         }
         return true;
+    }
+
+    public interface ItemAdd {
+        void add(Player player);
     }
 }

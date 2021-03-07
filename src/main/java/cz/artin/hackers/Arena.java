@@ -13,33 +13,45 @@ public class Arena {
     private static final Logger LOGGER = Logger.getLogger(Arena.class.getName());
     private static final int DEFAULT_LOBBY_SIZE = 20;
     private static final int DEFAULT_LOBBY_HEIGHT = 5;
-    private static Location arenaLocation = null;
+    private static final int DEFAULT_ARENA_LOBBY_DISTANCE = 30;
+    private static Location arenaCenter = null;
+    private static Location lobbyCenter = null;
 
     Arena() {
         LOGGER.finer("Arena");
     }
 
-    public Location getArenaLocation() {
-        return arenaLocation;
+    public Location getArenaCenter() {
+        return arenaCenter;
     }
 
-    public void setArenaLocation(Location location) {
-        arenaLocation = location;
+    public void setArenaCenter(Location location) {
+        arenaCenter = location;
+        lobbyCenter = location.add(0, DEFAULT_ARENA_LOBBY_DISTANCE, 0);
     }
 
-    public Location getLobbyLocation() {
-        return arenaLocation;
+    public Location getLobbyCenter() {
+        return lobbyCenter;
+    }
+
+    public Location getLobbyRandomLocation() {
+        return new Location(lobbyCenter.getWorld(), getRandomPositionWithin(lobbyCenter.getX(), DEFAULT_LOBBY_SIZE), lobbyCenter.getY() + 1, getRandomPositionWithin(lobbyCenter.getZ(), DEFAULT_LOBBY_SIZE));
     }
 
     public void buildLobby() {
-        if (getLobbyLocation() == null) {
+        if (getLobbyCenter() == null) {
             return;
         }
 
-        Location lobbyCorner = new Location(getLobbyLocation().getWorld(), getLobbyLocation().getX() - (DEFAULT_LOBBY_SIZE >> 1), getLobbyLocation().getY(), getLobbyLocation().getZ() - (DEFAULT_LOBBY_SIZE >> 1));
         Material lobbyMaterial = Material.GLASS;
+        Location lobbyCorner = new Location(getLobbyCenter().getWorld(), getMinimumPositionWithin(getLobbyCenter().getX(), DEFAULT_LOBBY_SIZE), getLobbyCenter().getY(), getMinimumPositionWithin(getLobbyCenter().getZ(), DEFAULT_LOBBY_SIZE));
+
+        // Clearance
         buildPatch(lobbyCorner, Material.AIR, DEFAULT_LOBBY_SIZE, DEFAULT_LOBBY_HEIGHT + 1, DEFAULT_LOBBY_SIZE);
+
+        // Build floor
         buildPatch(lobbyCorner, lobbyMaterial, DEFAULT_LOBBY_SIZE, 1, DEFAULT_LOBBY_SIZE);
+
         for (int i = 1; i <= DEFAULT_LOBBY_HEIGHT; i++) {
             (new Location(lobbyCorner.getWorld(), lobbyCorner.getX(), lobbyCorner.getY() + i, lobbyCorner.getZ())).getBlock().setType(lobbyMaterial);
             (new Location(lobbyCorner.getWorld(), lobbyCorner.getX() + DEFAULT_LOBBY_SIZE - 1, lobbyCorner.getY() + i, lobbyCorner.getZ())).getBlock().setType(lobbyMaterial);
@@ -114,5 +126,15 @@ public class Arena {
 
     private int getRandomInt(int minimum, int maximum) {
         return ThreadLocalRandom.current().nextInt(minimum, maximum);
+    }
+
+    private double getRandomPositionWithin(double center, int size) {
+        int radius = (size >> 1) - 1;
+        return center + getRandomInt(-radius, radius);
+    }
+
+    private double getMinimumPositionWithin(double center, int size) {
+        int radius = size >> 1;
+        return center - radius;
     }
 }
