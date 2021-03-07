@@ -23,7 +23,7 @@ public class FrostAxe extends Item implements Listener {
     public void interact(Player player, Action action) {
         if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
             if (Effect.removeMana(player, Mana.Colour.GREEN, 1)) {
-                Effect.launchFireball(player);
+                Effect.launchSnowball(player);
             }
         }
     }
