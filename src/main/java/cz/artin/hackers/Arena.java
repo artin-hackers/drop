@@ -38,7 +38,7 @@ public class Arena {
         return new Location(lobbyCenter.getWorld(), getRandomPositionWithin(lobbyCenter.getX(), DEFAULT_LOBBY_SIZE), lobbyCenter.getY() + 1, getRandomPositionWithin(lobbyCenter.getZ(), DEFAULT_LOBBY_SIZE));
     }
 
-    public void buildLobby() {
+    public void createLobby() {
         if (getLobbyCenter() == null) {
             return;
         }

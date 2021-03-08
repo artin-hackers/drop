@@ -3,6 +3,8 @@ version: "1.0-SNAPSHOT"
 author: Artin Hackers Team
 main: cz.artin.hackers.Drop
 commands:
+  createLobby:
+    description: Create a lobby and bring all the online players
   startMatch:
     description: Start the match
   endMatch:
@@ -11,9 +13,7 @@ commands:
     description: Show the current score
   debugClearArea:
     description: Debug - Clear area around the player
-  debugBuildLobby:
-    description: Debug - Build lobby and bring the players
   debugDropInventory:
-    description: Debug - Remove all items from player inventory
+    description: Debug - Remove all items from thw player's inventory
   debugSetLevel:
-    description: Debug - Set specific levet to the player
+    description: Debug - Set specific level to the player
