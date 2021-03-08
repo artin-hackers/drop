@@ -15,3 +15,5 @@ commands:
     description: Debug - Build lobby and bring the players
   debugDropInventory:
     description: Debug - Remove all items from player inventory
+  debugSetLevel:
+    description: Debug - Set specific levet to the player

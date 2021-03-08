@@ -34,6 +34,7 @@ public class Drop extends JavaPlugin implements Listener {
     private static final int DEFAULT_DUMMY_COUNT = 10;
     private static final int DEFAULT_DUMMY_RADIUS = 10;
     private static final int DEFAULT_CLEAR_AREA = 100;
+    private static final int DEFAULT_PLAYER_LEVEL = 0;
     private static BukkitTask matchTaskId;
     private static Arena arena;
     private static Location PORTAL_EXIT = null;
@@ -100,9 +101,9 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] arguments) {
         if (label.equalsIgnoreCase("startMatch")) {
-            return startMatch(commandSender, args);
+            return startMatch(commandSender, arguments);
         } else if (label.equalsIgnoreCase("endMatch")) {
             return endMatch(commandSender);
         } else if (label.equalsIgnoreCase("showScore")) {
@@ -113,20 +114,8 @@ public class Drop extends JavaPlugin implements Listener {
             return buildLobby();
         } else if (label.equalsIgnoreCase("debugDropInventory")) {
             return dropInventory((Player) commandSender);
-        } else if (label.equalsIgnoreCase("buildArena")) {
-            return buildArena(commandSender);
-        } else if (label.equalsIgnoreCase("setPortalExit")) {
-            return setPortalExit(commandSender);
-        } else if (label.equalsIgnoreCase("spawnDummies")) {
-            return spawnDummies(commandSender, args);
-        } else if (label.equalsIgnoreCase("sethometown")) {
-            getLogger().info("sethometown");
-            return setHometown(commandSender);
-        } else if (label.equalsIgnoreCase("buildObelisk")) {
-            getLogger().info("buildObelisk()");
-            return buildObelisk(commandSender);
-        } else if (label.equalsIgnoreCase("speedHack")) {
-            return speedHack(commandSender);
+        } else if (label.equalsIgnoreCase("debugSetLevel")) {
+            return setLevel((Player) commandSender, arguments);
         } else {
             return false;
         }
@@ -350,10 +339,12 @@ public class Drop extends JavaPlugin implements Listener {
         }
     }
 
-    private int getValueInt(String[] args, int index, int default_value) {
-        if (index < 0 || index >= args.length) {
+    private int getValueInt(String[] arguments, int index, int default_value) {
+        if (index >= 0 && index < arguments.length) {
+            return Integer.parseInt(arguments[index]);
+        } else {
             return default_value;
-        } else return Integer.parseInt(args[index]);
+        }
     }
 
     private boolean setHometown(CommandSender sender) {
@@ -497,6 +488,12 @@ public class Drop extends JavaPlugin implements Listener {
             }
             itemStack.setAmount(0);
         }
+        return true;
+    }
+
+    private boolean setLevel(Player player, String[] arguments) {
+        int level = getValueInt(arguments, 0, DEFAULT_PLAYER_LEVEL);
+        player.setLevel(level);
         return true;
     }
 
