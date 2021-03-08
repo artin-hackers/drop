@@ -21,6 +21,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 
@@ -125,10 +126,6 @@ public class Drop extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         LOGGER.info("A new player, " + event.getPlayer().getName() + ", just joined the fray");
 
-        if (arena.getArenaCenter() == null) {
-            arena.setArenaCenter(event.getPlayer().getWorld().getSpawnLocation());
-        }
-
         dropPlayers.add(new DropPlayer(event.getPlayer()));
         event.getPlayer().setGameMode(GameMode.SURVIVAL);
         dropInventory(event.getPlayer());
@@ -144,6 +141,7 @@ public class Drop extends JavaPlugin implements Listener {
         (new Mana()).add(event.getPlayer(), Mana.Colour.WHITE, 3);
         event.getPlayer().teleport(new Location(event.getPlayer().getWorld(), -100, 70, 100));
         event.getPlayer().setWalkSpeed(0.2F);
+        event.getPlayer().setLevel(DEFAULT_PLAYER_LEVEL);
     }
 
     private boolean startMatch(CommandSender commandSender, String[] args) {
@@ -170,6 +168,7 @@ public class Drop extends JavaPlugin implements Listener {
                 arena.buildArena(commandSender);
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                     onlinePlayer.setHealth(20);
+                    onlinePlayer.setLevel(DEFAULT_PLAYER_LEVEL);
                 }
                 runMatch(getValueInt(args, 0, DEFAULT_MATCH_LENGTH));
             } else {
@@ -303,6 +302,7 @@ public class Drop extends JavaPlugin implements Listener {
                     dropPlayer.addDeath();
                 }
                 Player killer = player.getKiller();
+                killer.setLevel(killer.getLevel() + 1);
                 if (killer != null) {
                     if (dropPlayer.getName().equals(killer.getName())) {
                         dropPlayer.addKill();
@@ -495,6 +495,15 @@ public class Drop extends JavaPlugin implements Listener {
         int level = getValueInt(arguments, 0, DEFAULT_PLAYER_LEVEL);
         player.setLevel(level);
         return true;
+    }
+
+    private DropPlayer getDropPlayer(UUID uuid) {
+        for (DropPlayer player : dropPlayers) {
+            if (uuid == player.getPlayerUuid()) {
+                return player;
+            }
+        }
+        return null;
     }
 
     public interface ItemAdd {
