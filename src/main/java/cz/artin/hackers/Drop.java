@@ -30,6 +30,7 @@ public class Drop extends JavaPlugin implements Listener {
     private static final List<DropPlayer> dropPlayers = new ArrayList<>();
     private static final List<ItemAdd> weapons = new ArrayList<>();
     private static final boolean DEBUG_STICK_ALLOWED = false;
+    private static final int DEFAULT_START_TIME = 1000;
     private static final int DEFAULT_COUNTDOWN = 3;
     private static final int DEFAULT_MATCH_LENGTH = 300;
     private static final int DEFAULT_DUMMY_COUNT = 10;
@@ -41,18 +42,22 @@ public class Drop extends JavaPlugin implements Listener {
     private static Location PORTAL_EXIT = null;
     private static int countDown;
 
+    /**
+     * Server initialisation
+     */
     @Override
     public void onEnable() {
         LOGGER.info("Loading DROP plugin...");
 
         getServer().getPluginManager().registerEvents(this, this);
 
-        Objects.requireNonNull(getServer().getWorld("world")).setTime(1000);
+        Objects.requireNonNull(getServer().getWorld("world")).setTime(DEFAULT_START_TIME);
         Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
         Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, false);
 
-        arena = new Arena();
+        arena = new Arena(); // TODO: Set spawn location from the first online player
 
+        // TODO: export to resetAllPlayers method
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (arena.getArenaCenter() == null) {
                 arena.setArenaCenter(player.getWorld().getSpawnLocation());
@@ -60,6 +65,7 @@ public class Drop extends JavaPlugin implements Listener {
             dropPlayers.add(new DropPlayer(player));
         }
 
+        // TODO: Export to createWeapons method
         if (DEBUG_STICK_ALLOWED) {
             weapons.add(new DebugStick(this));
         }
@@ -71,6 +77,7 @@ public class Drop extends JavaPlugin implements Listener {
         weapons.add(new SwordOfTheDamned(this));
         weapons.add(new FrostAxe(this));
 
+        // TODO: Export to setupTimers, later under the players
         new BukkitRunnable() {
             public void run() {
                 for (Player player : Bukkit.getOnlinePlayers()) {
@@ -89,38 +96,76 @@ public class Drop extends JavaPlugin implements Listener {
         LOGGER.info("...plugin successfully loaded.");
     }
 
-    private void healPlayer() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-            if (itemInMainHand.getItemMeta() != null) {
-                String itemDisplayName = itemInMainHand.getItemMeta().getDisplayName();
-                if (itemDisplayName.equals("cz.artin.hackers.Trident")) {
-                    Effect.addHealth(player, 2);
-                }
-            }
-        }
-    }
-
+    /**
+     * Minecraft in-game command line handling
+     *
+     * @param commandSender Source object which is issuing/executing the command
+     * @param command       The command executor
+     * @param label         The command alias
+     * @param arguments     All arguments passed to the command
+     * @return If the command is known and executed successfully true, otherwise false
+     */
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] arguments) {
-        if (label.equalsIgnoreCase("startMatch")) {
-            return startMatch(commandSender, arguments);
+        Player player;
+        if (commandSender instanceof Player) {
+            player = (Player) commandSender;
+        } else {
+            return false;
+        }
+
+        if (label.equalsIgnoreCase("createLobby")) {
+            return handleCommandCreateLobby();
+        } else if (label.equalsIgnoreCase("startMatch")) {
+            return handleCommandStartMatch(player, arguments);
         } else if (label.equalsIgnoreCase("endMatch")) {
-            return endMatch(commandSender);
+            return handleCommandEndMatch(player);
         } else if (label.equalsIgnoreCase("showScore")) {
-            return showScore(commandSender);
+            return handleCommandShowScore(player);
         } else if (label.equalsIgnoreCase("debugClearArea")) {
-            return clearArea(commandSender);
-        } else if (label.equalsIgnoreCase("debugBuildLobby")) {
-            return buildLobby();
+            return handleCommandClearArea(player);
         } else if (label.equalsIgnoreCase("debugDropInventory")) {
-            return dropInventory((Player) commandSender);
+            return handleCommandDropInventory(player);
         } else if (label.equalsIgnoreCase("debugSetLevel")) {
-            return setLevel((Player) commandSender, arguments);
+            return handleCommandSetLevel(player, arguments);
         } else {
             return false;
         }
     }
+
+    private boolean handleCommandCreateLobby() {
+        arena.createLobby();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.teleport(arena.getLobbyRandomLocation());
+        }
+        return true;
+    }
+
+    private boolean handleCommandStartMatch(Player player, String[] arguments) {
+        return startMatch(player, arguments);
+    }
+
+    private boolean handleCommandEndMatch(Player player) {
+        return endMatch(player);
+    }
+
+    private boolean handleCommandShowScore(Player player) {
+        return showScore(player);
+    }
+
+    private boolean handleCommandClearArea(Player player) {
+        return clearArea(player);
+    }
+
+    private boolean handleCommandDropInventory(Player player) {
+        return dropInventory(player);
+    }
+
+    private boolean handleCommandSetLevel(Player player, String[] arguments) {
+        return setLevel(player, arguments);
+    }
+
+    /* Event Handlers */
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -142,110 +187,6 @@ public class Drop extends JavaPlugin implements Listener {
         event.getPlayer().teleport(new Location(event.getPlayer().getWorld(), -100, 70, 100));
         event.getPlayer().setWalkSpeed(0.2F);
         event.getPlayer().setLevel(DEFAULT_PLAYER_LEVEL);
-    }
-
-    private boolean startMatch(CommandSender commandSender, String[] args) {
-        if (!(commandSender instanceof Player)) {
-            return false;
-        }
-
-        if (matchTaskId != null) {
-            commandSender.sendMessage("Match is already in progress");
-            return false;
-        }
-
-        Bukkit.broadcastMessage("Match will start in...");
-
-        countDown = DEFAULT_COUNTDOWN;
-        matchTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
-            if (countDown == 0) {
-                Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
-                Bukkit.broadcastMessage("FIGHT!");
-                for (DropPlayer player : dropPlayers) {
-                    player.setKills(0);
-                    player.setDeaths(0);
-                }
-                arena.buildArena(commandSender);
-                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                    onlinePlayer.setHealth(20);
-                    onlinePlayer.setLevel(DEFAULT_PLAYER_LEVEL);
-                }
-                runMatch(getValueInt(args, 0, DEFAULT_MATCH_LENGTH));
-            } else {
-                Bukkit.broadcastMessage("..." + countDown);
-                countDown--;
-            }
-        }, 20L, 20L);
-
-        return true;
-    }
-
-    private void runMatch(int matchLength) {
-        matchTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
-            Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
-            endMatch();
-        }, 20L * matchLength, 20L);
-    }
-
-    private void endMatch() {
-        Bukkit.broadcastMessage("Match will end in...");
-        countDown = DEFAULT_COUNTDOWN;
-        matchTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
-            if (countDown == 0) {
-                Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
-                Bukkit.broadcastMessage("Match has ended!");
-
-                // Send players to lobby
-                buildLobby();
-                for (DropPlayer player : dropPlayers) {
-                    Bukkit.broadcastMessage(player.getName() + ": " + player.getKills() + "/" + player.getDeaths());
-                }
-                matchTaskId = null;
-            } else {
-                Bukkit.broadcastMessage("..." + countDown);
-                countDown--;
-            }
-        }, 20L, 20L);
-    }
-
-    private boolean endMatch(CommandSender commandSender) {
-        if (!(commandSender instanceof Player)) {
-            return false;
-        }
-
-        if (matchTaskId == null) {
-            commandSender.sendMessage("Cannot end match, no match in progress");
-            return false;
-        }
-
-        Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
-        endMatch();
-
-        return true;
-    }
-
-    private boolean showScore(CommandSender commandSender) {
-        if (!(commandSender instanceof Player)) {
-            return false;
-        }
-
-        for (DropPlayer dropPlayer : dropPlayers) {
-            commandSender.sendMessage(dropPlayer.getName() + ": " + dropPlayer.getKills() + "/" + dropPlayer.getDeaths());
-        }
-
-        return true;
-    }
-
-    public boolean speedHack(CommandSender sender) {
-        if (!(sender instanceof Player)) {
-            LOGGER.warning("Unexpected use of Drop.speedHack");
-            return false;
-        }
-
-        Player player = (Player) sender;
-        float speed = player.getWalkSpeed();
-        player.setWalkSpeed(speed * 2);
-        return true;
     }
 
     @EventHandler
@@ -273,10 +214,6 @@ public class Drop extends JavaPlugin implements Listener {
 
         event.setRespawnLocation(new Location(event.getPlayer().getWorld(), -100, 70, 100));
         event.getPlayer().setWalkSpeed(0.2F);
-    }
-
-    private boolean buildArena(CommandSender sender) {
-        return arena.buildArena(sender);
     }
 
     @EventHandler
@@ -337,6 +274,117 @@ public class Drop extends JavaPlugin implements Listener {
             }
 
         }
+    }
+
+    /* Implementation */
+
+    private boolean startMatch(CommandSender commandSender, String[] args) {
+        if (!(commandSender instanceof Player)) {
+            return false;
+        }
+
+        if (matchTaskId != null) {
+            commandSender.sendMessage("Match is already in progress");
+            return false;
+        }
+
+        Bukkit.broadcastMessage("Match will start in...");
+
+        countDown = DEFAULT_COUNTDOWN;
+        matchTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
+            if (countDown == 0) {
+                Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
+                Bukkit.broadcastMessage("FIGHT!");
+                for (DropPlayer player : dropPlayers) {
+                    player.setKills(0);
+                    player.setDeaths(0);
+                }
+                arena.buildArena(commandSender);
+                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                    onlinePlayer.setHealth(20);
+                    onlinePlayer.setLevel(DEFAULT_PLAYER_LEVEL);
+                }
+                runMatch(getValueInt(args, 0, DEFAULT_MATCH_LENGTH));
+            } else {
+                Bukkit.broadcastMessage("..." + countDown);
+                countDown--;
+            }
+        }, 20L, 20L);
+
+        return true;
+    }
+
+    private void runMatch(int matchLength) {
+        matchTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
+            Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
+            endMatch();
+        }, 20L * matchLength, 20L);
+    }
+
+    private void endMatch() {
+        Bukkit.broadcastMessage("Match will end in...");
+        countDown = DEFAULT_COUNTDOWN;
+        matchTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
+            if (countDown == 0) {
+                Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
+                Bukkit.broadcastMessage("Match has ended!");
+
+                // Send players to lobby
+                handleCommandCreateLobby();
+                for (DropPlayer player : dropPlayers) {
+                    Bukkit.broadcastMessage(player.getName() + ": " + player.getKills() + "/" + player.getDeaths());
+                }
+                matchTaskId = null;
+            } else {
+                Bukkit.broadcastMessage("..." + countDown);
+                countDown--;
+            }
+        }, 20L, 20L);
+    }
+
+    private boolean endMatch(CommandSender commandSender) {
+        if (!(commandSender instanceof Player)) {
+            return false;
+        }
+
+        if (matchTaskId == null) {
+            commandSender.sendMessage("Cannot end match, no match in progress");
+            return false;
+        }
+
+        Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
+        endMatch();
+
+        return true;
+    }
+
+    private boolean showScore(CommandSender commandSender) {
+        if (!(commandSender instanceof Player)) {
+            return false;
+        }
+
+        for (DropPlayer dropPlayer : dropPlayers) {
+            commandSender.sendMessage(dropPlayer.getName() + ": " + dropPlayer.getKills() + "/" + dropPlayer.getDeaths());
+        }
+
+        return true;
+    }
+
+    public boolean speedHack(CommandSender sender) {
+        if (!(sender instanceof Player)) {
+            LOGGER.warning("Unexpected use of Drop.speedHack");
+            return false;
+        }
+
+        Player player = (Player) sender;
+        float speed = player.getWalkSpeed();
+        player.setWalkSpeed(speed * 2);
+        return true;
+    }
+
+
+    private boolean buildArena(CommandSender sender) {
+        return arena.buildArena(sender);
     }
 
     private int getValueInt(String[] arguments, int index, int default_value) {
@@ -471,14 +519,6 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean buildLobby() {
-        arena.buildLobby();
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            player.teleport(arena.getLobbyRandomLocation());
-        }
-        return true;
-    }
-
     private boolean dropInventory(Player player) {
         Inventory inventory = player.getInventory();
         for (int slot = 0; slot < inventory.getSize(); slot++) {
@@ -504,6 +544,18 @@ public class Drop extends JavaPlugin implements Listener {
             }
         }
         return null;
+    }
+
+    private void healPlayer() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+            if (itemInMainHand.getItemMeta() != null) {
+                String itemDisplayName = itemInMainHand.getItemMeta().getDisplayName();
+                if (itemDisplayName.equals("cz.artin.hackers.Trident")) {
+                    Effect.addHealth(player, 2);
+                }
+            }
+        }
     }
 
     public interface ItemAdd {
