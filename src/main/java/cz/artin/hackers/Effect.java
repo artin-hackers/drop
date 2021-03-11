@@ -18,8 +18,9 @@ public abstract class Effect {
     }
 
     public static void addMana(Player player, Mana.Colour colour, Integer amount) {
-        (new    }
-
+        (new Mana()).add(player, colour, amount);
+    }
+    
     public static boolean removeMana(Player player, Mana.Colour colour, Integer amount) {
         return (new Mana()).remove(player, colour, amount);
     }
