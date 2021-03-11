@@ -1,5 +1,9 @@
 package cz.artin.hackers;
 
+import org.bukkit.block.Block;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -47,9 +51,32 @@ public class FrostAxe extends Item implements Listener {
     }
 
     public void interact(Player player, Action action) {
-        if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
-            if (Effect.removeMana(player, Mana.Colour.GREEN, 1)) {
-                Effect.launchSnowball(player);
+        // if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
+        //     if (Effect.removeMana(player, Mana.Colour.GREEN, 1)) {
+        //         Effect.launchSnowball(player);
+        //     }
+        // } else if (action.equals(Action.LEFT_CLICK_BLOCK)) {
+        //     if (sender instanceof Player) {
+        //     Player player = (Player) sender;
+        //     player.getBlock().setType(Material.ICE);
+        // }
+        // return true;
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event) {
+        ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
+        if (itemInMainHand.getItemMeta() != null) {
+            if (itemInMainHand.getItemMeta().getDisplayName().equals(this.getClass().getName()) {
+                Action action = event.getAction();
+                if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
+                    if (Effect.removeMana(player, Mana.Colour.GREEN, 1)) {
+                        Effect.launchSnowball(player);
+                    }
+                } else if (action.equals(Action.LEFT_CLICK_BLOCK)) {
+                    Block block = getCligetClickedBlock();
+                    block.setType(Material.ICE);
+                }
             }
         }
     }

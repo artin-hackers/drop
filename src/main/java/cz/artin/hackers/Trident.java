@@ -16,12 +16,5 @@ public class Trident extends Item implements Listener {
     }
 
     public void interact(Player player, Action action) {
-        if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
-            if (Effect.removeMana(player, Mana.Colour.WHITE, 1)) {
-                Effect.launchFireball(player);
-            } else {
-                player.sendMessage("Not enough mana");
-            }
-        }
     }
 }
