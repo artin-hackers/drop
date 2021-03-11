@@ -46,7 +46,11 @@ public class FrostAxe extends Item implements Listener {
     public void onHit(ProjectileHitEvent event) {
         if (event.getEntity() instanceof Snowball) {
             LOGGER.info("Snowball hit something");
-            setGroundFreeze(event.getHitBlock().getLocation(), 2);
+            if (event.getHitBlock() != null) {
+                setGroundFreeze(event.getHitBlock().getLocation(), 2);
+            } else if (event.getHitEntity() != null) {
+              event.getHitEntity().setFireTicks(100);
+            }
         }
     }
 
