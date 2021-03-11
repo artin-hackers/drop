@@ -49,7 +49,7 @@ public class FrostAxe extends Item implements Listener {
             if (event.getHitBlock() != null) {
                 setGroundFreeze(event.getHitBlock().getLocation(), 2);
             } else if (event.getHitEntity() != null) {
-              event.getHitEntity().setFireTicks(100);
+              event.getHitEntity().setFireTicks(200);
             }
         }
     }
