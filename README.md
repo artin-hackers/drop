@@ -19,11 +19,13 @@ the PvP genre.
 
 ### Commands
 
+* `createLobby`
 * `startMatch`
 * `endMatch`
 * `showScore`
-* `debugClearArea`
-* `debugBuildLobby`
+* `clearArea`
+* `dropInventory`
+* `setLevel`
 
 ### Weapons and Mana
 

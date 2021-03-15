@@ -13,12 +13,21 @@ public class Arena {
     private static final Logger LOGGER = Logger.getLogger(Arena.class.getName());
     private static final int DEFAULT_LOBBY_SIZE = 20;
     private static final int DEFAULT_LOBBY_HEIGHT = 5;
-    private static final int DEFAULT_ARENA_LOBBY_DISTANCE = 30;
+    private static final int DEFAULT_ARENA_LOBBY_DISTANCE = 20;
+    private static final Material DEFAULT_LOBBY_MATERIAL = Material.GLASS;
     private static Location arenaCenter = null;
     private static Location lobbyCenter = null;
 
     Arena() {
         LOGGER.finer("Arena");
+    }
+
+    public boolean isInitialised() {
+        if (arenaCenter != null && lobbyCenter != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Location getArenaCenter() {
@@ -27,7 +36,8 @@ public class Arena {
 
     public void setArenaCenter(Location location) {
         arenaCenter = location;
-        lobbyCenter = location.add(0, DEFAULT_ARENA_LOBBY_DISTANCE, 0);
+        lobbyCenter = arenaCenter.clone();
+        lobbyCenter.add(0, DEFAULT_ARENA_LOBBY_DISTANCE, 0);
     }
 
     public Location getLobbyCenter() {
@@ -38,12 +48,12 @@ public class Arena {
         return new Location(lobbyCenter.getWorld(), getRandomPositionWithin(lobbyCenter.getX(), DEFAULT_LOBBY_SIZE), lobbyCenter.getY() + 1, getRandomPositionWithin(lobbyCenter.getZ(), DEFAULT_LOBBY_SIZE));
     }
 
-    public void buildLobby() {
+    public void createLobby() {
         if (getLobbyCenter() == null) {
             return;
         }
 
-        Material lobbyMaterial = Material.GLASS;
+        Material lobbyMaterial = DEFAULT_LOBBY_MATERIAL;
         Location lobbyCorner = new Location(getLobbyCenter().getWorld(), getMinimumPositionWithin(getLobbyCenter().getX(), DEFAULT_LOBBY_SIZE), getLobbyCenter().getY(), getMinimumPositionWithin(getLobbyCenter().getZ(), DEFAULT_LOBBY_SIZE));
 
         // Clearance
@@ -52,12 +62,15 @@ public class Arena {
         // Build floor
         buildPatch(lobbyCorner, lobbyMaterial, DEFAULT_LOBBY_SIZE, 1, DEFAULT_LOBBY_SIZE);
 
+        // Build columns
         for (int i = 1; i <= DEFAULT_LOBBY_HEIGHT; i++) {
             (new Location(lobbyCorner.getWorld(), lobbyCorner.getX(), lobbyCorner.getY() + i, lobbyCorner.getZ())).getBlock().setType(lobbyMaterial);
             (new Location(lobbyCorner.getWorld(), lobbyCorner.getX() + DEFAULT_LOBBY_SIZE - 1, lobbyCorner.getY() + i, lobbyCorner.getZ())).getBlock().setType(lobbyMaterial);
             (new Location(lobbyCorner.getWorld(), lobbyCorner.getX(), lobbyCorner.getY() + i, lobbyCorner.getZ() + DEFAULT_LOBBY_SIZE - 1)).getBlock().setType(lobbyMaterial);
             (new Location(lobbyCorner.getWorld(), lobbyCorner.getX() + DEFAULT_LOBBY_SIZE - 1, lobbyCorner.getY() + i, lobbyCorner.getZ() + DEFAULT_LOBBY_SIZE - 1)).getBlock().setType(lobbyMaterial);
         }
+
+        // Build top frame
         for (int i = 0; i < DEFAULT_LOBBY_SIZE; i++) {
             (new Location(lobbyCorner.getWorld(), lobbyCorner.getX() + i, lobbyCorner.getY() + DEFAULT_LOBBY_HEIGHT, lobbyCorner.getZ())).getBlock().setType(lobbyMaterial);
             (new Location(lobbyCorner.getWorld(), lobbyCorner.getX() + i, lobbyCorner.getY() + DEFAULT_LOBBY_HEIGHT, lobbyCorner.getZ() + DEFAULT_LOBBY_SIZE - 1)).getBlock().setType(lobbyMaterial);
@@ -71,9 +84,6 @@ public class Arena {
             LOGGER.warning("Unexpected use of Arena.buildArena");
             return false;
         }
-
-        Player player = (Player) commandSender;
-        Location arenaCenter = new Location(player.getWorld(), -100, 70, 100);
 
         Location patchLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() - 50, arenaCenter.getY() - 5, arenaCenter.getZ() - 50);
         buildPatch(patchLocation, Material.AIR, 101, 40, 101);
