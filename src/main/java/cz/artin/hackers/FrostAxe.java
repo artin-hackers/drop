@@ -50,8 +50,18 @@ public class FrostAxe extends Item implements Listener {
                 setGroundFreeze(event.getHitBlock().getLocation(), 2);
             } else if (event.getHitEntity() != null) {
                 Location hitEntityLocation = event.getHitEntity().getLocation();
-                hitEntityLocation.add(0, -1, 0);
-                hitEntityLocation.getBlock().setType(Material.GOLD_BLOCK);
+                for (int x = -1; x <= 1; x++) {
+                    for (int y = 0; y <= 1; y++) {
+                        for (int z = -1; z <= 1; z++) {
+                            final Location iceBlock = new Location(
+                                hitEntityLocation.getWorld(),
+                                hitEntityLocation.getX() + x,
+                                hitEntityLocation.getY() + y,
+                                hitEntityLocation.getZ() + z);
+                            iceBlock.getBlock().setType(Material.ICE);
+                        }
+                    }
+                }
             }
         }
     }
