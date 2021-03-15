@@ -1,6 +1,8 @@
 package cz.artin.hackers;
 
+import com.google.common.collect.Iterables;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -18,10 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 
@@ -37,6 +36,7 @@ public class Drop extends JavaPlugin implements Listener {
     private static final int DEFAULT_DUMMY_RADIUS = 10;
     private static final int DEFAULT_CLEAR_AREA = 100;
     private static final int DEFAULT_PLAYER_LEVEL = 0;
+    private static final float DEFAULT_WALK_SPEED = 0.2F;
     private static BukkitTask matchTaskId;
     private static Arena arena;
     private static Location PORTAL_EXIT = null;
@@ -55,43 +55,15 @@ public class Drop extends JavaPlugin implements Listener {
         Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
         Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, false);
 
-        arena = new Arena(); // TODO: Set spawn location from the first online player
-
-        // TODO: export to resetAllPlayers method
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (arena.getArenaCenter() == null) {
-                arena.setArenaCenter(player.getWorld().getSpawnLocation());
-            }
-            dropPlayers.add(new DropPlayer(player));
+        arena = new Arena();
+        if (!arena.isInitialised() && Bukkit.getOnlinePlayers().size() != 0) {
+            arena.setArenaCenter((Iterables.get(Bukkit.getOnlinePlayers(), 0)).getWorld().getSpawnLocation());
         }
 
-        // TODO: Export to createWeapons method
-        if (DEBUG_STICK_ALLOWED) {
-            weapons.add(new DebugStick(this));
-        }
-        weapons.add(new ZireaelSword(this));
-        weapons.add(new FilipAxe(this));
-        weapons.add(new ZdenekWand(this));
-        weapons.add(new Trident(this));
-        weapons.add(new Bow(this));
-        weapons.add(new SwordOfTheDamned(this));
-        weapons.add(new FrostAxe(this));
+        resetWeapons();
+        resetResources();
 
-        // TODO: Export to setupTimers, later under the players
-        new BukkitRunnable() {
-            public void run() {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    Effect.addMana(player, Mana.Colour.BLACK, 1);
-                    Effect.addMana(player, Mana.Colour.BLUE, 1);
-                    Effect.addMana(player, Mana.Colour.RED, 1);
-                    Effect.addMana(player, Mana.Colour.WHITE, 1);
-                    Effect.addMana(player, Mana.Colour.GREEN, 1);
-                }
-                healPlayer();
-            }
-        }.runTaskTimer(this, 20 * 5L, 20 * 5L);
-
-        matchTaskId = null;
+        resetPlayers(Bukkit.getOnlinePlayers());
 
         LOGGER.info("...plugin successfully loaded.");
     }
@@ -122,11 +94,11 @@ public class Drop extends JavaPlugin implements Listener {
             return handleCommandEndMatch(player);
         } else if (label.equalsIgnoreCase("showScore")) {
             return handleCommandShowScore(player);
-        } else if (label.equalsIgnoreCase("debugClearArea")) {
+        } else if (label.equalsIgnoreCase("clearArea")) {
             return handleCommandClearArea(player);
-        } else if (label.equalsIgnoreCase("debugDropInventory")) {
+        } else if (label.equalsIgnoreCase("dropInventory")) {
             return handleCommandDropInventory(player);
-        } else if (label.equalsIgnoreCase("debugSetLevel")) {
+        } else if (label.equalsIgnoreCase("setLevel")) {
             return handleCommandSetLevel(player, arguments);
         } else {
             return false;
@@ -167,53 +139,53 @@ public class Drop extends JavaPlugin implements Listener {
 
     /* Event Handlers */
 
+    /**
+     * Handle newly joining players
+     *
+     * @param event Source event
+     */
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         LOGGER.info("A new player, " + event.getPlayer().getName() + ", just joined the fray");
 
-        dropPlayers.add(new DropPlayer(event.getPlayer()));
-        event.getPlayer().setGameMode(GameMode.SURVIVAL);
-        dropInventory(event.getPlayer());
-        for (ItemAdd item : weapons) {
-            item.add(event.getPlayer());
+        if (!arena.isInitialised()) {
+            arena.setArenaCenter(event.getPlayer().getWorld().getSpawnLocation());
         }
 
-        event.getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, 5));
-
-        (new Mana()).add(event.getPlayer(), Mana.Colour.BLACK, 5);
-        (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
-        (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
-        (new Mana()).add(event.getPlayer(), Mana.Colour.WHITE, 3);
-        event.getPlayer().teleport(new Location(event.getPlayer().getWorld(), -100, 70, 100));
-        event.getPlayer().setWalkSpeed(0.2F);
-        event.getPlayer().setLevel(DEFAULT_PLAYER_LEVEL);
+        resetPlayer(event.getPlayer());
+        event.getPlayer().teleport(arena.getArenaCenter());
     }
 
+    /**
+     * Handle leaving players
+     *
+     * @param event Source event
+     */
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         dropPlayers.removeIf(dropPlayer -> dropPlayer.getPlayer().equals(event.getPlayer()));
     }
 
+    /**
+     * Handle kicked players
+     *
+     * @param event Source event
+     */
     @EventHandler
     public void onPlayerKick(PlayerKickEvent event) {
         dropPlayers.removeIf(dropPlayer -> dropPlayer.getPlayer().equals(event.getPlayer()));
     }
 
+    /**
+     * Handle respawning players
+     *
+     * @param event Source event
+     */
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        dropInventory(event.getPlayer());
-        for (ItemAdd item : weapons) {
-            item.add(event.getPlayer());
-        }
-
-        event.getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, 5));
-
-        (new Mana()).add(event.getPlayer(), Mana.Colour.BLACK, 5);
-        (new Mana()).add(event.getPlayer(), Mana.Colour.BLUE, 3);
-        (new Mana()).add(event.getPlayer(), Mana.Colour.GREEN, 3);
-
-        event.setRespawnLocation(new Location(event.getPlayer().getWorld(), -100, 70, 100));
-        event.getPlayer().setWalkSpeed(0.2F);
+        clearEffects(event.getPlayer());
+        armPlayer(event.getPlayer());
+        event.setRespawnLocation(arena.getArenaCenter());
     }
 
     @EventHandler
@@ -277,6 +249,97 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     /* Implementation */
+
+    /**
+     * Reset players (mode, level, equipment, ...)
+     *
+     * @param players Players to be reset
+     */
+    private void resetPlayers(Collection<? extends Player> players) {
+        for (Player player : players) {
+            resetPlayer(player);
+        }
+    }
+
+    /**
+     * Reset player (mode, level, equipment, ...)
+     *
+     * @param player Player to be reset
+     */
+    private void resetPlayer(Player player) {
+        dropPlayers.add(new DropPlayer(player));
+        player.setGameMode(GameMode.SURVIVAL);
+        player.setLevel(DEFAULT_PLAYER_LEVEL);
+        clearEffects(player);
+        armPlayer(player);
+    }
+
+    /**
+     * Reset the weapons wielded by the players
+     */
+    private void resetWeapons() {
+        if (DEBUG_STICK_ALLOWED) {
+            weapons.add(new DebugStick(this));
+        }
+        weapons.add(new ZireaelSword(this));
+        weapons.add(new FilipAxe(this));
+        weapons.add(new ZdenekWand(this));
+        weapons.add(new Trident(this));
+        weapons.add(new Bow(this));
+        weapons.add(new SwordOfTheDamned(this));
+        weapons.add(new FrostAxe(this));
+    }
+
+    /**
+     * Reset the resources used by the players
+     */
+    private void resetResources() { // TODO: Review and refactor
+        new BukkitRunnable() {
+            public void run() {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    Effect.addMana(player, Mana.Colour.BLACK, 1);
+                    Effect.addMana(player, Mana.Colour.BLUE, 1);
+                    Effect.addMana(player, Mana.Colour.RED, 1);
+                    Effect.addMana(player, Mana.Colour.WHITE, 1);
+                    Effect.addMana(player, Mana.Colour.GREEN, 1);
+                }
+                healPlayer();
+            }
+        }.runTaskTimer(this, 20 * 5L, 20 * 5L);
+
+        matchTaskId = null;
+    }
+
+    /**
+     * Clear all positive and negative effects from the player
+     *
+     * @param player Player to be cleared
+     */
+    private void clearEffects(Player player) {
+        player.setWalkSpeed(DEFAULT_WALK_SPEED);
+        player.setHealth(Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue());
+    }
+
+    /**
+     * Equip the player with weapons and resources
+     *
+     * @param player Player which receives the equipment
+     */
+    private void armPlayer(Player player) { // TODO: Review and refactor
+        dropInventory(player);
+
+        for (ItemAdd item : weapons) {
+            item.add(player);
+        }
+
+        player.getInventory().addItem(new ItemStack(Material.ARROW, 10));
+
+        (new Mana()).add(player, Mana.Colour.BLACK, 5);
+        (new Mana()).add(player, Mana.Colour.BLUE, 5);
+        (new Mana()).add(player, Mana.Colour.GREEN, 5);
+        (new Mana()).add(player, Mana.Colour.RED, 5);
+        (new Mana()).add(player, Mana.Colour.WHITE, 5);
+    }
 
     private boolean startMatch(CommandSender commandSender, String[] args) {
         if (!(commandSender instanceof Player)) {
@@ -410,7 +473,7 @@ public class Drop extends JavaPlugin implements Listener {
                             plattformCenter.getZ() + z);
                     plattformBlockPosition.getBlock().setType(Material.GLASS);
                     plattformBlockPosition.add(0, 4, 0);
-                    plattformBlockPosition.getBlock().setType(Material.GREEN_WOOL);
+                    plattformBlockPosition.getBlock().setType(Material.GOLD_BLOCK);
 
                 }
             }
