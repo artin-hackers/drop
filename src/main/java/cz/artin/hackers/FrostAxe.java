@@ -61,7 +61,7 @@ public class FrostAxe extends Item implements Listener {
                     }
                 }
                 for (int x = -1; x <= 1; x++) {
-                    for (int y = 0; z <= 1; y++) {
+                    for (int y = 0; y <= 1; y++) {
                         for (int z = -1; z <= 1; z++) {
                             if (x == hitEntityLocation.getX() && z == hitEntityLocation.getZ()) {
                             } else {
