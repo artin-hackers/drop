@@ -2,6 +2,7 @@ package cz.artin.hackers;
 
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public class DropPlayer {
@@ -21,6 +22,10 @@ public class DropPlayer {
         return this.player;
     }
 
+    public UUID getPlayerUuid() {
+        return this.player.getUniqueId();
+    }
+
     public String getName() {
         return this.player.getName();
     }
@@ -33,16 +38,16 @@ public class DropPlayer {
         this.kills = kills;
     }
 
+    public void addKill() {
+        this.kills++;
+    }
+
     public int getDeaths() {
         return this.deaths;
     }
 
     public void setDeaths(int deaths) {
         this.deaths = deaths;
-    }
-
-    public void addKill() {
-        this.kills++;
     }
 
     public void addDeath() {

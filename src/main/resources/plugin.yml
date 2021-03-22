@@ -2,16 +2,19 @@ name: drop
 version: "1.0-SNAPSHOT"
 author: Artin Hackers Team
 main: cz.artin.hackers.Drop
+api-version: 1.15
 commands:
+  createLobby:
+    description: Create a lobby and bring all the online players
   startMatch:
     description: Start the match
   endMatch:
     description: End the match
   showScore:
     description: Show the current score
-  debugClearArea:
-    description: Debug - Clear area around the player
-  debugBuildLobby:
-    description: Debug - Build lobby and bring the players
-  debugDropInventory:
-    description: Debug - Remove all items from player inventory
+  clearArea:
+    description: Clear area around the player
+  dropInventory:
+    description: Remove all items from thw player's inventory
+  setLevel:
+    description: Set specific level to the player
