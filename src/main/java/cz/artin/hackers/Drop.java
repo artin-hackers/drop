@@ -106,6 +106,7 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     private boolean handleCommandCreateLobby() {
+        arena.buildArena();
         arena.createLobby();
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.teleport(arena.getLobbyRandomLocation());
@@ -362,7 +363,6 @@ public class Drop extends JavaPlugin implements Listener {
                     player.setKills(0);
                     player.setDeaths(0);
                 }
-                arena.buildArena(commandSender);
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                     onlinePlayer.setHealth(20);
                     onlinePlayer.setLevel(DEFAULT_PLAYER_LEVEL);
@@ -447,7 +447,7 @@ public class Drop extends JavaPlugin implements Listener {
 
 
     private boolean buildArena(CommandSender sender) {
-        return arena.buildArena(sender);
+        return arena.buildArena();
     }
 
     private int getValueInt(String[] arguments, int index, int default_value) {

@@ -13,7 +13,7 @@ public class Arena {
     private static final Logger LOGGER = Logger.getLogger(Arena.class.getName());
     private static final int DEFAULT_LOBBY_SIZE = 20;
     private static final int DEFAULT_LOBBY_HEIGHT = 5;
-    private static final int DEFAULT_ARENA_LOBBY_DISTANCE = 20;
+    private static final int DEFAULT_ARENA_LOBBY_DISTANCE = 31;
     private static final Material DEFAULT_LOBBY_MATERIAL = Material.GLASS;
     private static Location arenaCenter = null;
     private static Location lobbyCenter = null;
@@ -79,11 +79,7 @@ public class Arena {
         }
     }
 
-    public boolean buildArena(CommandSender commandSender) {
-        if (!(commandSender instanceof Player)) {
-            LOGGER.warning("Unexpected use of Arena.buildArena");
-            return false;
-        }
+    public boolean buildArena() {
 
         Location patchLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() - 50, arenaCenter.getY() - 5, arenaCenter.getZ() - 50);
         buildPatch(patchLocation, Material.AIR, 101, 40, 101);
