@@ -366,6 +366,7 @@ public class Drop extends JavaPlugin implements Listener {
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                     onlinePlayer.setHealth(20);
                     onlinePlayer.setLevel(DEFAULT_PLAYER_LEVEL);
+                    onlinePlayer.teleport(arena.getArenaRandomLocation());
                 }
                 runMatch(getValueInt(args, 0, DEFAULT_MATCH_LENGTH));
             } else {
