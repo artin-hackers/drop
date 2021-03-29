@@ -32,6 +32,8 @@ public class Drop extends JavaPlugin implements Listener {
     private static final List<ItemAdd> weapons = new ArrayList<>();
     private static final boolean DEBUG_STICK_ALLOWED = false;
     private static final int DEFAULT_START_TIME = 1000;
+    private static final int DEFAULT_PLAYER_LEVEL = 0;
+    private static final float DEFAULT_WALK_SPEED = 0.2F;
     private static final int DEFAULT_RESOURCE_AMOUNT = 5;
 
     // TODO: Review chaotic variables below
@@ -39,11 +41,9 @@ public class Drop extends JavaPlugin implements Listener {
     private static final int DEFAULT_COUNTDOWN = 3;
     private static final int DEFAULT_MATCH_LENGTH = 300;
     private static final int DEFAULT_CLEAR_AREA = 100;
-    private static final int DEFAULT_PLAYER_LEVEL = 0;
-    private static final float DEFAULT_WALK_SPEED = 0.2F;
+    private static final Location PORTAL_EXIT = null;
     private static BukkitTask matchTaskId;
     private static Arena arena;
-    private static final Location PORTAL_EXIT = null;
     private static int countDown;
 
     /**
@@ -209,7 +209,7 @@ public class Drop extends JavaPlugin implements Listener {
                         Effect.addMana(player, Mana.Colour.WHITE, 1);
                         Effect.addMana(player, Mana.Colour.GREEN, 1);
                     }
-                    healPlayer();
+                    healPlayer(); // TODO: Refactor
                 }
             }
         }.runTaskTimer(this, 20 * 5L, 20 * 5L);
