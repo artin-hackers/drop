@@ -30,6 +30,9 @@ public class Drop extends JavaPlugin implements Listener {
     private static final List<ItemAdd> weapons = new ArrayList<>();
     private static final boolean DEBUG_STICK_ALLOWED = false;
     private static final int DEFAULT_START_TIME = 1000;
+
+    // TODO: Review chaotic variables below
+
     private static final int DEFAULT_COUNTDOWN = 3;
     private static final int DEFAULT_MATCH_LENGTH = 300;
     private static final int DEFAULT_DUMMY_COUNT = 10;
@@ -52,7 +55,7 @@ public class Drop extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this, this);
 
         Objects.requireNonNull(getServer().getWorld("world")).setTime(DEFAULT_START_TIME);
-        Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
+        Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, false);
 
         arena = new Arena();
@@ -60,10 +63,9 @@ public class Drop extends JavaPlugin implements Listener {
             arena.setArenaCenter((Iterables.get(Bukkit.getOnlinePlayers(), 0)).getWorld().getSpawnLocation());
         }
 
-        resetWeapons();
-        resetResources();
-
-        resetPlayers(Bukkit.getOnlinePlayers());
+        initialiseWeapons();
+        initialiseResourceGenerator();
+        initialisePlayers(Bukkit.getOnlinePlayers());
 
         LOGGER.info("...plugin successfully loaded.");
     }
@@ -71,39 +73,80 @@ public class Drop extends JavaPlugin implements Listener {
     /**
      * Minecraft in-game command line handling
      *
-     * @param commandSender Source object which is issuing/executing the command
-     * @param command       The command executor
-     * @param label         The command alias
-     * @param arguments     All arguments passed to the command
+     * @param sender    Source object which is issuing/executing the command
+     * @param command   The command executor
+     * @param label     The command alias
+     * @param arguments All arguments passed to the command
      * @return If the command is known and executed successfully true, otherwise false
      */
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] arguments) {
-        Player player;
-        if (commandSender instanceof Player) {
-            player = (Player) commandSender;
-        } else {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] arguments) {
+        if (!(sender instanceof Player)) {
             return false;
         }
 
         if (label.equalsIgnoreCase("createLobby")) {
             return handleCommandCreateLobby();
         } else if (label.equalsIgnoreCase("startMatch")) {
-            return handleCommandStartMatch(player, arguments);
+            return handleCommandStartMatch((Player) sender, arguments);
         } else if (label.equalsIgnoreCase("endMatch")) {
-            return handleCommandEndMatch(player);
+            return handleCommandEndMatch((Player) sender);
         } else if (label.equalsIgnoreCase("showScore")) {
-            return handleCommandShowScore(player);
+            return handleCommandShowScore((Player) sender);
         } else if (label.equalsIgnoreCase("clearArea")) {
-            return handleCommandClearArea(player);
+            return handleCommandClearArea((Player) sender);
         } else if (label.equalsIgnoreCase("dropInventory")) {
-            return handleCommandDropInventory(player);
+            return handleCommandDropInventory((Player) sender);
         } else if (label.equalsIgnoreCase("setLevel")) {
-            return handleCommandSetLevel(player, arguments);
+            return handleCommandSetLevel((Player) sender, arguments);
         } else {
             return false;
         }
     }
+
+    /* Command handling */
+
+    /* Event handling */
+
+    /* Other */
+
+    /**
+     * Initialise the weapons wielded by the players
+     */
+    private void initialiseWeapons() {
+        if (DEBUG_STICK_ALLOWED) {
+            weapons.add(new DebugStick(this));
+        }
+        weapons.add(new ZireaelSword(this));
+        weapons.add(new FilipAxe(this));
+        weapons.add(new ZdenekWand(this));
+        weapons.add(new Trident(this));
+        weapons.add(new Bow(this));
+        weapons.add(new SwordOfTheDamned(this));
+        weapons.add(new FrostAxe(this));
+    }
+
+    /**
+     * Initialise the resource generator
+     */
+    private void initialiseResourceGenerator() { // TODO: Move to DropPlayer, every player will have his own timer
+        new BukkitRunnable() {
+            public void run() {
+                if (matchTaskId != null) { // TODO: Create Match class
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        Effect.addMana(player, Mana.Colour.BLACK, 1);
+                        Effect.addMana(player, Mana.Colour.BLUE, 1);
+                        Effect.addMana(player, Mana.Colour.RED, 1);
+                        Effect.addMana(player, Mana.Colour.WHITE, 1);
+                        Effect.addMana(player, Mana.Colour.GREEN, 1);
+                    }
+                    healPlayer();
+                }
+            }
+        }.runTaskTimer(this, 20 * 5L, 20 * 5L);
+    }
+
+    // TODO: Review the utter chaos below
 
     private boolean handleCommandCreateLobby() {
         arena.buildArena();
@@ -247,7 +290,6 @@ public class Drop extends JavaPlugin implements Listener {
                     }
                 }
             }
-
         }
     }
 
@@ -258,7 +300,7 @@ public class Drop extends JavaPlugin implements Listener {
      *
      * @param players Players to be reset
      */
-    private void resetPlayers(Collection<? extends Player> players) {
+    private void initialisePlayers(Collection<? extends Player> players) {
         for (Player player : players) {
             resetPlayer(player);
         }
@@ -275,44 +317,6 @@ public class Drop extends JavaPlugin implements Listener {
         player.setLevel(DEFAULT_PLAYER_LEVEL);
         clearEffects(player);
         armPlayer(player);
-    }
-
-    /**
-     * Reset the weapons wielded by the players
-     */
-    private void resetWeapons() {
-        if (DEBUG_STICK_ALLOWED) {
-            weapons.add(new DebugStick(this));
-        }
-        weapons.add(new ZireaelSword(this));
-        weapons.add(new FilipAxe(this));
-        weapons.add(new ZdenekWand(this));
-        weapons.add(new Trident(this));
-        weapons.add(new Bow(this));
-        weapons.add(new SwordOfTheDamned(this));
-        weapons.add(new FrostAxe(this));
-    }
-
-    /**
-     * Reset the resources used by the players
-     */
-    private void resetResources() { // TODO: Review and refactor
-        new BukkitRunnable() {
-            public void run() {
-                if (matchTaskId != null) {
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        Effect.addMana(player, Mana.Colour.BLACK, 1);
-                        Effect.addMana(player, Mana.Colour.BLUE, 1);
-                        Effect.addMana(player, Mana.Colour.RED, 1);
-                        Effect.addMana(player, Mana.Colour.WHITE, 1);
-                        Effect.addMana(player, Mana.Colour.GREEN, 1);
-                    }
-                    healPlayer();
-                }
-            }
-        }.runTaskTimer(this, 20 * 5L, 20 * 5L);
-
-        matchTaskId = null;
     }
 
     /**
