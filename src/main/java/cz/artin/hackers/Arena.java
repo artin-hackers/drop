@@ -13,7 +13,8 @@ public class Arena {
     private static final Logger LOGGER = Logger.getLogger(Arena.class.getName());
     private static final int DEFAULT_LOBBY_SIZE = 20;
     private static final int DEFAULT_LOBBY_HEIGHT = 5;
-    private static final int DEFAULT_ARENA_LOBBY_DISTANCE = 20;
+    private static final int DEFAULT_ARENA_LOBBY_DISTANCE = 31;
+    private static final int DEFAULT_TELEPORT_PLATFORM_SIZE = 11;
     private static final Material DEFAULT_LOBBY_MATERIAL = Material.GLASS;
     private static Location arenaCenter = null;
     private static Location lobbyCenter = null;
@@ -48,6 +49,10 @@ public class Arena {
         return new Location(lobbyCenter.getWorld(), getRandomPositionWithin(lobbyCenter.getX(), DEFAULT_LOBBY_SIZE), lobbyCenter.getY() + 1, getRandomPositionWithin(lobbyCenter.getZ(), DEFAULT_LOBBY_SIZE));
     }
 
+    public Location getArenaRandomLocation() {
+        return new Location(arenaCenter.getWorld(), getRandomPositionWithin(arenaCenter.getX(), DEFAULT_TELEPORT_PLATFORM_SIZE), arenaCenter.getY() + 2, getRandomPositionWithin(arenaCenter.getZ(), DEFAULT_TELEPORT_PLATFORM_SIZE));
+    }
+
     public void createLobby() {
         if (getLobbyCenter() == null) {
             return;
@@ -79,11 +84,7 @@ public class Arena {
         }
     }
 
-    public boolean buildArena(CommandSender commandSender) {
-        if (!(commandSender instanceof Player)) {
-            LOGGER.warning("Unexpected use of Arena.buildArena");
-            return false;
-        }
+    public boolean buildArena() {
 
         Location patchLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() - 50, arenaCenter.getY() - 5, arenaCenter.getZ() - 50);
         buildPatch(patchLocation, Material.AIR, 101, 40, 101);
@@ -106,16 +107,9 @@ public class Arena {
 
         // Build teleport platform
         patchLocation = new Location(arenaCenter.getWorld(), arenaCenter.getX() - 5, arenaCenter.getY() - 1, arenaCenter.getZ() - 5);
-        buildPatch(patchLocation, Material.AIR, 11, 10, 11);
-        buildPatch(patchLocation, Material.EMERALD_BLOCK, 11, 1, 11);
-
-        // Teleport players
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            int randomX = ThreadLocalRandom.current().nextInt(-5, 5);
-            int randomZ = ThreadLocalRandom.current().nextInt(-5, 5);
-            onlinePlayer.teleport(new Location(arenaCenter.getWorld(), arenaCenter.getX() + randomX, arenaCenter.getY(), arenaCenter.getZ() + randomZ));
-        }
-
+        buildPatch(patchLocation, Material.AIR, DEFAULT_TELEPORT_PLATFORM_SIZE, 10, DEFAULT_TELEPORT_PLATFORM_SIZE);
+        buildPatch(patchLocation, Material.EMERALD_BLOCK, DEFAULT_TELEPORT_PLATFORM_SIZE, 1, DEFAULT_TELEPORT_PLATFORM_SIZE);
+        
         return true;
     }
 

@@ -106,9 +106,12 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     private boolean handleCommandCreateLobby() {
+        arena.buildArena();
         arena.createLobby();
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.teleport(arena.getLobbyRandomLocation());
+            clearEffects(player);
+            dropInventory(player);
         }
         return true;
     }
@@ -296,14 +299,16 @@ public class Drop extends JavaPlugin implements Listener {
     private void resetResources() { // TODO: Review and refactor
         new BukkitRunnable() {
             public void run() {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    Effect.addMana(player, Mana.Colour.BLACK, 1);
-                    Effect.addMana(player, Mana.Colour.BLUE, 1);
-                    Effect.addMana(player, Mana.Colour.RED, 1);
-                    Effect.addMana(player, Mana.Colour.WHITE, 1);
-                    Effect.addMana(player, Mana.Colour.GREEN, 1);
+                if (matchTaskId != null) {
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        Effect.addMana(player, Mana.Colour.BLACK, 1);
+                        Effect.addMana(player, Mana.Colour.BLUE, 1);
+                        Effect.addMana(player, Mana.Colour.RED, 1);
+                        Effect.addMana(player, Mana.Colour.WHITE, 1);
+                        Effect.addMana(player, Mana.Colour.GREEN, 1);
+                    }
+                    healPlayer();
                 }
-                healPlayer();
             }
         }.runTaskTimer(this, 20 * 5L, 20 * 5L);
 
@@ -362,10 +367,12 @@ public class Drop extends JavaPlugin implements Listener {
                     player.setKills(0);
                     player.setDeaths(0);
                 }
-                arena.buildArena(commandSender);
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                     onlinePlayer.setHealth(20);
                     onlinePlayer.setLevel(DEFAULT_PLAYER_LEVEL);
+                    onlinePlayer.teleport(arena.getArenaRandomLocation());
+                    clearEffects(onlinePlayer);
+                    armPlayer(onlinePlayer);
                 }
                 runMatch(getValueInt(args, 0, DEFAULT_MATCH_LENGTH));
             } else {
@@ -447,7 +454,7 @@ public class Drop extends JavaPlugin implements Listener {
 
 
     private boolean buildArena(CommandSender sender) {
-        return arena.buildArena(sender);
+        return arena.buildArena();
     }
 
     private int getValueInt(String[] arguments, int index, int default_value) {
@@ -615,7 +622,7 @@ public class Drop extends JavaPlugin implements Listener {
             if (itemInMainHand.getItemMeta() != null) {
                 String itemDisplayName = itemInMainHand.getItemMeta().getDisplayName();
                 if (itemDisplayName.equals("cz.artin.hackers.Trident")) {
-                    Effect.addHealth(player, 2);
+                    Effect.addHealth(player, 6);
                 }
             }
         }
