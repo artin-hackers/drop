@@ -622,7 +622,7 @@ public class Drop extends JavaPlugin implements Listener {
             if (itemInMainHand.getItemMeta() != null) {
                 String itemDisplayName = itemInMainHand.getItemMeta().getDisplayName();
                 if (itemDisplayName.equals("cz.artin.hackers.Trident")) {
-                    Effect.addHealth(player, 2);
+                    Effect.addHealth(player, 6);
                 }
             }
         }
