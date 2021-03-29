@@ -110,6 +110,7 @@ public class Drop extends JavaPlugin implements Listener {
         arena.createLobby();
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.teleport(arena.getLobbyRandomLocation());
+            dropInventory(player);
         }
         return true;
     }
