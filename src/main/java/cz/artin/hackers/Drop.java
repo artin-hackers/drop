@@ -299,14 +299,16 @@ public class Drop extends JavaPlugin implements Listener {
     private void resetResources() { // TODO: Review and refactor
         new BukkitRunnable() {
             public void run() {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    Effect.addMana(player, Mana.Colour.BLACK, 1);
-                    Effect.addMana(player, Mana.Colour.BLUE, 1);
-                    Effect.addMana(player, Mana.Colour.RED, 1);
-                    Effect.addMana(player, Mana.Colour.WHITE, 1);
-                    Effect.addMana(player, Mana.Colour.GREEN, 1);
+                if (matchTaskId != null) {
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        Effect.addMana(player, Mana.Colour.BLACK, 1);
+                        Effect.addMana(player, Mana.Colour.BLUE, 1);
+                        Effect.addMana(player, Mana.Colour.RED, 1);
+                        Effect.addMana(player, Mana.Colour.WHITE, 1);
+                        Effect.addMana(player, Mana.Colour.GREEN, 1);
+                    }
+                    healPlayer();
                 }
-                healPlayer();
             }
         }.runTaskTimer(this, 20 * 5L, 20 * 5L);
 
