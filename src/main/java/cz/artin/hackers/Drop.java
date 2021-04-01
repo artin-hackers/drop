@@ -6,7 +6,10 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -21,7 +24,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 
 public class Drop extends JavaPlugin implements Listener {
@@ -30,16 +32,18 @@ public class Drop extends JavaPlugin implements Listener {
     private static final List<ItemAdd> weapons = new ArrayList<>();
     private static final boolean DEBUG_STICK_ALLOWED = false;
     private static final int DEFAULT_START_TIME = 1000;
-    private static final int DEFAULT_COUNTDOWN = 3;
-    private static final int DEFAULT_MATCH_LENGTH = 300;
-    private static final int DEFAULT_DUMMY_COUNT = 10;
-    private static final int DEFAULT_DUMMY_RADIUS = 10;
-    private static final int DEFAULT_CLEAR_AREA = 100;
     private static final int DEFAULT_PLAYER_LEVEL = 0;
     private static final float DEFAULT_WALK_SPEED = 0.2F;
+    private static final int DEFAULT_RESOURCE_AMOUNT = 5;
+
+    // TODO: Review chaotic variables below
+
+    private static final int DEFAULT_COUNTDOWN = 3;
+    private static final int DEFAULT_MATCH_LENGTH = 300;
+    private static final int DEFAULT_CLEAR_AREA = 100;
+    private static final Location PORTAL_EXIT = null;
     private static BukkitTask matchTaskId;
     private static Arena arena;
-    private static Location PORTAL_EXIT = null;
     private static int countDown;
 
     /**
@@ -52,7 +56,7 @@ public class Drop extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this, this);
 
         Objects.requireNonNull(getServer().getWorld("world")).setTime(DEFAULT_START_TIME);
-        Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
+        Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, false);
 
         arena = new Arena();
@@ -60,10 +64,9 @@ public class Drop extends JavaPlugin implements Listener {
             arena.setArenaCenter((Iterables.get(Bukkit.getOnlinePlayers(), 0)).getWorld().getSpawnLocation());
         }
 
-        resetWeapons();
-        resetResources();
-
-        resetPlayers(Bukkit.getOnlinePlayers());
+        initialiseWeapons();
+        initialiseResourceGenerator();
+        registerPlayers(Bukkit.getOnlinePlayers());
 
         LOGGER.info("...plugin successfully loaded.");
     }
@@ -71,50 +74,249 @@ public class Drop extends JavaPlugin implements Listener {
     /**
      * Minecraft in-game command line handling
      *
-     * @param commandSender Source object which is issuing/executing the command
-     * @param command       The command executor
-     * @param label         The command alias
-     * @param arguments     All arguments passed to the command
+     * @param sender    Source object which is issuing/executing the command
+     * @param command   The command executor
+     * @param label     The command alias
+     * @param arguments All arguments passed to the command
      * @return If the command is known and executed successfully true, otherwise false
      */
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] arguments) {
-        Player player;
-        if (commandSender instanceof Player) {
-            player = (Player) commandSender;
-        } else {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] arguments) {
+        if (!(sender instanceof Player)) {
             return false;
         }
 
         if (label.equalsIgnoreCase("createLobby")) {
             return handleCommandCreateLobby();
         } else if (label.equalsIgnoreCase("startMatch")) {
-            return handleCommandStartMatch(player, arguments);
+            return handleCommandStartMatch((Player) sender, arguments);
         } else if (label.equalsIgnoreCase("endMatch")) {
-            return handleCommandEndMatch(player);
+            return handleCommandEndMatch((Player) sender);
         } else if (label.equalsIgnoreCase("showScore")) {
-            return handleCommandShowScore(player);
+            return handleCommandShowScore((Player) sender);
         } else if (label.equalsIgnoreCase("clearArea")) {
-            return handleCommandClearArea(player);
+            return handleCommandClearArea((Player) sender);
         } else if (label.equalsIgnoreCase("dropInventory")) {
-            return handleCommandDropInventory(player);
+            return handleCommandDropInventory((Player) sender);
         } else if (label.equalsIgnoreCase("setLevel")) {
-            return handleCommandSetLevel(player, arguments);
+            return handleCommandSetLevel((Player) sender, arguments);
         } else {
             return false;
         }
     }
 
+    /* Command handling */
+
+    /**
+     * Handle the command "createLobby"
+     *
+     * @return Always true
+     */
     private boolean handleCommandCreateLobby() {
         arena.buildArena();
         arena.createLobby();
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.teleport(arena.getLobbyRandomLocation());
-            clearEffects(player);
-            dropInventory(player);
+            restorePlayer(player);
+            removePlayerInventory(player);
         }
         return true;
     }
+
+    /* Event handling */
+
+    /**
+     * Handle newly joining players
+     *
+     * @param event Source event
+     */
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        LOGGER.info("A new player, " + event.getPlayer().getName() + ", just joined the fray");
+
+        if (!arena.isInitialised()) {
+            arena.setArenaCenter(event.getPlayer().getWorld().getSpawnLocation());
+        }
+
+        registerPlayer(event.getPlayer());
+        resetPlayer(event.getPlayer());
+        restorePlayer(event.getPlayer());
+        restorePlayerInventory(event.getPlayer());
+        event.getPlayer().teleport(arena.getArenaCenter());
+    }
+
+    /**
+     * Handle leaving players
+     *
+     * @param event Source event
+     */
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        unregisterPlayer(event.getPlayer());
+    }
+
+    /**
+     * Handle kicked players
+     *
+     * @param event Source event
+     */
+    @EventHandler
+    public void onPlayerKick(PlayerKickEvent event) {
+        unregisterPlayer(event.getPlayer());
+    }
+
+    /**
+     * Handle respawning players
+     *
+     * @param event Source event
+     */
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        restorePlayer(event.getPlayer());
+        restorePlayerInventory(event.getPlayer());
+        event.setRespawnLocation(arena.getArenaCenter());
+    }
+
+    /* Other */
+
+    /**
+     * Initialise the weapons wielded by the players
+     */
+    private void initialiseWeapons() {
+        if (DEBUG_STICK_ALLOWED) {
+            weapons.add(new DebugStick(this));
+        }
+        weapons.add(new ZireaelSword(this));
+        weapons.add(new FilipAxe(this));
+        weapons.add(new ZdenekWand(this));
+        weapons.add(new Trident(this));
+        weapons.add(new Bow(this));
+        weapons.add(new SwordOfTheDamned(this));
+        weapons.add(new FrostAxe(this));
+    }
+
+    /**
+     * Initialise the resource generator
+     */
+    private void initialiseResourceGenerator() { // TODO: Move to DropPlayer, every player will have his own timer
+        new BukkitRunnable() {
+            public void run() {
+                if (matchTaskId != null) { // TODO: Create Match class
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        Effect.addMana(player, Mana.Colour.BLACK, 1);
+                        Effect.addMana(player, Mana.Colour.BLUE, 1);
+                        Effect.addMana(player, Mana.Colour.RED, 1);
+                        Effect.addMana(player, Mana.Colour.WHITE, 1);
+                        Effect.addMana(player, Mana.Colour.GREEN, 1);
+                    }
+                    healPlayer(); // TODO: Refactor
+                }
+            }
+        }.runTaskTimer(this, 20 * 5L, 20 * 5L);
+    }
+
+    /**
+     * Register players for the game
+     *
+     * @param players Players to be registered
+     */
+    private void registerPlayers(Collection<? extends Player> players) {
+        for (Player player : players) {
+            registerPlayer(player);
+        }
+    }
+
+    /**
+     * Register new player for the game
+     *
+     * @param player Player to be registered
+     */
+    private void registerPlayer(Player player) {
+        dropPlayers.add(new DropPlayer(player));
+        player.setGameMode(GameMode.SURVIVAL);
+    }
+
+    /**
+     * Unregister player from the game
+     *
+     * @param player Player to be unregistered
+     */
+    private void unregisterPlayer(Player player) {
+        dropPlayers.removeIf(dropPlayer -> dropPlayer.getPlayer().equals(player));
+    }
+
+    /**
+     * Reset player progress and statistics - level, kill/death count, ...
+     *
+     * @param player Player to be reset
+     */
+    private void resetPlayer(Player player) {
+        player.setLevel(DEFAULT_PLAYER_LEVEL);
+        Objects.requireNonNull(getDropPlayer(player.getUniqueId())).setKills(0);
+        Objects.requireNonNull(getDropPlayer(player.getUniqueId())).setDeaths(0);
+    }
+
+    /**
+     * Restore player attributes - restore health, clear (de)buffs
+     *
+     * @param player Player to be restored
+     */
+    private void restorePlayer(Player player) {
+        player.setHealth(Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue());
+        player.setWalkSpeed(DEFAULT_WALK_SPEED);
+    }
+
+    /**
+     * Restore player's inventory
+     *
+     * @param player The player whose inventory gets restored
+     */
+    private void restorePlayerInventory(Player player) {
+        removePlayerInventory(player);
+
+        for (ItemAdd item : weapons) {
+            item.add(player);
+        }
+
+        player.getInventory().addItem(new ItemStack(Material.ARROW, DEFAULT_RESOURCE_AMOUNT));
+        (new Mana()).add(player, Mana.Colour.BLACK, DEFAULT_RESOURCE_AMOUNT);
+        (new Mana()).add(player, Mana.Colour.BLUE, DEFAULT_RESOURCE_AMOUNT);
+        (new Mana()).add(player, Mana.Colour.GREEN, DEFAULT_RESOURCE_AMOUNT);
+        (new Mana()).add(player, Mana.Colour.RED, DEFAULT_RESOURCE_AMOUNT);
+        (new Mana()).add(player, Mana.Colour.WHITE, DEFAULT_RESOURCE_AMOUNT);
+    }
+
+    /**
+     * Remove player's whole inventory
+     *
+     * @param player The player whose inventory gets removed
+     */
+    private void removePlayerInventory(Player player) {
+        Inventory inventory = player.getInventory();
+        for (int slot = 0; slot < inventory.getSize(); slot++) {
+            ItemStack itemStack = inventory.getItem(slot);
+            if (itemStack != null) {
+                itemStack.setAmount(0);
+            }
+        }
+    }
+
+    /**
+     * Get matching DROP player instance for UUID
+     *
+     * @param uuid UUID of the player
+     * @return DROP player instance, null if there is no match
+     */
+    private DropPlayer getDropPlayer(UUID uuid) {
+        for (DropPlayer player : dropPlayers) {
+            if (player.getPlayerUuid() == uuid) {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    // TODO: Review the utter chaos below
 
     private boolean handleCommandStartMatch(Player player, String[] arguments) {
         return startMatch(player, arguments);
@@ -133,62 +335,12 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     private boolean handleCommandDropInventory(Player player) {
-        return dropInventory(player);
+        removePlayerInventory(player);
+        return true;
     }
 
     private boolean handleCommandSetLevel(Player player, String[] arguments) {
         return setLevel(player, arguments);
-    }
-
-    /* Event Handlers */
-
-    /**
-     * Handle newly joining players
-     *
-     * @param event Source event
-     */
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        LOGGER.info("A new player, " + event.getPlayer().getName() + ", just joined the fray");
-
-        if (!arena.isInitialised()) {
-            arena.setArenaCenter(event.getPlayer().getWorld().getSpawnLocation());
-        }
-
-        resetPlayer(event.getPlayer());
-        event.getPlayer().teleport(arena.getArenaCenter());
-    }
-
-    /**
-     * Handle leaving players
-     *
-     * @param event Source event
-     */
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        dropPlayers.removeIf(dropPlayer -> dropPlayer.getPlayer().equals(event.getPlayer()));
-    }
-
-    /**
-     * Handle kicked players
-     *
-     * @param event Source event
-     */
-    @EventHandler
-    public void onPlayerKick(PlayerKickEvent event) {
-        dropPlayers.removeIf(dropPlayer -> dropPlayer.getPlayer().equals(event.getPlayer()));
-    }
-
-    /**
-     * Handle respawning players
-     *
-     * @param event Source event
-     */
-    @EventHandler
-    public void onPlayerRespawn(PlayerRespawnEvent event) {
-        clearEffects(event.getPlayer());
-        armPlayer(event.getPlayer());
-        event.setRespawnLocation(arena.getArenaCenter());
     }
 
     @EventHandler
@@ -207,7 +359,7 @@ public class Drop extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity().getPlayer();
-        dropInventory(player);
+        removePlayerInventory(player);
         if (player != null) {
             for (DropPlayer dropPlayer : dropPlayers) {
                 if (dropPlayer.getName().equals(player.getName())) {
@@ -247,103 +399,7 @@ public class Drop extends JavaPlugin implements Listener {
                     }
                 }
             }
-
         }
-    }
-
-    /* Implementation */
-
-    /**
-     * Reset players (mode, level, equipment, ...)
-     *
-     * @param players Players to be reset
-     */
-    private void resetPlayers(Collection<? extends Player> players) {
-        for (Player player : players) {
-            resetPlayer(player);
-        }
-    }
-
-    /**
-     * Reset player (mode, level, equipment, ...)
-     *
-     * @param player Player to be reset
-     */
-    private void resetPlayer(Player player) {
-        dropPlayers.add(new DropPlayer(player));
-        player.setGameMode(GameMode.SURVIVAL);
-        player.setLevel(DEFAULT_PLAYER_LEVEL);
-        clearEffects(player);
-        armPlayer(player);
-    }
-
-    /**
-     * Reset the weapons wielded by the players
-     */
-    private void resetWeapons() {
-        if (DEBUG_STICK_ALLOWED) {
-            weapons.add(new DebugStick(this));
-        }
-        weapons.add(new ZireaelSword(this));
-        weapons.add(new FilipAxe(this));
-        weapons.add(new ZdenekWand(this));
-        weapons.add(new Trident(this));
-        weapons.add(new Bow(this));
-        weapons.add(new SwordOfTheDamned(this));
-        weapons.add(new FrostAxe(this));
-    }
-
-    /**
-     * Reset the resources used by the players
-     */
-    private void resetResources() { // TODO: Review and refactor
-        new BukkitRunnable() {
-            public void run() {
-                if (matchTaskId != null) {
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        Effect.addMana(player, Mana.Colour.BLACK, 1);
-                        Effect.addMana(player, Mana.Colour.BLUE, 1);
-                        Effect.addMana(player, Mana.Colour.RED, 1);
-                        Effect.addMana(player, Mana.Colour.WHITE, 1);
-                        Effect.addMana(player, Mana.Colour.GREEN, 1);
-                    }
-                    healPlayer();
-                }
-            }
-        }.runTaskTimer(this, 20 * 5L, 20 * 5L);
-
-        matchTaskId = null;
-    }
-
-    /**
-     * Clear all positive and negative effects from the player
-     *
-     * @param player Player to be cleared
-     */
-    private void clearEffects(Player player) {
-        player.setWalkSpeed(DEFAULT_WALK_SPEED);
-        player.setHealth(Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue());
-    }
-
-    /**
-     * Equip the player with weapons and resources
-     *
-     * @param player Player which receives the equipment
-     */
-    private void armPlayer(Player player) { // TODO: Review and refactor
-        dropInventory(player);
-
-        for (ItemAdd item : weapons) {
-            item.add(player);
-        }
-
-        player.getInventory().addItem(new ItemStack(Material.ARROW, 10));
-
-        (new Mana()).add(player, Mana.Colour.BLACK, 5);
-        (new Mana()).add(player, Mana.Colour.BLUE, 5);
-        (new Mana()).add(player, Mana.Colour.GREEN, 5);
-        (new Mana()).add(player, Mana.Colour.RED, 5);
-        (new Mana()).add(player, Mana.Colour.WHITE, 5);
     }
 
     private boolean startMatch(CommandSender commandSender, String[] args) {
@@ -363,16 +419,11 @@ public class Drop extends JavaPlugin implements Listener {
             if (countDown == 0) {
                 Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
                 Bukkit.broadcastMessage("FIGHT!");
-                for (DropPlayer player : dropPlayers) {
-                    player.setKills(0);
-                    player.setDeaths(0);
-                }
-                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                    onlinePlayer.setHealth(20);
-                    onlinePlayer.setLevel(DEFAULT_PLAYER_LEVEL);
-                    onlinePlayer.teleport(arena.getArenaRandomLocation());
-                    clearEffects(onlinePlayer);
-                    armPlayer(onlinePlayer);
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    resetPlayer(player);
+                    restorePlayer(player);
+                    restorePlayerInventory(player);
+                    player.teleport(arena.getArenaRandomLocation());
                 }
                 runMatch(getValueInt(args, 0, DEFAULT_MATCH_LENGTH));
             } else {
@@ -399,8 +450,12 @@ public class Drop extends JavaPlugin implements Listener {
                 Bukkit.getScheduler().cancelTask(matchTaskId.getTaskId());
                 Bukkit.broadcastMessage("Match has ended!");
 
-                // Send players to lobby
-                handleCommandCreateLobby();
+                arena.createLobby();
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    player.teleport(arena.getLobbyRandomLocation());
+                    restorePlayer(player);
+                    removePlayerInventory(player);
+                }
                 for (DropPlayer player : dropPlayers) {
                     Bukkit.broadcastMessage(player.getName() + ": " + player.getKills() + "/" + player.getDeaths());
                 }
@@ -440,68 +495,12 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
-    public boolean speedHack(CommandSender sender) {
-        if (!(sender instanceof Player)) {
-            LOGGER.warning("Unexpected use of Drop.speedHack");
-            return false;
-        }
-
-        Player player = (Player) sender;
-        float speed = player.getWalkSpeed();
-        player.setWalkSpeed(speed * 2);
-        return true;
-    }
-
-
-    private boolean buildArena(CommandSender sender) {
-        return arena.buildArena();
-    }
-
     private int getValueInt(String[] arguments, int index, int default_value) {
         if (index >= 0 && index < arguments.length) {
             return Integer.parseInt(arguments[index]);
         } else {
             return default_value;
         }
-    }
-
-    private boolean setHometown(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            PORTAL_EXIT = player.getLocation().clone();
-            Location plattformCenter = player.getLocation().clone();
-            plattformCenter.add(0, -1, 0);
-            for (int x = -2; x <= 2; x++) {
-                for (int z = -2; z <= 2; z++) {
-                    Location plattformBlockPosition = new Location(
-                            player.getWorld(),
-                            plattformCenter.getX() + x,
-                            plattformCenter.getY(),
-                            plattformCenter.getZ() + z);
-                    plattformBlockPosition.getBlock().setType(Material.GLASS);
-                    plattformBlockPosition.add(0, 4, 0);
-                    plattformBlockPosition.getBlock().setType(Material.GOLD_BLOCK);
-
-                }
-            }
-            for (int y = 0; y < 3; y++) {
-                Location columnBlockPosition = player.getLocation().clone();
-                columnBlockPosition.add(-2, y, 0);
-                columnBlockPosition.getBlock().setType(Material.EMERALD_BLOCK);
-                columnBlockPosition = player.getLocation().clone();
-                columnBlockPosition.add(2, y, 0);
-                columnBlockPosition.getBlock().setType(Material.EMERALD_BLOCK);
-            }
-        }
-        return true;
-    }
-
-    private boolean setPortalExit(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            PORTAL_EXIT = player.getLocation().clone();
-        }
-        return true;
     }
 
     private void shootRifleWand(Player player) {
@@ -513,40 +512,6 @@ public class Drop extends JavaPlugin implements Listener {
                 ((LivingEntity) target).damage(999999999, player);
             }
         }
-    }
-
-    private boolean buildObelisk(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            Location obeliskLocation = player.getLocation().clone();
-            obeliskLocation.add(5, 0, 0);
-            obeliskLocation.getBlock().setType(Material.BLACK_CONCRETE);
-            obeliskLocation.add(0, 1, 0);
-            obeliskLocation.getBlock().setType(Material.BLACK_CONCRETE);
-            obeliskLocation.add(0, 1, 0);
-            obeliskLocation.getBlock().setType(Material.DIAMOND_BLOCK);
-        }
-        return true;
-    }
-
-    private boolean spawnDummies(CommandSender sender, String[] args) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            Location playerLocation = player.getLocation().clone();
-            int count = getValueInt(args, 0, DEFAULT_DUMMY_COUNT);
-            int radius = getValueInt(args, 1, DEFAULT_DUMMY_RADIUS);
-            for (int i = 0; i < count; i++) {
-                int randomX = ThreadLocalRandom.current().nextInt(-radius, radius);
-                int randomZ = ThreadLocalRandom.current().nextInt(-radius, radius);
-                final Location dummyLocation = new Location(
-                        player.getWorld(),
-                        playerLocation.getX() + randomX,
-                        playerLocation.getY(),
-                        playerLocation.getZ() + randomZ);
-                player.getWorld().spawn(dummyLocation, Zombie.class);
-            }
-        }
-        return true;
     }
 
     public Entity getNearestLivingEntityInSight(Player player, int range) {
@@ -589,31 +554,10 @@ public class Drop extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean dropInventory(Player player) {
-        Inventory inventory = player.getInventory();
-        for (int slot = 0; slot < inventory.getSize(); slot++) {
-            ItemStack itemStack = inventory.getItem(slot);
-            if (itemStack == null) {
-                continue;
-            }
-            itemStack.setAmount(0);
-        }
-        return true;
-    }
-
     private boolean setLevel(Player player, String[] arguments) {
         int level = getValueInt(arguments, 0, DEFAULT_PLAYER_LEVEL);
         player.setLevel(level);
         return true;
-    }
-
-    private DropPlayer getDropPlayer(UUID uuid) {
-        for (DropPlayer player : dropPlayers) {
-            if (uuid == player.getPlayerUuid()) {
-                return player;
-            }
-        }
-        return null;
     }
 
     private void healPlayer() {
