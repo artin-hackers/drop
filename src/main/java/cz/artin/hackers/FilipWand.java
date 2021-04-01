@@ -8,16 +8,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
 
-public class ZdenekWand extends Item implements Listener {
-    private static final Logger LOGGER = Logger.getLogger(ZdenekWand.class.getName());
+public class FilipWand extends Item implements Listener {
+    private static final Logger LOGGER = Logger.getLogger(FilipWand.class.getName());
 
-    ZdenekWand(JavaPlugin plugin) {
-        LOGGER.finer("ZdenekWand");
+    FilipWand(JavaPlugin plugin) {
+        LOGGER.finer("FilipWand");
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public void add(Player player) {
-        add(player, Material.STICK, ZdenekWand.class.getName());
+        add(player, Material.STICK, FilipWand.class.getName());
     }
 
     @Override
