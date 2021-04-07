@@ -366,7 +366,6 @@ public class Drop extends JavaPlugin implements Listener {
                     dropPlayer.addDeath();
                 }
                 Player killer = player.getKiller();
-                killer.setLevel(killer.getLevel() + 1);
                 if (killer != null) {
                     if (dropPlayer.getName().equals(killer.getName())) {
                         dropPlayer.addKill();
