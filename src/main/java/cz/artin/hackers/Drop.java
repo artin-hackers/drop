@@ -251,9 +251,9 @@ public class Drop extends JavaPlugin implements Listener {
      * @param player Player to be reset
      */
     private void resetPlayer(Player player) {
-        player.setLevel(DEFAULT_PLAYER_LEVEL);
         Objects.requireNonNull(getDropPlayer(player.getUniqueId())).setKills(0);
         Objects.requireNonNull(getDropPlayer(player.getUniqueId())).setDeaths(0);
+        Objects.requireNonNull(getDropPlayer(player.getUniqueId())).setLevel(DEFAULT_PLAYER_LEVEL);
     }
 
     /**
@@ -262,6 +262,7 @@ public class Drop extends JavaPlugin implements Listener {
      * @param player Player to be restored
      */
     private void restorePlayer(Player player) {
+        player.setLevel(getDropPlayer(player.getUniqueId()).getLevel());
         player.setHealth(Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue());
         player.setWalkSpeed(DEFAULT_WALK_SPEED);
     }
@@ -361,6 +362,7 @@ public class Drop extends JavaPlugin implements Listener {
         Player player = event.getEntity().getPlayer();
         removePlayerInventory(player);
         if (player != null) {
+            getDropPlayer(player.getUniqueId()).setLevel(player.getLevel());
             for (DropPlayer dropPlayer : dropPlayers) {
                 if (dropPlayer.getName().equals(player.getName())) {
                     dropPlayer.addDeath();
