@@ -114,9 +114,9 @@ public abstract class Effect {
         }
 
         Location holeCentre = sight.get(sight.size() - 1).getLocation();
-        for (int x = 0; x <= holeSize; x++) {
-            for (int y = 0; y <= holeSize; y++) {
-                for (int z = 0; z <= holeSize; z++) {
+        for (int x = 0; x < holeSize; x++) {
+            for (int y = 0; y < holeSize; y++) {
+                for (int z = 0; z < holeSize; z++) {
                     final Location holeBlock = new Location(
                             player.getWorld(),
                             holeCentre.getX() + x,
