@@ -98,21 +98,31 @@ public abstract class Effect {
     }
 
     public static void createHole(Player player) {
-        List<Block> sight = player.getLineOfSight(null, 20);
+        int level = player.getLevel();
+        int maxLineOfSight;
+        int holeSize;
+
+        maxLineOfSight = 5 + 2 * level;
+        if (maxLineOfSight > 25) {
+            maxLineOfSight = 25;
+        }
+        List<Block> sight = player.getLineOfSight(null, maxLineOfSight);
+
+        holeSize = 1 + level;
+        if (holeSize > 5 ) {
+            holeSize = 5;
+        }
+
         Location holeCentre = sight.get(sight.size() - 1).getLocation();
-        if (player.getLevel() <= 3) {
-            holeCentre.getBlock().setType(Material.AIR);
-        } else {
-            for (int x = -1; x <= 1; x++) {
-                for (int y = -1; y <= 1; y++) {
-                    for (int z = -1; z <= 1; z++) {
-                        final Location wallBlock = new Location(
-                                player.getWorld(),
-                                holeCentre.getX() + x,
-                                holeCentre.getY() + y,
-                                holeCentre.getZ() + z);
-                        wallBlock.getBlock().setType(Material.AIR);
-                    }
+        for (int x = 0; x <= holeSize; x++) {
+            for (int y = 0; y <= holeSize; y++) {
+                for (int z = 0; z <= holeSize; z++) {
+                    final Location holeBlock = new Location(
+                            player.getWorld(),
+                            holeCentre.getX() + x,
+                            holeCentre.getY() + y,
+                            holeCentre.getZ() + z);
+                    holeBlock.getBlock().setType(Material.AIR);
                 }
             }
         }
