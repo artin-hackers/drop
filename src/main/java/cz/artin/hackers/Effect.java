@@ -114,6 +114,9 @@ public abstract class Effect {
         }
 
         Location holeCentre = sight.get(sight.size() - 1).getLocation();
+        Location holeCorner = holeCentre.clone();
+        holeCorner.add(-(int) (holeSize / 2), -(int) (holeSize / 2), -(int) (holeSize / 2));
+
         for (int x = 0; x < holeSize; x++) {
             for (int y = 0; y < holeSize; y++) {
                 for (int z = 0; z < holeSize; z++) {
