@@ -60,6 +60,6 @@ public class DropPlayer {
     }
 
     public void setLevel(int level) {
-        this.deaths = level;
+        this.level = level;
     }
 }

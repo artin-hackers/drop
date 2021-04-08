@@ -43,6 +43,7 @@ public class Drop extends JavaPlugin implements Listener {
     private static final int DEFAULT_CLEAR_AREA = 100;
     private static final Location PORTAL_EXIT = null;
     private static BukkitTask matchTaskId;
+    private static BukkitTask delayedTaskId;
     private static Arena arena;
     private static int countDown;
 
@@ -262,9 +263,13 @@ public class Drop extends JavaPlugin implements Listener {
      * @param player Player to be restored
      */
     private void restorePlayer(Player player) {
-        player.setLevel(getDropPlayer(player.getUniqueId()).getLevel());
         player.setHealth(Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue());
         player.setWalkSpeed(DEFAULT_WALK_SPEED);
+
+        delayedTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
+            Bukkit.getScheduler().cancelTask(delayedTaskId.getTaskId());
+            player.setLevel(getDropPlayer(player.getUniqueId()).getLevel());
+        }, 1L, 1L);
     }
 
     /**
