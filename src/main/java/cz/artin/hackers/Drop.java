@@ -377,6 +377,7 @@ public class Drop extends JavaPlugin implements Listener {
                     if (dropPlayer.getName().equals(killer.getName())) {
                         dropPlayer.addKill();
                     }
+                    killer.setLevel(killer.getLevel() + 1);
                 }
                 Bukkit.broadcastMessage(dropPlayer.getName() + ": " + dropPlayer.getKills() + "/" + dropPlayer.getDeaths());
             }

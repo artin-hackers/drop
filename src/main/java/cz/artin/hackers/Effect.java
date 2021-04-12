@@ -69,7 +69,7 @@ public abstract class Effect {
     public static void creategauge(Player player) {
         int level = player.getLevel();
         int maxLineOfSight;
-        int wallCentre;
+        int wallSize;
 
         maxLineOfSight = 5 + 2 * level;
         if (maxLineOfSight > 25) {
@@ -77,23 +77,23 @@ public abstract class Effect {
         }
         List<Block> sight = player.getLineOfSight(null, maxLineOfSight);
 
-        wallCentre = 1 + level;
-        if (wallCentre > 5 ) {
-            wallCentre = 5;
+        wallSize = 1 + level;
+        if (wallSize > 5 ) {
+            wallSize = 5;
         }
 
-        Location holeCentre = sight.get(sight.size() - 1).getLocation();
-        Location holeCorner = holeCentre.clone();
-        holeCorner.add(-(int) (wallCentre / 2), -(int) (wallCentre / 2), -(int) (wallCentre / 2));
+        Location wallCentre = sight.get(sight.size() - 1).getLocation();
+        Location wallCorner = wallCentre.clone();
+        wallCorner.add(-(int) (wallSize / 2), -(int) (wallSize / 2), -(int) (wallSize / 2));
 
-        for (int x = -2; x <= 2; x++) {
-            for (int y = -2; y <= 2; y++) {
-                for (int z = -2; z <= 2; z++) {
+        for (int x = 0; x <= wallSize; x++) {
+            for (int y = 0; y <= wallSize; y++) {
+                for (int z = 0; z <= wallSize; z++) {
                     final Location wallBlock = new Location(
                             player.getWorld(),
-                            wallCentre.getX() + x,
-                            wallCentre.getY() + y,
-                            wallCentre.getZ() + z);
+                            wallCorner.getX() + x,
+                            wallCorner.getY() + y,
+                            wallCorner.getZ() + z);
                     wallBlock.getBlock().setType(Material.GOLD_BLOCK);
                 }
             }
@@ -132,9 +132,9 @@ public abstract class Effect {
                 for (int z = 0; z < holeSize; z++) {
                     final Location holeBlock = new Location(
                             player.getWorld(),
-                            holeCentre.getX() + x,
-                            holeCentre.getY() + y,
-                            holeCentre.getZ() + z);
+                            holeCorner.getX() + x,
+                            holeCorner.getY() + y,
+                            holeCorner.getZ() + z);
                     holeBlock.getBlock().setType(Material.AIR);
                 }
             }
