@@ -43,6 +43,7 @@ public class Drop extends JavaPlugin implements Listener {
     private static final int DEFAULT_CLEAR_AREA = 100;
     private static final Location PORTAL_EXIT = null;
     private static BukkitTask matchTaskId;
+    private static BukkitTask delayedTaskId;
     private static Arena arena;
     private static int countDown;
 
@@ -251,9 +252,9 @@ public class Drop extends JavaPlugin implements Listener {
      * @param player Player to be reset
      */
     private void resetPlayer(Player player) {
-        player.setLevel(DEFAULT_PLAYER_LEVEL);
         Objects.requireNonNull(getDropPlayer(player.getUniqueId())).setKills(0);
         Objects.requireNonNull(getDropPlayer(player.getUniqueId())).setDeaths(0);
+        Objects.requireNonNull(getDropPlayer(player.getUniqueId())).setLevel(DEFAULT_PLAYER_LEVEL);
     }
 
     /**
@@ -264,6 +265,11 @@ public class Drop extends JavaPlugin implements Listener {
     private void restorePlayer(Player player) {
         player.setHealth(Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue());
         player.setWalkSpeed(DEFAULT_WALK_SPEED);
+
+        delayedTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
+            Bukkit.getScheduler().cancelTask(delayedTaskId.getTaskId());
+            player.setLevel(getDropPlayer(player.getUniqueId()).getLevel());
+        }, 1L, 1L);
     }
 
     /**
@@ -361,12 +367,12 @@ public class Drop extends JavaPlugin implements Listener {
         Player player = event.getEntity().getPlayer();
         removePlayerInventory(player);
         if (player != null) {
+            getDropPlayer(player.getUniqueId()).setLevel(player.getLevel());
             for (DropPlayer dropPlayer : dropPlayers) {
                 if (dropPlayer.getName().equals(player.getName())) {
                     dropPlayer.addDeath();
                 }
                 Player killer = player.getKiller();
-                killer.setLevel(killer.getLevel() + 1);
                 if (killer != null) {
                     if (dropPlayer.getName().equals(killer.getName())) {
                         dropPlayer.addKill();

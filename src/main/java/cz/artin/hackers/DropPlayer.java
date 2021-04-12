@@ -10,6 +10,7 @@ public class DropPlayer {
     private final Player player;
     private int kills;
     private int deaths;
+    private int level;
 
     DropPlayer(Player player) {
         LOGGER.finer("DropPlayer");
@@ -52,5 +53,13 @@ public class DropPlayer {
 
     public void addDeath() {
         this.deaths++;
+    }
+
+    public int getLevel() {
+        return this.level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 }
