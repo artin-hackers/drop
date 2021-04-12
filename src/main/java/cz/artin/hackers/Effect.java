@@ -67,15 +67,25 @@ public abstract class Effect {
     }
 
     public static void creategauge(Player player) {
-        Location playerLocation = player.getLocation();
-        Location playergroundLocation = playerLocation.add(0, -1, 0);
-        Material material = playergroundLocation.getBlock().getType();
-        Set<Material> all_materials = new HashSet<>();
-        all_materials.add(Material.GOLD_ORE);
-        Collections.addAll(all_materials, Material.values());
-        List<Block> sight = player.getLineOfSight(all_materials, 10);
-        Location wallCentre = sight.get(sight.size() - 1).getLocation();
-        wallCentre.getBlock().setType(Material.GOLD_BLOCK);
+        int level = player.getLevel();
+        int maxLineOfSight;
+        int wallCentre;
+
+        maxLineOfSight = 5 + 2 * level;
+        if (maxLineOfSight > 25) {
+            maxLineOfSight = 25;
+        }
+        List<Block> sight = player.getLineOfSight(null, maxLineOfSight);
+
+        wallCentre = 1 + level;
+        if (wallCentre > 5 ) {
+            wallCentre = 5;
+        }
+
+        Location holeCentre = sight.get(sight.size() - 1).getLocation();
+        Location holeCorner = holeCentre.clone();
+        holeCorner.add(-(int) (wallCentre / 2), -(int) (wallCentre / 2), -(int) (wallCentre / 2));
+
         for (int x = -2; x <= 2; x++) {
             for (int y = -2; y <= 2; y++) {
                 for (int z = -2; z <= 2; z++) {
@@ -84,7 +94,7 @@ public abstract class Effect {
                             wallCentre.getX() + x,
                             wallCentre.getY() + y,
                             wallCentre.getZ() + z);
-                    wallBlock.getBlock().setType(material);
+                    wallBlock.getBlock().setType(Material.GOLD_BLOCK);
                 }
             }
         }
@@ -98,21 +108,34 @@ public abstract class Effect {
     }
 
     public static void createHole(Player player) {
-        List<Block> sight = player.getLineOfSight(null, 20);
+        int level = player.getLevel();
+        int maxLineOfSight;
+        int holeSize;
+
+        maxLineOfSight = 5 + 2 * level;
+        if (maxLineOfSight > 25) {
+            maxLineOfSight = 25;
+        }
+        List<Block> sight = player.getLineOfSight(null, maxLineOfSight);
+
+        holeSize = 1 + level;
+        if (holeSize > 5 ) {
+            holeSize = 5;
+        }
+
         Location holeCentre = sight.get(sight.size() - 1).getLocation();
-        if (player.getLevel() <= 3) {
-            holeCentre.getBlock().setType(Material.AIR);
-        } else {
-            for (int x = -1; x <= 1; x++) {
-                for (int y = -1; y <= 1; y++) {
-                    for (int z = -1; z <= 1; z++) {
-                        final Location wallBlock = new Location(
-                                player.getWorld(),
-                                holeCentre.getX() + x,
-                                holeCentre.getY() + y,
-                                holeCentre.getZ() + z);
-                        wallBlock.getBlock().setType(Material.AIR);
-                    }
+        Location holeCorner = holeCentre.clone();
+        holeCorner.add(-(int) (holeSize / 2), -(int) (holeSize / 2), -(int) (holeSize / 2));
+
+        for (int x = 0; x < holeSize; x++) {
+            for (int y = 0; y < holeSize; y++) {
+                for (int z = 0; z < holeSize; z++) {
+                    final Location holeBlock = new Location(
+                            player.getWorld(),
+                            holeCentre.getX() + x,
+                            holeCentre.getY() + y,
+                            holeCentre.getZ() + z);
+                    holeBlock.getBlock().setType(Material.AIR);
                 }
             }
         }
