@@ -3,6 +3,7 @@ package cz.artin.hackers;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.logging.Logger;
 
@@ -55,6 +56,9 @@ public class Mana extends Item {
                 LOGGER.warning("Unknown mana colour");
                 return false;
         }
+    }
+
+    public void interact(PlayerInteractEvent event) {
     }
 
     public void interact(Player player, Action action) {

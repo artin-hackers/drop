@@ -3,7 +3,6 @@ package cz.artin.hackers;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -18,12 +17,12 @@ public abstract class Item implements Drop.ItemAdd {
         LOGGER.finer("Item");
     }
 
-    public abstract void interact(Player player, Action action);
+    public abstract void interact(PlayerInteractEvent event);
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         if (isItemInMainHand(event.getPlayer(), this.getClass().getName())) {
-            interact(event.getPlayer(), event.getAction());
+            interact(event);
         }
     }
 
@@ -88,7 +87,7 @@ public abstract class Item implements Drop.ItemAdd {
             if (itemStack.getItemMeta() == null) {
                 continue;
             }
-            LOGGER.finest("Item.removeItems: material = " + itemStack.getType().toString() + ", displayName = " + itemStack.getItemMeta().getDisplayName());
+            LOGGER.finest("Item.removeItems: material = " + itemStack.getType() + ", displayName = " + itemStack.getItemMeta().getDisplayName());
             if (!itemStack.getItemMeta().getDisplayName().equals(displayName)) {
                 continue;
             }

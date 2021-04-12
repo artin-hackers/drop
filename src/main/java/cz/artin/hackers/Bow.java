@@ -6,8 +6,8 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
@@ -47,6 +47,6 @@ public class Bow extends Item implements Listener {
         }
     }
 
-    public void interact(Player player, Action action) {
+    public void interact(PlayerInteractEvent event) {
     }
 }

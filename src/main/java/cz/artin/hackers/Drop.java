@@ -30,7 +30,7 @@ public class Drop extends JavaPlugin implements Listener {
     private static final Logger LOGGER = Logger.getLogger(Drop.class.getName());
     private static final List<DropPlayer> dropPlayers = new ArrayList<>();
     private static final List<ItemAdd> weapons = new ArrayList<>();
-    private static final boolean DEBUG_STICK_ALLOWED = false;
+    private static final boolean DEBUG_STICK_ALLOWED = true;
     private static final int DEFAULT_START_TIME = 1000;
     private static final int DEFAULT_PLAYER_LEVEL = 0;
     private static final float DEFAULT_WALK_SPEED = 0.2F;
