@@ -269,6 +269,7 @@ public class Drop extends JavaPlugin implements Listener {
         delayedTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
             Bukkit.getScheduler().cancelTask(delayedTaskId.getTaskId());
             player.setLevel(getDropPlayer(player.getUniqueId()).getLevel());
+            LOGGER.info("Player, " + player.getName() + ", restored with level " + getDropPlayer(player.getUniqueId()).getLevel());
         }, 1L, 1L);
     }
 
@@ -367,7 +368,9 @@ public class Drop extends JavaPlugin implements Listener {
         Player player = event.getEntity().getPlayer();
         removePlayerInventory(player);
         if (player != null) {
+            LOGGER.info("Player, " + player.getName() + ", died with level " + player.getLevel());
             getDropPlayer(player.getUniqueId()).setLevel(player.getLevel());
+            LOGGER.info("Player, " + player.getName() + ", saved with level " + getDropPlayer(player.getUniqueId()).getLevel());
             for (DropPlayer dropPlayer : dropPlayers) {
                 if (dropPlayer.getName().equals(player.getName())) {
                     dropPlayer.addDeath();
