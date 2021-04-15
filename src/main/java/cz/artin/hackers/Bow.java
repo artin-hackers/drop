@@ -43,7 +43,7 @@ public class Bow extends Item implements Listener {
         if (event.getEntity() instanceof Arrow) {
             LOGGER.info("Shooter: " + ((Player) event.getEntity().getShooter()).getName());
             int level = ((Player) event.getEntity().getShooter()).getLevel();
-            setGroundFire(event.getEntity().getLocation(), level);
+//            setGroundFire(event.getEntity().getLocation(), level);
         }
     }
 
