@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
@@ -20,8 +21,9 @@ public class FilipWand extends Item implements Listener {
         add(player, Material.STICK, FilipWand.class.getName());
     }
 
-    @Override
-    public void interact(Player player, Action action) {
+    public void interact(PlayerInteractEvent event) {
+        Action action = event.getAction();
+        Player player = event.getPlayer();
         if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
             if (Effect.removeMana(player, Mana.Colour.GREEN, 1)) {
                 Effect.creategauge(player);

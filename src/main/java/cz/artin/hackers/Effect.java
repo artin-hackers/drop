@@ -3,10 +3,9 @@ package cz.artin.hackers;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Fireball;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
-import org.bukkit.entity.Snowball;
+import org.bukkit.entity.*;
+import org.bukkit.util.Vector;
+
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -139,5 +138,9 @@ public abstract class Effect {
                 }
             }
         }
+    }
+
+    public static void launchArrow(Player player) {
+        player.launchProjectile(Arrow.class);
     }
 }
