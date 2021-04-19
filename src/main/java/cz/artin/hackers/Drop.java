@@ -15,7 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -29,6 +28,7 @@ import java.util.logging.Logger;
 public class Drop extends JavaPlugin implements Listener {
     private static final Logger LOGGER = Logger.getLogger(Drop.class.getName());
     private static final List<DropPlayer> dropPlayers = new ArrayList<>();
+    private static final Hashtable<UUID, DropPlayer> dropPlayersNew = new Hashtable<>();
     private static final List<ItemAdd> weapons = new ArrayList<>();
     private static final boolean DEBUG_STICK_ALLOWED = true;
     private static final int DEFAULT_START_TIME = 1000;
@@ -55,6 +55,7 @@ public class Drop extends JavaPlugin implements Listener {
         LOGGER.info("Loading DROP plugin...");
 
         getServer().getPluginManager().registerEvents(this, this);
+        new DropListener(this, dropPlayersNew);
 
         Objects.requireNonNull(getServer().getWorld("world")).setTime(DEFAULT_START_TIME);
         Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
@@ -171,19 +172,20 @@ public class Drop extends JavaPlugin implements Listener {
      *
      * @param event Source event
      */
-    @EventHandler
-    public void onPlayerRespawn(PlayerRespawnEvent event) {
-        restorePlayer(event.getPlayer());
-        restorePlayerInventory(event.getPlayer());
-        event.setRespawnLocation(arena.getArenaCenter());
-    }
+//    @EventHandler
+//    public void onPlayerRespawn(PlayerRespawnEvent event) {
+//        LOGGER.info("onPlayerRespawn");
+//        restorePlayer(event.getPlayer());
+//        restorePlayerInventory(event.getPlayer());
+//        event.setRespawnLocation(arena.getArenaCenter());
+//    }
 
     /* Other */
 
     /**
      * Initialise the weapons wielded by the players
      */
-    private void initialiseWeapons() {
+    private void initialiseWeapons() { // TODO: Remove listeners
         if (DEBUG_STICK_ALLOWED) {
             weapons.add(new DebugStick(this));
         }
@@ -234,6 +236,7 @@ public class Drop extends JavaPlugin implements Listener {
      */
     private void registerPlayer(Player player) {
         dropPlayers.add(new DropPlayer(player));
+        dropPlayersNew.put(player.getUniqueId(), new DropPlayer(player));
         player.setGameMode(GameMode.SURVIVAL);
     }
 
@@ -244,6 +247,7 @@ public class Drop extends JavaPlugin implements Listener {
      */
     private void unregisterPlayer(Player player) {
         dropPlayers.removeIf(dropPlayer -> dropPlayer.getPlayer().equals(player));
+        dropPlayersNew.remove(player.getUniqueId());
     }
 
     /**
@@ -316,7 +320,7 @@ public class Drop extends JavaPlugin implements Listener {
      */
     private DropPlayer getDropPlayer(UUID uuid) {
         for (DropPlayer player : dropPlayers) {
-            if (player.getPlayerUuid() == uuid) {
+            if (player.getUuid() == uuid) {
                 return player;
             }
         }
@@ -363,31 +367,32 @@ public class Drop extends JavaPlugin implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent event) {
-        Player player = event.getEntity().getPlayer();
-        removePlayerInventory(player);
-        if (player != null) {
-            for (DropPlayer dropPlayer : dropPlayers) {
-                if (dropPlayer.getName().equals(player.getName())) {
-                    dropPlayer.addDeath();
-                    LOGGER.info("Player, " + player.getName() + ", died with level " + player.getLevel());
-                    getDropPlayer(player.getUniqueId()).setLevel(player.getLevel());
-                    LOGGER.info("Player, " + player.getName() + ", saved with level " + getDropPlayer(player.getUniqueId()).getLevel());
-                    Player killer = player.getKiller();
-                    if (killer != null) {
-                        if (dropPlayer.getName().equals(killer.getName())) {
-                            dropPlayer.addKill();
-                            LOGGER.info("Player, " + killer.getName() + ", killed someone. Increasing the level from " + killer.getLevel() + " to " + (killer.getLevel() + 1));
-                            killer.setLevel(killer.getLevel() + 1);
-                            LOGGER.info("Player, " + killer.getName() + " has now level " + killer.getLevel());
-                        }
-                    }
-                    Bukkit.broadcastMessage(dropPlayer.getName() + ": " + dropPlayer.getKills() + "/" + dropPlayer.getDeaths());
-                }
-            }
-        }
-    }
+//    @EventHandler
+//    public void onPlayerDeath(PlayerDeathEvent event) {
+//        LOGGER.info("onPlayerDeath");
+//        Player player = event.getEntity().getPlayer();
+//        removePlayerInventory(player);
+//        if (player != null) {
+//            for (DropPlayer dropPlayer : dropPlayers) {
+//                if (dropPlayer.getName().equals(player.getName())) {
+//                    dropPlayer.addDeath();
+//                    LOGGER.info("Player, " + player.getName() + ", died with level " + player.getLevel());
+//                    getDropPlayer(player.getUniqueId()).setLevel(player.getLevel());
+//                    LOGGER.info("Player, " + player.getName() + ", saved with level " + getDropPlayer(player.getUniqueId()).getLevel());
+//                    Player killer = player.getKiller();
+//                    if (killer != null) {
+//                        if (dropPlayer.getName().equals(killer.getName())) {
+//                            dropPlayer.addKill();
+//                            LOGGER.info("Player, " + killer.getName() + ", killed someone. Increasing the level from " + killer.getLevel() + " to " + (killer.getLevel() + 1));
+//                            killer.setLevel(killer.getLevel() + 1);
+//                            LOGGER.info("Player, " + killer.getName() + " has now level " + killer.getLevel());
+//                        }
+//                    }
+//                    Bukkit.broadcastMessage(dropPlayer.getName() + ": " + dropPlayer.getKills() + "/" + dropPlayer.getDeaths());
+//                }
+//            }
+//        }
+//    }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {

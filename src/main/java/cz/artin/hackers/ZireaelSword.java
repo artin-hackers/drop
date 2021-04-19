@@ -14,7 +14,7 @@ public class ZireaelSword extends Item implements Listener {
 
     ZireaelSword(JavaPlugin plugin) {
         LOGGER.finer("ZireaelSword");
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+//        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public void add(Player player) {

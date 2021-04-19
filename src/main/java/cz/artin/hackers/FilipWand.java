@@ -14,7 +14,7 @@ public class FilipWand extends Item implements Listener {
 
     FilipWand(JavaPlugin plugin) {
         LOGGER.finer("FilipWand");
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+//        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public void add(Player player) {

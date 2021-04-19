@@ -19,12 +19,12 @@ public abstract class Item implements Drop.ItemAdd {
 
     public abstract void interact(PlayerInteractEvent event);
 
-    @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
-        if (isItemInMainHand(event.getPlayer(), this.getClass().getName())) {
-            interact(event);
-        }
-    }
+//    @EventHandler
+//    public void onInteract(PlayerInteractEvent event) {
+//        if (isItemInMainHand(event.getPlayer(), this.getClass().getName())) {
+//            interact(event);
+//        }
+//    }
 
     public void add(Player player, Material material, String displayName) {
         add(player, material, displayName, 1, 64);

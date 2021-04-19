@@ -14,7 +14,7 @@ public class SwordOfTheDamned extends Item implements Listener {
 
     SwordOfTheDamned(JavaPlugin plugin) {
         LOGGER.finer("SwordOfTheDamned");
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+//        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public void add(Player player) {

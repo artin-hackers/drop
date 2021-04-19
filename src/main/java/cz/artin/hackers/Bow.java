@@ -17,7 +17,7 @@ public class Bow extends Item implements Listener {
 
     Bow(JavaPlugin plugin) {
         LOGGER.finer("Bow");
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+//        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public void add(Player player) {
@@ -38,14 +38,14 @@ public class Bow extends Item implements Listener {
         return true;
     }
 
-    @EventHandler
-    public void onHit(ProjectileHitEvent event) {
-        if (event.getEntity() instanceof Arrow) {
-            LOGGER.info("Shooter: " + ((Player) event.getEntity().getShooter()).getName());
-            int level = ((Player) event.getEntity().getShooter()).getLevel();
-//            setGroundFire(event.getEntity().getLocation(), level);
-        }
-    }
+//    @EventHandler
+//    public void onHit(ProjectileHitEvent event) {
+//        if (event.getEntity() instanceof Arrow) {
+//            LOGGER.info("Shooter: " + ((Player) event.getEntity().getShooter()).getName());
+//            int level = ((Player) event.getEntity().getShooter()).getLevel();
+////            setGroundFire(event.getEntity().getLocation(), level);
+//        }
+//    }
 
     public void interact(PlayerInteractEvent event) {
     }

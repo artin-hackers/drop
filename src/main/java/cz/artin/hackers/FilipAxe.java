@@ -14,7 +14,7 @@ public class FilipAxe extends Item implements Listener {
 
     FilipAxe(JavaPlugin plugin) {
         LOGGER.finer("FilipAxe");
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+//        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public void add(Player player) {

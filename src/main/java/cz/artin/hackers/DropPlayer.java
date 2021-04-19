@@ -17,13 +17,14 @@ public class DropPlayer {
         this.player = player;
         this.kills = 0;
         this.deaths = 0;
+        this.level = 0;
     }
 
     public Player getPlayer() {
         return this.player;
     }
 
-    public UUID getPlayerUuid() {
+    public UUID getUuid() {
         return this.player.getUniqueId();
     }
 
@@ -61,5 +62,9 @@ public class DropPlayer {
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    public void changeLevel(int change) {
+        this.level += change;
     }
 }

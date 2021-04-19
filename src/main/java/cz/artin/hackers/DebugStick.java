@@ -14,7 +14,7 @@ public class DebugStick extends Item implements Listener {
 
     DebugStick(JavaPlugin plugin) {
         LOGGER.finer("DebugStick");
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+//        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public void add(Player player) {

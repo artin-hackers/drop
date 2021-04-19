@@ -20,7 +20,7 @@ public class FrostAxe extends Item implements Listener {
 
     FrostAxe(JavaPlugin plugin) {
         LOGGER.finer("FrostAxe");
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+//        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public void add(Player player) {
@@ -41,41 +41,41 @@ public class FrostAxe extends Item implements Listener {
         return true;
     }
 
-    @EventHandler
-    public void onHit(ProjectileHitEvent event) {
-        if (event.getEntity() instanceof Snowball) {
-            LOGGER.info("Snowball hit something");
-            if (event.getHitBlock() != null) {
-                setGroundFreeze(event.getHitBlock().getLocation(), 2);
-            } else if (event.getHitEntity() != null) {
-                Location hitEntityLocation = event.getHitEntity().getLocation();
-                for (int x = -1; x <= 1; x++) {
-                    for (int z = -1; z <= 1; z++) {
-                        final Location iceBlock = new Location(
-                                hitEntityLocation.getWorld(),
-                                hitEntityLocation.getX() + x,
-                                hitEntityLocation.getY() - 1,
-                                hitEntityLocation.getZ() + z);
-                        iceBlock.getBlock().setType(Material.ICE);
-                    }
-                }
-                for (int x = -1; x <= 1; x++) {
-                    for (int y = 0; y <= 2; y++) {
-                        for (int z = -1; z <= 1; z++) {
-                            if (!(x == 0 && z == 0)) {
-                                final Location iceBlock = new Location(
-                                        hitEntityLocation.getWorld(),
-                                        hitEntityLocation.getX() + x,
-                                        hitEntityLocation.getY() + y,
-                                        hitEntityLocation.getZ() + z);
-                                iceBlock.getBlock().setType(Material.ICE);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    @EventHandler
+//    public void onHit(ProjectileHitEvent event) {
+//        if (event.getEntity() instanceof Snowball) {
+//            LOGGER.info("Snowball hit something");
+//            if (event.getHitBlock() != null) {
+//                setGroundFreeze(event.getHitBlock().getLocation(), 2);
+//            } else if (event.getHitEntity() != null) {
+//                Location hitEntityLocation = event.getHitEntity().getLocation();
+//                for (int x = -1; x <= 1; x++) {
+//                    for (int z = -1; z <= 1; z++) {
+//                        final Location iceBlock = new Location(
+//                                hitEntityLocation.getWorld(),
+//                                hitEntityLocation.getX() + x,
+//                                hitEntityLocation.getY() - 1,
+//                                hitEntityLocation.getZ() + z);
+//                        iceBlock.getBlock().setType(Material.ICE);
+//                    }
+//                }
+//                for (int x = -1; x <= 1; x++) {
+//                    for (int y = 0; y <= 2; y++) {
+//                        for (int z = -1; z <= 1; z++) {
+//                            if (!(x == 0 && z == 0)) {
+//                                final Location iceBlock = new Location(
+//                                        hitEntityLocation.getWorld(),
+//                                        hitEntityLocation.getX() + x,
+//                                        hitEntityLocation.getY() + y,
+//                                        hitEntityLocation.getZ() + z);
+//                                iceBlock.getBlock().setType(Material.ICE);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     public void interact(PlayerInteractEvent event) {
         ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
