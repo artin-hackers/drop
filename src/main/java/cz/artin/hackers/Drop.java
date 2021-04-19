@@ -368,22 +368,23 @@ public class Drop extends JavaPlugin implements Listener {
         Player player = event.getEntity().getPlayer();
         removePlayerInventory(player);
         if (player != null) {
-            LOGGER.info("Player, " + player.getName() + ", died with level " + player.getLevel());
-            getDropPlayer(player.getUniqueId()).setLevel(player.getLevel());
-            LOGGER.info("Player, " + player.getName() + ", saved with level " + getDropPlayer(player.getUniqueId()).getLevel());
             for (DropPlayer dropPlayer : dropPlayers) {
                 if (dropPlayer.getName().equals(player.getName())) {
                     dropPlayer.addDeath();
-                }
-                Player killer = player.getKiller();
-                if (killer != null) {
-                    if (dropPlayer.getName().equals(killer.getName())) {
-                        dropPlayer.addKill();
+                    LOGGER.info("Player, " + player.getName() + ", died with level " + player.getLevel());
+                    getDropPlayer(player.getUniqueId()).setLevel(player.getLevel());
+                    LOGGER.info("Player, " + player.getName() + ", saved with level " + getDropPlayer(player.getUniqueId()).getLevel());
+                    Player killer = player.getKiller();
+                    if (killer != null) {
+                        if (dropPlayer.getName().equals(killer.getName())) {
+                            dropPlayer.addKill();
+                            LOGGER.info("Player, " + killer.getName() + ", killed someone. Increasing the level from " + killer.getLevel() + " to " + (killer.getLevel() + 1));
+                            killer.setLevel(killer.getLevel() + 1);
+                            LOGGER.info("Player, " + killer.getName() + " has now level " + killer.getLevel());
+                        }
                     }
-                    LOGGER.info("Player, " + killer.getName() + ", killed somebody. Increasing level from " + killer.getLevel());
-                    killer.setLevel(killer.getLevel() + 1);
+                    Bukkit.broadcastMessage(dropPlayer.getName() + ": " + dropPlayer.getKills() + "/" + dropPlayer.getDeaths());
                 }
-                Bukkit.broadcastMessage(dropPlayer.getName() + ": " + dropPlayer.getKills() + "/" + dropPlayer.getDeaths());
             }
         }
     }
