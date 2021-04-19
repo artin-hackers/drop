@@ -586,4 +586,10 @@ public class Drop extends JavaPlugin implements Listener {
     public interface ItemAdd {
         void add(Player player);
     }
+
+    // Disable orb experience
+    @EventHandler
+    public void onPlayerExpChangeEvent(PlayerExpChangeEvent event) {
+        event.setAmount(0);
+    }
 }
