@@ -47,7 +47,9 @@ public class Bow extends Item implements Listener {
             Arrow arrow = (Arrow) event.getEntity();
             arrow.setDamage(1.0);
             arrow.setCritical(false);
-            arrow.setPierceLevel(1);
+            arrow.setPierceLevel(0);
+            arrow.setKnockbackStrength(0);
+            arrow.setShotFromCrossbow(false);
         }
     }
 
