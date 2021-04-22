@@ -4,7 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
-import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -44,6 +43,8 @@ public abstract class Effect {
     }
 
     public static void launchFireball(Player player) {
+        // Fireball fireball = Fireball();
+        // player.launchProjectile(fireball);
         player.launchProjectile(Fireball.class);
     }
 
@@ -70,24 +71,24 @@ public abstract class Effect {
         int maxLineOfSight;
         int wallSize;
 
-        maxLineOfSight = 5 + 2 * level;
-        if (maxLineOfSight > 25) {
-            maxLineOfSight = 25;
-        }
+//        maxLineOfSight = 5 + 2 * level;
+//        if (maxLineOfSight > 25) {
+            maxLineOfSight = 10;
+//        }
         List<Block> sight = player.getLineOfSight(null, maxLineOfSight);
 
-        wallSize = 1 + level;
-        if (wallSize > 5 ) {
-            wallSize = 5;
-        }
+//        wallSize = 1 + level;
+//        if (wallSize > 5) {
+            wallSize = 3;
+//        }
 
         Location wallCentre = sight.get(sight.size() - 1).getLocation();
         Location wallCorner = wallCentre.clone();
         wallCorner.add(-(int) (wallSize / 2), -(int) (wallSize / 2), -(int) (wallSize / 2));
 
-        for (int x = 0; x <= wallSize; x++) {
-            for (int y = 0; y <= wallSize; y++) {
-                for (int z = 0; z <= wallSize; z++) {
+        for (int x = 0; x < wallSize; x++) {
+            for (int y = 0; y < wallSize; y++) {
+                for (int z = 0; z < wallSize; z++) {
                     final Location wallBlock = new Location(
                             player.getWorld(),
                             wallCorner.getX() + x,
@@ -111,16 +112,16 @@ public abstract class Effect {
         int maxLineOfSight;
         int holeSize;
 
-        maxLineOfSight = 5 + 2 * level;
-        if (maxLineOfSight > 25) {
-            maxLineOfSight = 25;
-        }
+        // maxLineOfSight = 5 + 2 * level;
+        // if (maxLineOfSight > 25) {
+            maxLineOfSight = 10;
+        // }
         List<Block> sight = player.getLineOfSight(null, maxLineOfSight);
 
-        holeSize = 1 + level;
-        if (holeSize > 5 ) {
-            holeSize = 5;
-        }
+        // holeSize = 1 + level;
+        // if (holeSize > 5 ) {
+            holeSize = 3;
+        // }
 
         Location holeCentre = sight.get(sight.size() - 1).getLocation();
         Location holeCorner = holeCentre.clone();
