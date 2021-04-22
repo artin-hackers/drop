@@ -45,7 +45,9 @@ public class Bow extends Item implements Listener {
             int level = ((Player) event.getEntity().getShooter()).getLevel();
 //            setGroundFire(event.getEntity().getLocation(), level);
             Arrow arrow = (Arrow) event.getEntity();
-            arrow.setDamage(1.0); 
+            arrow.setDamage(1.0);
+            arrow.setCritical(false);
+            arrow.setPierceLevel(1);
         }
     }
 
