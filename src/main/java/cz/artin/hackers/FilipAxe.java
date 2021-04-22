@@ -25,9 +25,7 @@ public class FilipAxe extends Item implements Listener {
         Action action = event.getAction();
         Player player = event.getPlayer();
         if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
-            if (Effect.removeMana(player, Mana.Colour.BLUE, 1)) {
-                Effect.launchFireball(player);
-            }
+            Effect.launchFireball(player);
         }
     }
 }

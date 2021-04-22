@@ -3,9 +3,10 @@ package cz.artin.hackers;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.*;
-import org.bukkit.util.Vector;
-
+import org.bukkit.entity.Fireball;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Zombie;
+import org.bukkit.entity.Snowball;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -44,7 +45,8 @@ public abstract class Effect {
     }
 
     public static void launchFireball(Player player) {
-        player.launchProjectile(Fireball.class);
+        Fireball fireball = Fireball();
+        player.launchProjectile(fireball);
     }
 
     public static void launchSnowball(Player player) {
@@ -66,34 +68,24 @@ public abstract class Effect {
     }
 
     public static void creategauge(Player player) {
-        int level = player.getLevel();
-        int maxLineOfSight;
-        int wallSize;
-
-        maxLineOfSight = 5 + 2 * level;
-        if (maxLineOfSight > 25) {
-            maxLineOfSight = 25;
-        }
-        List<Block> sight = player.getLineOfSight(null, maxLineOfSight);
-
-        wallSize = 1 + level;
-        if (wallSize > 5 ) {
-            wallSize = 5;
-        }
-
+        Location playerLocation = player.getLocation();
+        Location playergroundLocation = playerLocation.add(0, -1, 0);
+        Material material = playergroundLocation.getBlock().getType();
+        Set<Material> all_materials = new HashSet<>();
+        all_materials.add(Material.GOLD_ORE);
+        Collections.addAll(all_materials, Material.values());
+        List<Block> sight = player.getLineOfSight(all_materials, 10);
         Location wallCentre = sight.get(sight.size() - 1).getLocation();
-        Location wallCorner = wallCentre.clone();
-        wallCorner.add(-(int) (wallSize / 2), -(int) (wallSize / 2), -(int) (wallSize / 2));
-
-        for (int x = 0; x <= wallSize; x++) {
-            for (int y = 0; y <= wallSize; y++) {
-                for (int z = 0; z <= wallSize; z++) {
+        wallCentre.getBlock().setType(Material.GOLD_BLOCK);
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                for (int z = -1; z <= 1; z++) {
                     final Location wallBlock = new Location(
                             player.getWorld(),
-                            wallCorner.getX() + x,
-                            wallCorner.getY() + y,
-                            wallCorner.getZ() + z);
-                    wallBlock.getBlock().setType(Material.GOLD_BLOCK);
+                            wallCentre.getX() + x,
+                            wallCentre.getY() + y,
+                            wallCentre.getZ() + z);
+                    wallBlock.getBlock().setType(material);
                 }
             }
         }
@@ -111,16 +103,16 @@ public abstract class Effect {
         int maxLineOfSight;
         int holeSize;
 
-        maxLineOfSight = 5 + 2 * level;
-        if (maxLineOfSight > 25) {
-            maxLineOfSight = 25;
-        }
+        // maxLineOfSight = 5 + 2 * level;
+        // if (maxLineOfSight > 25) {
+            maxLineOfSight = 10;
+        // }
         List<Block> sight = player.getLineOfSight(null, maxLineOfSight);
 
-        holeSize = 1 + level;
-        if (holeSize > 5 ) {
-            holeSize = 5;
-        }
+        // holeSize = 1 + level;
+        // if (holeSize > 5 ) {
+            holeSize = 2;
+        // }
 
         Location holeCentre = sight.get(sight.size() - 1).getLocation();
         Location holeCorner = holeCentre.clone();
@@ -138,9 +130,5 @@ public abstract class Effect {
                 }
             }
         }
-    }
-
-    public static void launchArrow(Player player) {
-        player.launchProjectile(Arrow.class);
     }
 }
