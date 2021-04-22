@@ -45,8 +45,9 @@ public abstract class Effect {
     }
 
     public static void launchFireball(Player player) {
-        Fireball fireball = Fireball();
-        player.launchProjectile(fireball);
+        // Fireball fireball = Fireball();
+        // player.launchProjectile(fireball);
+        player.launchProjectile(Fireball.class);
     }
 
     public static void launchSnowball(Player player) {
