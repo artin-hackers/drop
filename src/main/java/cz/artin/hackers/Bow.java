@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
@@ -43,14 +44,21 @@ public class Bow extends Item implements Listener {
         if (event.getEntity() instanceof Arrow) {
             LOGGER.info("Shooter: " + ((Player) event.getEntity().getShooter()).getName());
             int level = ((Player) event.getEntity().getShooter()).getLevel();
-//            if(ItemInMainHand = Bow)
-//            setGroundFire(event.getEntity().getLocation());
             Arrow arrow = (Arrow) event.getEntity();
             arrow.setDamage(0.25);
             arrow.setCritical(false);
             arrow.setPierceLevel(0);
             arrow.setKnockbackStrength(0);
             arrow.setShotFromCrossbow(false);
+            Player shooter = (Player) event.getEntity().getShooter();
+            if(shooter !=null){
+                ItemStack itemInMainHand = shooter.getInventory().getItemInMainHand();
+                if (itemInMainHand.getItemMeta() != null) {
+                    if(itemInMainHand.getItemMeta().getDisplayName().equals("cz.artin.hackers.Bow")) {
+                        setGroundFire(event.getEntity().getLocation(), 1);
+                    }
+                }
+            }
         }
     }
 
