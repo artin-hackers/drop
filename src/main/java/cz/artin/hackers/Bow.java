@@ -42,28 +42,40 @@ public class Bow extends Item implements Listener {
     @EventHandler
     public void onHit(ProjectileHitEvent event) {
         if (event.getEntity() instanceof Arrow) {
-//            LOGGER.info("Shooter: " + ((Player) event.getEntity().getShooter()).getName());
-//            int level = ((Player) event.getEntity().getShooter()).getLevel();
-//            Arrow arrow = (Arrow) event.getEntity();
-//            arrow.setDamage(0.25);
-//            arrow.setCritical(false);
-//            arrow.setPierceLevel(0);
-//            arrow.setKnockbackStrength(0);
-//            arrow.setShotFromCrossbow(false);
             Player shooter = (Player) event.getEntity().getShooter();
-            if(shooter !=null){
+            if (shooter != null) {
                 ItemStack itemInMainHand = shooter.getInventory().getItemInMainHand();
-                if (itemInMainHand.getItemMeta() != null) {
-                    if(itemInMainHand.getItemMeta().getDisplayName().equals("cz.artin.hackers.Bow")) {
-                        setGroundFire(event.getEntity().getLocation(), 1);
-                    }
+                if (itemInMainHand.getItemMeta() != null && itemInMainHand.getItemMeta().getDisplayName().equals("cz.artin.hackers.Bow")) {
+                    setGroundFire(event.getEntity().getLocation(), 1);
+                } else {
+                    Arrow arrow = (Arrow) event.getEntity();
+                    arrow.setDamage(0.25);
+                    arrow.setCritical(false);
+                    arrow.setPierceLevel(0);
+                    arrow.setKnockbackStrength(0);
+                    arrow.setShotFromCrossbow(false);
                 }
             }
         }
     }
 
-
-
     public void interact(PlayerInteractEvent event) {
     }
 }
+
+
+// 1 0
+// True false
+
+// or  ||
+// and &&
+
+// 0 || 0 = 0
+// 0 || 1 = 1
+// 1 || 0 = 1
+// 1 || 1 = 1
+
+// 0 && 0 = 0
+// 0 && 1 = 0
+// 1 && 0 = 0
+// 1 && 1 = 1
