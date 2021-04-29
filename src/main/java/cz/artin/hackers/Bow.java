@@ -42,14 +42,14 @@ public class Bow extends Item implements Listener {
     @EventHandler
     public void onHit(ProjectileHitEvent event) {
         if (event.getEntity() instanceof Arrow) {
-            LOGGER.info("Shooter: " + ((Player) event.getEntity().getShooter()).getName());
-            int level = ((Player) event.getEntity().getShooter()).getLevel();
-            Arrow arrow = (Arrow) event.getEntity();
-            arrow.setDamage(0.25);
-            arrow.setCritical(false);
-            arrow.setPierceLevel(0);
-            arrow.setKnockbackStrength(0);
-            arrow.setShotFromCrossbow(false);
+//            LOGGER.info("Shooter: " + ((Player) event.getEntity().getShooter()).getName());
+//            int level = ((Player) event.getEntity().getShooter()).getLevel();
+//            Arrow arrow = (Arrow) event.getEntity();
+//            arrow.setDamage(0.25);
+//            arrow.setCritical(false);
+//            arrow.setPierceLevel(0);
+//            arrow.setKnockbackStrength(0);
+//            arrow.setShotFromCrossbow(false);
             Player shooter = (Player) event.getEntity().getShooter();
             if(shooter !=null){
                 ItemStack itemInMainHand = shooter.getInventory().getItemInMainHand();
@@ -61,6 +61,8 @@ public class Bow extends Item implements Listener {
             }
         }
     }
+
+
 
     public void interact(PlayerInteractEvent event) {
     }
