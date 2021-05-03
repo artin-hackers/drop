@@ -80,7 +80,16 @@ public abstract class Effect {
 //        wallSize = 1 + level;
 //        if (wallSize > 5) {
             wallSize = 3;
-//        }
+//
+        Location playerLocation  = Player.getLocation();
+        playerLocation.add(0,-1,0);
+        material = playerLocation.getBlock().getType();
+        wallBlock.getBlock().setType(material);
+
+        // 1. Get player location: playerLocation = player.getLocation()
+        // 2. Get one block below: playerLocation.add(0, -1, 0)
+        // 3. Get material from the block: material = playerLocation.getBlock().getType()
+        // 4. Use material instead of gold: wallBlock.getBlock().setType(Material.GOLD_BLOCK) -> wallBlock.getBlock().setType(material)
 
         Location wallCentre = sight.get(sight.size() - 1).getLocation();
         Location wallCorner = wallCentre.clone();

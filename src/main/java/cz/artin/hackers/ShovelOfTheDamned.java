@@ -9,16 +9,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
 
-public class SwordOfTheDamned extends Item implements Listener {
+public class ShovelOfTheDamned extends Item implements Listener {
     private static final Logger LOGGER = Logger.getLogger(ZireaelSword.class.getName());
 
-    SwordOfTheDamned(JavaPlugin plugin) {
-        LOGGER.finer("SwordOfTheDamned");
+    ShovelOfTheDamned(JavaPlugin plugin) {
+        LOGGER.finer("ShovelOfTheDamned");
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public void add(Player player) {
-        add(player, Material.DIAMOND_SHOVEL, SwordOfTheDamned.class.getName());
+        add(player, Material.DIAMOND_SHOVEL, ShovelOfTheDamned.class.getName());
     }
 
     public void interact(PlayerInteractEvent event) {
@@ -26,7 +26,8 @@ public class SwordOfTheDamned extends Item implements Listener {
         Player player = event.getPlayer();
         if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
             if (Effect.removeMana(player, Mana.Colour.BLACK, 1)) {
-                Effect.spawnZombies(player);
+               // Effect.spawnZombies(player);
+                Effect.launchSnowball(player);
             } else {
                 player.sendMessage("Not enough mana");
             }
