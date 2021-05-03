@@ -192,7 +192,7 @@ public class Drop extends JavaPlugin implements Listener {
         weapons.add(new FilipWand(this));
         weapons.add(new Trident(this));
         weapons.add(new Bow(this));
-        weapons.add(new SwordOfTheDamned(this));
+        weapons.add(new ShovelOfTheDamned(this));
         weapons.add(new FrostAxe(this));
     }
 

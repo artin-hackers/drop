@@ -80,7 +80,16 @@ public abstract class Effect {
 //        wallSize = 1 + level;
 //        if (wallSize > 5) {
             wallSize = 3;
-//        }
+//
+        Location playerLocation  = player.getLocation();
+        playerLocation.add(0,-1,0);
+        Material material = playerLocation.getBlock().getType();
+        // wallBlock.getBlock().setType(material);
+
+        // 1. Get player location: playerLocation = player.getLocation()
+        // 2. Get one block below: playerLocation.add(0, -1, 0)
+        // 3. Get material from the block: material = playerLocation.getBlock().getType()
+        // 4. Use material instead of gold: wallBlock.getBlock().setType(Material.GOLD_BLOCK) -> wallBlock.getBlock().setType(material)
 
         Location wallCentre = sight.get(sight.size() - 1).getLocation();
         Location wallCorner = wallCentre.clone();
@@ -94,7 +103,7 @@ public abstract class Effect {
                             wallCorner.getX() + x,
                             wallCorner.getY() + y,
                             wallCorner.getZ() + z);
-                    wallBlock.getBlock().setType(Material.GOLD_BLOCK);
+                    wallBlock.getBlock().setType(material);
                 }
             }
         }
@@ -105,6 +114,13 @@ public abstract class Effect {
         List<Block> sight = player.getLineOfSight(null, distance);
         Location zombieLocation = sight.get(sight.size() - 1).getLocation();
         player.getWorld().spawn(zombieLocation, Zombie.class);
+        
+    }
+
+    public static void spawnZombies(Location location) {
+        Location zombieLocation = location.clone();
+        zombieLocation.add(0,1,0);
+        zombieLocation.getWorld().spawn(zombieLocation, Zombie.class);    
     }
 
     public static void createHole(Player player) {
