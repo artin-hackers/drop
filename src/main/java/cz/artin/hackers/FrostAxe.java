@@ -89,7 +89,7 @@ public class FrostAxe extends Item implements Listener {
             if (itemInMainHand.getItemMeta().getDisplayName().equals(this.getClass().getName())) {
                 Action action = event.getAction();
                 if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
-                    if (Effect.removeMana(event.getPlayer(), Mana.Colour.GREEN, 1)) {
+                    if (Effect.removeMana(event.getPlayer(), Mana.Colour.WHITE, 1)) {
                         Effect.launchSnowball(event.getPlayer());
 
                     }

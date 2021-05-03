@@ -114,6 +114,13 @@ public abstract class Effect {
         List<Block> sight = player.getLineOfSight(null, distance);
         Location zombieLocation = sight.get(sight.size() - 1).getLocation();
         player.getWorld().spawn(zombieLocation, Zombie.class);
+        
+    }
+
+    public static void spawnZombies(Location location) {
+        Location zombieLocation = location.clone();
+        zombieLocation.add(0,1,0);
+        zombieLocation.getWorld().spawn(zombieLocation, Zombie.class);    
     }
 
     public static void createHole(Player player) {
