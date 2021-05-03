@@ -62,20 +62,3 @@ public class Bow extends Item implements Listener {
     public void interact(PlayerInteractEvent event) {
     }
 }
-
-
-// 1 0
-// True false
-
-// or  ||
-// and &&
-
-// 0 || 0 = 0
-// 0 || 1 = 1
-// 1 || 0 = 1
-// 1 || 1 = 1
-
-// 0 && 0 = 0
-// 0 && 1 = 0
-// 1 && 0 = 0
-// 1 && 1 = 1

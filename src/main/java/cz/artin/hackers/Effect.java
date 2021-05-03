@@ -81,10 +81,10 @@ public abstract class Effect {
 //        if (wallSize > 5) {
             wallSize = 3;
 //
-        Location playerLocation  = Player.getLocation();
+        Location playerLocation  = player.getLocation();
         playerLocation.add(0,-1,0);
-        material = playerLocation.getBlock().getType();
-        wallBlock.getBlock().setType(material);
+        Material material = playerLocation.getBlock().getType();
+        // wallBlock.getBlock().setType(material);
 
         // 1. Get player location: playerLocation = player.getLocation()
         // 2. Get one block below: playerLocation.add(0, -1, 0)
@@ -103,7 +103,7 @@ public abstract class Effect {
                             wallCorner.getX() + x,
                             wallCorner.getY() + y,
                             wallCorner.getZ() + z);
-                    wallBlock.getBlock().setType(Material.GOLD_BLOCK);
+                    wallBlock.getBlock().setType(material);
                 }
             }
         }
