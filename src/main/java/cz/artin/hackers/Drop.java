@@ -46,6 +46,8 @@ public class Drop extends JavaPlugin implements Listener {
     private static BukkitTask delayedTaskId;
     private static Arena arena;
     private static int countDown;
+    private static int timer;
+    private static int currentLevel = 0;
 
     /**
      * Server initialisation
@@ -200,8 +202,16 @@ public class Drop extends JavaPlugin implements Listener {
      * Initialise the resource generator
      */
     private void initialiseResourceGenerator() { // TODO: Move to DropPlayer, every player will have his own timer
+        timer = 0;
+        currentLevel = 0;
         new BukkitRunnable() {
             public void run() {
+                if (timer % 2 == 0) {
+                    currentLevel++;
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        player.setLevel(currentLevel);
+                    }
+                }
                 if (matchTaskId != null) { // TODO: Create Match class
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         Effect.addMana(player, Mana.Colour.BLACK, 1);
@@ -212,6 +222,7 @@ public class Drop extends JavaPlugin implements Listener {
                     }
                     healPlayer(); // TODO: Refactor
                 }
+                timer++;
             }
         }.runTaskTimer(this, 20 * 5L, 20 * 5L);
     }
@@ -266,11 +277,10 @@ public class Drop extends JavaPlugin implements Listener {
         player.setHealth(Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue());
         player.setWalkSpeed(DEFAULT_WALK_SPEED);
 
-//        delayedTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
-//            Bukkit.getScheduler().cancelTask(delayedTaskId.getTaskId());
-//            player.setLevel(getDropPlayer(player.getUniqueId()).getLevel());
-//            LOGGER.info("Player, " + player.getName() + ", restored with level " + getDropPlayer(player.getUniqueId()).getLevel());
-//        }, 1L, 1L);
+        delayedTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
+            Bukkit.getScheduler().cancelTask(delayedTaskId.getTaskId());
+            player.setLevel(currentLevel);
+        }, 20 * 2L, 1L);
     }
 
     /**
@@ -415,6 +425,11 @@ public class Drop extends JavaPlugin implements Listener {
     }
 
     private boolean startMatch(CommandSender commandSender, String[] args) {
+        currentLevel = 0;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.setLevel(currentLevel);
+        }
+
         if (!(commandSender instanceof Player)) {
             return false;
         }
