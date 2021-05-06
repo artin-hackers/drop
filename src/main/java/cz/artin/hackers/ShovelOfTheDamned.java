@@ -1,5 +1,6 @@
 package cz.artin.hackers;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
@@ -33,10 +34,22 @@ public class ShovelOfTheDamned extends Item implements Listener {
                 ItemStack itemInMainHand = shooter.getInventory().getItemInMainHand();
                 if (itemInMainHand.getItemMeta() != null && itemInMainHand.getItemMeta().getDisplayName().equals("cz.artin.hackers.ShovelOfTheDamned")) {
                     LOGGER.info("ShovelOfTheDamned");
+                    Location zombieLocation = null;
                     if (event.getHitBlock() != null) {
-                        Effect.spawnZombies(event.getHitBlock().getLocation());
+                        zombieLocation = event.getHitBlock().getLocation().clone();
                     } else if (event.getHitEntity() != null) {
-                        Effect.spawnZombies(event.getHitEntity().getLocation());
+                        zombieLocation = event.getHitEntity().getLocation().clone();
+                    }
+                    int zombieNumber;
+                    if (shooter.getLevel() < 90) {
+                        zombieNumber = 1;
+                    } else if (shooter.getLevel() < 180) {
+                        zombieNumber = 2;
+                    } else {
+                        zombieNumber = 3;
+                    }
+                    for (int i = 0; i < zombieNumber; i++) {
+                        Effect.spawnZombies(zombieLocation);
                     }
                 }
             }
