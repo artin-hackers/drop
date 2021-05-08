@@ -299,6 +299,7 @@ public class Drop extends JavaPlugin implements Listener {
         (new Mana()).add(player, Mana.Colour.GREEN, DEFAULT_RESOURCE_AMOUNT);
         (new Mana()).add(player, Mana.Colour.RED, DEFAULT_RESOURCE_AMOUNT);
         (new Mana()).add(player, Mana.Colour.WHITE, DEFAULT_RESOURCE_AMOUNT);
+
     }
 
     /**

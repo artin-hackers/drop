@@ -33,7 +33,14 @@ public class FilipAxe extends Item implements Listener {
                         player.setFireTicks(100);
                     }
                 }
+                if (action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK)) {
+                    if (Effect.removeMana(player, Mana.Colour.RED, 1)) {
+                        Effect.createFireLine(player);
+                    }
+                }
             }
+
         }
     }
 }
+

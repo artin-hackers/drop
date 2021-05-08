@@ -47,6 +47,12 @@ public abstract class Effect {
         // player.launchProjectile(fireball);
         player.launchProjectile(Fireball.class);
     }
+    public static void createFireLine(Player player) {
+        List<Block> sight = player.getLineOfSight(null, 10);
+        for (Block block : sight) {
+            block.setType(Material.FIRE);
+        }
+    }
 
     public static void launchSnowball(Player player) {
         player.launchProjectile(Snowball.class);
