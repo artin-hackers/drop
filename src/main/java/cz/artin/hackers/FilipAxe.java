@@ -26,11 +26,15 @@ public class FilipAxe extends Item implements Listener {
         Action action = event.getAction();
         Player player = event.getPlayer();
         if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
-            if (Effect.removeMana(player, Mana.Colour.RED, 5)) {
-                if (Effect.removeMana(player, Mana.Colour.BLACK, 5)) {
+            if (Effect.removeMana(player, Mana.Colour.RED, 1)) {
+                if (Effect.removeMana(player, Mana.Colour.BLACK, 1)) {
                     //  Effect.launchFireball(player);
-                    for (Player player1 : Bukkit.getOnlinePlayers()) {
-                        player.setFireTicks(100);
+                    for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                        if (player.getName().equalsIgnoreCase(onlinePlayer.getName())) {
+                            // Do not set on fire
+                        } else {
+                            onlinePlayer.setFireTicks(100);
+                        }
                     }
                 }
                 if (action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK)) {
@@ -43,4 +47,3 @@ public class FilipAxe extends Item implements Listener {
         }
     }
 }
-
