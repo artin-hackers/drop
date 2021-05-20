@@ -47,10 +47,29 @@ public class FrostAxe extends Item implements Listener {
             Player shooter = (Player) event.getEntity().getShooter();
             if (shooter != null) {
                 ItemStack itemInMainHand = shooter.getInventory().getItemInMainHand();
-                if (itemInMainHand.getItemMeta() != null && itemInMainHand.getItemMeta().getDisplayName().equals("cz.artin.hackers.FrostAxe")) {
-                    LOGGER.info("Snowball hit something");
-                    if (event.getHitBlock() != null) {
-                        setGroundFreeze(event.getHitBlock().getLocation(), 2);
+              //  if (itemInMainHand.getItemMeta() != null && itemInMainHand.getItemMeta().getDisplayName().equals("cz.artin.hackers.FrostAxe")) {
+                //    LOGGER.info("Snowball hit something");
+                //    if (event.getHitBlock() != null) {
+                  //      setGroundFreeze(event.getHitBlock().getLocation(), 2);
+                 //       if (event.getHitPlayer() != null) {
+                  //          iceLocation = event.getHitPlayer().getLocation().clone();
+                   //     } else if (event.getHitEntity() != null) {
+                     //       iceLocation = event.getHitEntity().getLocation().clone();
+                     //   }
+                    //    int iceNumber;
+                    //    if (shooter.getLevel() < 90) {
+                    //        iceNumber = 1;
+                    //    } else if (shooter.getLevel() < 180) {
+                    //        iceNumber = 2;
+                     //   } else {
+                    //       iceNumber = 3;
+                     //   }
+                    //
+
+                  //  }
+               // }
+          //  }
+       // }
                     } else if (event.getHitEntity() != null) {
                         Location hitEntityLocation = event.getHitEntity().getLocation();
                         for (int x = -1; x <= 1; x++) {
