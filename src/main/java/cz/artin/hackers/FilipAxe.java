@@ -1,5 +1,6 @@
 package cz.artin.hackers;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -25,7 +26,23 @@ public class FilipAxe extends Item implements Listener {
         Action action = event.getAction();
         Player player = event.getPlayer();
         if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
-            Effect.launchFireball(player);
+            if (Effect.removeMana(player, Mana.Colour.RED, 1)) {
+                if (Effect.removeMana(player, Mana.Colour.BLACK, 1)) {
+                    //  Effect.launchFireball(player);
+                    for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                        if (player.getName().equalsIgnoreCase(onlinePlayer.getName())) {
+                            // Do not set on fire
+                        } else {
+                            onlinePlayer.setFireTicks(100);
+                        }
+                    }
+                }
+            }
+        }
+        if (action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK)) {
+            if (Effect.removeMana(player, Mana.Colour.RED, 1)) {
+                Effect.createFireLine(player);
+            }
         }
     }
 }
