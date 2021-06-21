@@ -52,14 +52,13 @@ public abstract class Effect {
         int i = 0;
         for (Block block : sight) {
             if (block.getType().equals(Material.AIR)) {
-                Location locationBelow = block.getLocation();
-                for (i = 0; i < 5; i++) {
-                    locationBelow.add(0, -1, 0);
-                    Block blockBelow = locationBelow.getBlock();
+                Location location = block.getLocation();
+                for (i = 0; i < 10; i++) {
+                    Block blockBelow = location.add(0, -1, 0).getBlock();
                     if (blockBelow.getType().equals(Material.AIR)) {
-                        continue;
+                        location.add(0, -1, 0);
                     } else {
-                        block.setType(Material.FIRE);
+                        location.getBlock().setType(Material.FIRE);
                         break;
                     }
                 }
