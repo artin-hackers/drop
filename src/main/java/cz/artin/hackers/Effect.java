@@ -49,13 +49,19 @@ public abstract class Effect {
     }
     public static void createFireLine(Player player) {
         List<Block> sight = player.getLineOfSight(null, 10);
+        int i = 0;
         for (Block block : sight) {
             if (block.getType().equals(Material.AIR)) {
-                Block blockBelow = block.getLocation().add(0, -1, 0).getBlock();
-                if (blockBelow.getType().equals(Material.AIR)) {
-                    blockBelow.setType(Material.EMERALD_BLOCK);
-                } else {
-                    block.setType(Material.FIRE);
+                Location locationBelow = block.getLocation();
+                for (i = 0; i < 5; i++) {
+                    locationBelow.add(0, -1, 0);
+                    Block blockBelow = locationBelow.getBlock();
+                    if (blockBelow.getType().equals(Material.AIR)) {
+                        continue;
+                    } else {
+                        block.setType(Material.FIRE);
+                        break;
+                    }
                 }
             } else {
                 block.setType(Material.FIRE);
