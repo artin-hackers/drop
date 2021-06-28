@@ -63,7 +63,7 @@ public abstract class Effect {
                     }
                 }
             } else {
-                block.setType(Material.FIRE);
+                block.setType(Material.LAVA);
             }
         }
     }
