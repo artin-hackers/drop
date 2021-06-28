@@ -54,7 +54,7 @@ public abstract class Effect {
             if (block.getType().equals(Material.AIR)) {
                 Location location = block.getLocation();
                 for (i = 0; i < 10; i++) {
-                    Block blockBelow = location.add(0, -1, 0).getBlock();
+                    Block blockBelow = location.getBlock();
                     if (blockBelow.getType().equals(Material.AIR)) {
                         location.add(0, -1, 0);
                     } else {
