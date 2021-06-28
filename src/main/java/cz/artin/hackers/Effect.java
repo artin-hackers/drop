@@ -58,7 +58,7 @@ public abstract class Effect {
                     if (blockBelow.getType().equals(Material.AIR)) {
                         location.add(0, -1, 0);
                     } else {
-                        location.getBlock().setType(Material.FIRE);
+                        location.getBlock().setType(Material.LAVA);
                         break;
                     }
                 }
