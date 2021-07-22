@@ -32,7 +32,7 @@ public class ShovelOfTheDamned extends Item implements Listener {
             Player shooter = (Player) event.getEntity().getShooter();
             if (shooter != null) {
                 ItemStack itemInMainHand = shooter.getInventory().getItemInMainHand();
-                if (itemInMainHand.getItemMeta() != null && itemInMainHand.getItemMeta().getDisplayName().equals("cz.artin.hackers.ShovelOfTheDamned")) {
+                // if (itemInMainHand.getItemMeta() != null && itemInMainHand.getItemMeta().getDisplayName().equals("cz.artin.hackers.ShovelOfTheDamned")) {
                     LOGGER.info("ShovelOfTheDamned");
                     Location zombieLocation = null;
                     if (event.getHitBlock() != null) {
@@ -51,7 +51,7 @@ public class ShovelOfTheDamned extends Item implements Listener {
                     for (int i = 0; i < zombieNumber; i++) {
                         Effect.spawnZombies(zombieLocation);
                     }
-                }
+                // }
             }
         }
     }
