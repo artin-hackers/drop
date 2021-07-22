@@ -25,7 +25,9 @@ public class DebugStick extends Item implements Listener {
         Action action = event.getAction();
         Player player = event.getPlayer();
         if (action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK)) {
-            Effect.launchArrow(player);
+            for (int i = 0; i < 100; i++) {
+                Effect.launchArrow(player);
+            }
         } else if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
             Effect.launchArrow(player);
         }
