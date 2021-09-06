@@ -103,6 +103,8 @@ public class Drop extends JavaPlugin implements Listener {
             return handleCommandDropInventory((Player) sender);
         } else if (label.equalsIgnoreCase("setLevel")) {
             return handleCommandSetLevel((Player) sender, arguments);
+        } else if (label.equalsIgnoreCase("getRandomBuff")) {
+            return handleCommandgetRandomBuff((Player) sender);
         } else {
             return false;
         }
@@ -125,6 +127,11 @@ public class Drop extends JavaPlugin implements Listener {
         }
         return true;
     }
+
+    private boolean handleCommandgetRandomBuff(Player player) {
+        LOGGER.info("getRandomBuff");
+        return true;
+    }   
 
     /* Event handling */
 

@@ -18,3 +18,5 @@ commands:
     description: Remove all items from thw player's inventory
   setLevel:
     description: Set specific level to the player
+  getRandomBuff:
+    description: get random buff  
