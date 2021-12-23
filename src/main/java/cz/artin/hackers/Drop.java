@@ -109,6 +109,25 @@ public class Drop extends JavaPlugin implements Listener {
            Location wallLocation = playerLocation.clone(); // wall location is copy of player location, e.g. (0,0,0)
            wallLocation.add(5, 0, 0); // Move wall location by 5 on axis X, e.g. (5,0,0)
 
+           playerLocation = Objects.requireNonNull(((Player) sender).getPlayer()).getLocation();
+
+           playerLocation.add(0, 5, 0);
+
+           for (int x = 0; x < 5; x++) {
+
+               for (int y = 0; y < 5; y++) {
+
+                   for (int z = 0; z < 5; z++) {
+
+                       Location blockLocation = new Location(playerLocation.getWorld(), playerLocation.getX() + x, playerLocation.getY() + y, playerLocation.getZ() + z);
+
+                       blockLocation.getBlock().setType(Material.DIAMOND_BLOCK);
+
+                   }
+
+               }
+
+           }
 
 
            // Tomasovo
