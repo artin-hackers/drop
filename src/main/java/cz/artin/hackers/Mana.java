@@ -21,19 +21,19 @@ public class Mana extends Item {
     public void add(Player player, Mana.Colour colour, int amount) {
         switch (colour) {
             case BLACK:
-                add(player, Material.BLACK_DYE, "Black Mana", amount, 5);
+                add(player, Material.OBSIDIAN, "Black Mana", amount, 20);
                 break;
             case BLUE:
-                add(player, Material.BLUE_DYE, "Blue Mana", amount, 5);
+                add(player, Material.LAPIS_BLOCK, "Blue Mana", amount, 20);
                 break;
             case GREEN:
-                add(player, Material.GREEN_DYE, "Green Mana", amount, 5);
+                add(player, Material.GREEN_CONCRETE, "Green Mana", amount, 20);
                 break;
             case RED:
-                add(player, Material.RED_DYE, "Red Mana", amount, 5);
+                add(player, Material.REDSTONE_BLOCK, "Red Mana", amount, 20);
                 break;
             case WHITE:
-                add(player, Material.WHITE_DYE, "White Mana", amount, 5);
+                add(player, Material.SNOW_BLOCK, "White Mana", amount, 20);
                 break;
             default:
                 LOGGER.warning("Unknown mana colour");
@@ -43,15 +43,15 @@ public class Mana extends Item {
     public boolean remove(Player player, Mana.Colour colour, int amount) {
         switch (colour) {
             case BLACK:
-                return remove(player, Material.BLACK_DYE, "Black Mana", amount);
+                return remove(player, Material.OBSIDIAN, "Black Mana", amount);
             case BLUE:
-                return remove(player, Material.BLUE_DYE, "Blue Mana", amount);
+                return remove(player, Material.LAPIS_BLOCK, "Blue Mana", amount);
             case GREEN:
-                return remove(player, Material.GREEN_DYE, "Green Mana", amount);
+                return remove(player, Material.GREEN_CONCRETE, "Green Mana", amount);
             case RED:
-                return remove(player, Material.RED_DYE, "Red Mana", amount);
+                return remove(player, Material.REDSTONE_BLOCK, "Red Mana", amount);
             case WHITE:
-                return remove(player, Material.WHITE_DYE, "White Mana", amount);
+                return remove(player, Material.SNOW_BLOCK, "White Mana", amount);
             default:
                 LOGGER.warning("Unknown mana colour");
                 return false;

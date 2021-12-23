@@ -18,7 +18,7 @@ public class DebugStick extends Item implements Listener {
     }
 
     public void add(Player player) {
-        add(player, Material.DEBUG_STICK, DebugStick.class.getName());
+        add(player, Material.DIAMOND_SHOVEL, DebugStick.class.getName());
     }
 
     public void interact(PlayerInteractEvent event) {

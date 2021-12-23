@@ -19,4 +19,8 @@ commands:
   setLevel:
     description: Set specific level to the player
   getRandomBuff:
-    description: get random buff  
+    description: get random buff
+  spawnchicken:
+    description: spawn chicken
+  createwall:
+    description: create wall

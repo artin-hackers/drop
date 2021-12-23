@@ -26,7 +26,7 @@ public class ZireaelSword extends Item implements Listener {
         Player player = event.getPlayer();
         if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
             if (Effect.removeMana(player, Mana.Colour.BLUE, 1)) {
-                Effect.blinkForward(player, 10);
+                Effect.blinkForward(player, 20);
             } else {
                 player.sendMessage("Not enough mana");
             }

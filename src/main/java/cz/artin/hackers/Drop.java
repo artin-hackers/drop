@@ -1,15 +1,14 @@
-package cz.artin.hackers;
+package cz.artin.hackers; // Project name
 
+// import = library, functionality of 3rd side
 import com.google.common.collect.Iterables;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
+import org.bukkit.entity.Chicken;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -26,7 +25,9 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.*;
 import java.util.logging.Logger;
 
+// Entry point
 public class Drop extends JavaPlugin implements Listener {
+    // Constants = usualy default values
     private static final Logger LOGGER = Logger.getLogger(Drop.class.getName());
     private static final List<DropPlayer> dropPlayers = new ArrayList<>();
     private static final List<ItemAdd> weapons = new ArrayList<>();
@@ -35,9 +36,6 @@ public class Drop extends JavaPlugin implements Listener {
     private static final int DEFAULT_PLAYER_LEVEL = 0;
     private static final float DEFAULT_WALK_SPEED = 0.2F;
     private static final int DEFAULT_RESOURCE_AMOUNT = 5;
-
-    // TODO: Review chaotic variables below
-
     private static final int DEFAULT_COUNTDOWN = 3;
     private static final int DEFAULT_MATCH_LENGTH = 300;
     private static final int DEFAULT_CLEAR_AREA = 100;
@@ -62,6 +60,7 @@ public class Drop extends JavaPlugin implements Listener {
         Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         Objects.requireNonNull(getServer().getWorld("world")).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, false);
 
+        // Create playground/arena
         arena = new Arena();
         if (!arena.isInitialised() && Bukkit.getOnlinePlayers().size() != 0) {
             arena.setArenaCenter((Iterables.get(Bukkit.getOnlinePlayers(), 0)).getWorld().getSpawnLocation());
@@ -88,6 +87,177 @@ public class Drop extends JavaPlugin implements Listener {
         if (!(sender instanceof Player)) {
             return false;
         }
+
+        // Tomas
+       if ( label.equalsIgnoreCase("spawnchicken")) { // If text from commandline is "spawnchicken"
+            // Do following
+            LOGGER.info("Somebody wants to spawn chicken");
+            Location playerLocation = ((Player) sender).getPlayer().getLocation(); // Where is the command sender located
+            Location chickenLocation = playerLocation.clone(); // Chicken location is copy of player location
+            chickenLocation.add(5, 0, 0); // Move chicken location by 5 on axis X
+            chickenLocation.getWorld().spawn(chickenLocation, Chicken.class); // Spawn Chicken on chicken location
+            for (int index = 0;index<4;index++){
+                chickenLocation.getWorld().spawn(chickenLocation, Creeper.class); // Spawn Chicken on chicken location
+            }
+
+        }
+       if ( label.equalsIgnoreCase("createwall")) { // If text from commandline is "createwall"
+           // Do following
+           LOGGER.info("Somebody wants to create wall");
+           // X = left-right / west-east, Y = down-up, Z = back-forward / south-north
+           Location playerLocation = ((Player) sender).getPlayer().getLocation(); // Where is the command sender located, e.g. (0,0,0)
+           Location wallLocation = playerLocation.clone(); // wall location is copy of player location, e.g. (0,0,0)
+           wallLocation.add(5, 0, 0); // Move wall location by 5 on axis X, e.g. (5,0,0)
+
+
+
+           // Tomasovo
+           for (int index = 0; index < 5 ; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(0, 0, 1); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 5; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(0, 1, 0); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 5; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(0, 0, -1); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 4; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(0, -1, 0); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 4; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(0, 0, 1); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 3; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(0, 1, 0); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 3; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(0, 0, -1); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 2; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(0, -1, 0); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 3; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(0, 0, 1); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 1; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(0, 1, 0); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 3; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(0, 0, -1); // Move wall location by 5 on axis X//
+           }
+
+               wallLocation=playerLocation.clone(); // Move wall location by 5 on axis X, e.g. (5,0,0)
+               wallLocation.add(-5, 0, 0); // Move wall location by 5 on axis X, e.g. (5,0,0)
+
+
+               // Tomasovo
+               for (int index = 0; index < 5 ; index++) {
+                   wallLocation.getBlock().setType(Material.BEDROCK);
+                   wallLocation.add(0, 0, 1); // Move wall location by 5 on axis X//
+               }
+               for (int index = 0; index < 5; index++) {
+                   wallLocation.getBlock().setType(Material.BEDROCK);
+                   wallLocation.add(0, 1, 0); // Move wall location by 5 on axis X//
+               }
+               for (int index = 0; index < 5; index++) {
+                   wallLocation.getBlock().setType(Material.BEDROCK);
+                   wallLocation.add(0, 0, -1); // Move wall location by 5 on axis X//
+               }
+               for (int index = 0; index < 4; index++) {
+                   wallLocation.getBlock().setType(Material.BEDROCK);
+                   wallLocation.add(0, -1, 0); // Move wall location by 5 on axis X//
+               }
+               for (int index = 0; index < 4; index++) {
+                   wallLocation.getBlock().setType(Material.BEDROCK);
+                   wallLocation.add(0, 0, 1); // Move wall location by 5 on axis X//
+               }
+               for (int index = 0; index < 3; index++) {
+                   wallLocation.getBlock().setType(Material.BEDROCK);
+                   wallLocation.add(0, 1, 0); // Move wall location by 5 on axis X//
+               }
+               for (int index = 0; index < 3; index++) {
+                   wallLocation.getBlock().setType(Material.BEDROCK);
+                   wallLocation.add(0, 0, -1); // Move wall location by 5 on axis X//
+               }
+               for (int index = 0; index < 2; index++) {
+                   wallLocation.getBlock().setType(Material.BEDROCK);
+                   wallLocation.add(0, -1, 0); // Move wall location by 5 on axis X//
+               }
+               for (int index = 0; index < 3; index++) {
+                   wallLocation.getBlock().setType(Material.BEDROCK);
+                   wallLocation.add(0, 0, 1); // Move wall location by 5 on axis X//
+               }
+               for (int index = 0; index < 1; index++) {
+                   wallLocation.getBlock().setType(Material.BEDROCK);
+                   wallLocation.add(0, 1, 0); // Move wall location by 5 on axis X//
+               }
+               for (int index = 0; index < 3; index++) {
+                   wallLocation.getBlock().setType(Material.BEDROCK);
+                   wallLocation.add(0, 0, -1); // Move wall location by 5 on axis X//
+               }
+           wallLocation=playerLocation.clone(); // Move wall location by 5 on axis X, e.g. (5,0,0)
+           wallLocation.add(-3, 0, 10); // Move wall location by 5 on axis X, e.g. (5,0,0)
+
+           // Tomasovo
+           for (int index = 0; index < 5 ; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(1, 0, 0); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 5; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(0, 1, 0); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 5; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(-1, 0, 0); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 4; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(0, -1, 0); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 4; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(1, 0, 0); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 3; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(0, 1, 0); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 3; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(-1, 0, 0); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 2; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(0, -1, 0); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 3; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(1, 0, 0); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 1; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(0, 1, 0); // Move wall location by 5 on axis X//
+           }
+           for (int index = 0; index < 3; index++) {
+               wallLocation.getBlock().setType(Material.BEDROCK);
+               wallLocation.add(-1, 0, 0); // Move wall location by 5 on axis X//
+           }
+
+       }
+
+
 
         if (label.equalsIgnoreCase("createLobby")) {
             return handleCommandCreateLobby();
